@@ -9,7 +9,9 @@ import AllBlogsPage from "./components/landing/AllBlogsPage";
 import BlogPostPage from "./components/landing/Blogpostpage";
 import CoursesPage from "./pages/CoursesPage";
 import CourseDetailsPage from "./pages/CourseDetailsPage";
-
+import InstructorPage from "./pages/InstructorPage";
+import MyCourseDetailsPage from "./pages/MyCourseDetailsPage";
+import CoursePlayerPage from "./pages/CoursePlayerPage";
 
 function App() {
   // const { user } = useContext(AuthContext);
@@ -28,8 +30,12 @@ function App() {
           <Route index element={<Landing />} />
           <Route path="/blogs" element={<AllBlogsPage />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />
-          <Route path="/courses" element={<CoursesPage />} />
-          <Route path="/courses/:slug" element={<CourseDetailsPage />} />
+          {/* <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/courses/:slug" element={<CourseDetailsPage />} /> */}
+           <Route path="/courses" element={<CoursesPage />} />
+        <Route path="/courses/:slug" element={<CourseDetailsPage />} />
+        <Route path="/instructor/:slug" element={<InstructorPage />} />
+        <Route path="/my-courses/:slug" element={<MyCourseDetailsPage />} />
         </Route>
 
         
@@ -37,7 +43,7 @@ function App() {
       
 
 
-     
+      <Route path="/learn/:slug" element={<CoursePlayerPage />} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
