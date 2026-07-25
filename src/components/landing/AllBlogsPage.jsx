@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search, ChevronLeft, ChevronRight, ArrowLeft, Megaphone, Sigma, User, GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
-import {
-    getBlogCategories,
-    getPublicBlogPosts,
-    getPublicBlogPostsByCategory,
-    getAssetUrl,
-} from "../../services/APIService";
+import { blogCategories, blogPosts } from "../../data/staticData";
+
+const getBlogCategories = async () => ({ data: { data: blogCategories } });
+const getPublicBlogPosts = async () => ({ data: { data: blogPosts } });
+const getPublicBlogPostsByCategory = async (slug) => ({
+    data: { data: { blogPosts: blogPosts.filter((post) => post.category?.slug === slug) } },
+});
 
 const ALL_CATEGORY_LABEL = "كل المقالات";
 
@@ -122,7 +123,7 @@ const VariantCover = ({ variant, small }) => {
 
 // بيعرض صورة الغلاف الحقيقية من الباك إند لو موجودة، وإلا يرجع لنفس الـ variants الأصلية
 const CoverImage = ({ post, variant, small }) => {
-    const url = getAssetUrl(post?.coverImage);
+    const url = post?.coverImage;
     if (!url) return <VariantCover variant={variant} small={small} />;
     return (
         <div className="w-full h-full relative">
@@ -165,7 +166,6 @@ const BlogCard = ({ post, variant }) => (
 );
 
 const AllBlogsPage = () => {
-    // ─── الجزء اللي تحت، متربط بالـ API ─────────────────────────────────────
     const [categories, setCategories] = useState([{ _id: "all", name: ALL_CATEGORY_LABEL, slug: "all" }]);
     const [activeCategory, setActiveCategory] = useState(ALL_CATEGORY_LABEL);
     const [searchTerm, setSearchTerm] = useState("");

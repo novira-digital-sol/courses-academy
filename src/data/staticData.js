@@ -1,0 +1,91 @@
+export const packages = [
+  { id: "basic", name: "الباقة الأساسية", price: 450, sessions: 8, isActive: true },
+  { id: "plus", name: "الباقة المتقدمة", price: 750, sessions: 12, isActive: true },
+];
+
+export const blogCategories = [
+  { _id: "education", name: "التعليم", slug: "education" },
+  { _id: "study-tips", name: "نصائح دراسية", slug: "study-tips" },
+  { _id: "academy-news", name: "أخبار الأكاديمية", slug: "academy-news" },
+];
+
+export const blogPosts = [
+  {
+    _id: "post-1",
+    slug: "build-a-study-routine",
+    title: "كيف تبني روتين مذاكرة فعال",
+    description: "خطوات بسيطة تساعد الطالب على تنظيم وقته وتحقيق تقدم ثابت بدون ضغط.",
+    content: "<h2>ابدأ بخطة واقعية</h2><p>قسّم المواد إلى مهام صغيرة وحدد لكل مهمة وقتاً واضحاً. ابدأ بالأهم، واترك وقتاً قصيراً للمراجعة في نهاية اليوم.</p><h2>حافظ على الاستمرارية</h2><p>ساعة يومياً بشكل منتظم أفضل من ساعات طويلة قبل الامتحان. راقب تقدمك وعدّل الخطة كل أسبوع.</p>",
+    category: blogCategories[1],
+    readingTime: 5,
+    publishedAt: "2026-07-20",
+    views: 1240,
+    coverImage: null,
+  },
+  {
+    _id: "post-2",
+    slug: "online-learning-success",
+    title: "دليلك للنجاح في التعلم أونلاين",
+    description: "جهّز بيئة التعلم المناسبة واستفد من الحصص المباشرة والتسجيلات بأفضل شكل.",
+    content: "<h2>مكان هادئ وتجهيز جيد</h2><p>اختر مكاناً ثابتاً للدراسة، واختبر الإنترنت والصوت قبل الحصة.</p><h2>شارك واسأل</h2><p>دوّن الأسئلة أثناء الشرح وشارك بها مع المدرس، ثم راجع التسجيل عند الحاجة.</p>",
+    category: blogCategories[0],
+    readingTime: 6,
+    publishedAt: "2026-07-16",
+    views: 980,
+    coverImage: null,
+  },
+  {
+    _id: "post-3",
+    slug: "summer-program-2026",
+    title: "انطلاق البرنامج الصيفي 2026",
+    description: "برنامج صيفي مرن يجمع بين المراجعة وتقوية المهارات الأساسية.",
+    content: "<h2>تعلم مرن خلال الصيف</h2><p>يتضمن البرنامج حصصاً مباشرة ومراجعات أسبوعية وأنشطة تطبيقية تناسب مستويات الطلاب المختلفة.</p>",
+    category: blogCategories[2],
+    readingTime: 3,
+    publishedAt: "2026-07-10",
+    views: 760,
+    coverImage: null,
+  },
+  {
+    _id: "post-4",
+    slug: "prepare-for-exams",
+    title: "خطة عملية للاستعداد للامتحانات",
+    description: "طريقة واضحة لتقسيم المنهج والمراجعة وحل نماذج الامتحانات.",
+    content: "<h2>قسّم المنهج</h2><p>اكتب قائمة بالدروس ورتبها حسب صعوبتها، ثم خصص أياماً للمراجعة وأياماً لحل الأسئلة.</p>",
+    category: blogCategories[1],
+    readingTime: 7,
+    publishedAt: "2026-07-05",
+    views: 1430,
+    coverImage: null,
+  },
+  {
+    _id: "post-5",
+    slug: "parent-learning-follow-up",
+    title: "دور ولي الأمر في متابعة التعلم",
+    description: "متابعة هادئة ومنتظمة تساعد الطالب دون أن تتحول إلى ضغط يومي.",
+    content: "<h2>اتفقوا على أهداف واضحة</h2><p>ناقشوا الهدف الأسبوعي وراجعوا النتيجة معاً، مع التركيز على التحسن وليس الدرجات فقط.</p>",
+    category: blogCategories[0],
+    readingTime: 4,
+    publishedAt: "2026-06-28",
+    views: 630,
+    coverImage: null,
+  },
+  {
+    _id: "post-6",
+    slug: "new-live-classes",
+    title: "مواعيد الحصص المباشرة الجديدة",
+    description: "تحديث جدول الحصص لتوفير اختيارات أكثر تناسب الطلاب.",
+    content: "<h2>مواعيد أكثر مرونة</h2><p>أضفنا مجموعات مسائية جديدة، ويمكن للطلاب اختيار الموعد الأنسب من الجدول.</p>",
+    category: blogCategories[2],
+    readingTime: 2,
+    publishedAt: "2026-06-22",
+    views: 520,
+    coverImage: null,
+  },
+];
+
+export const contactSettings = {
+  phone: "201000000000",
+  whatsapp: "201000000000",
+  email: "info@courses-academy.com",
+};

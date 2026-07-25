@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from "react";
-import { login as loginApi } from "../services/APIService";
 
 export const AuthContext = createContext();
 
@@ -24,22 +23,16 @@ export const AuthContextProvider = ({ children }) => {
   }, []);
 
   const login = async (credentials) => {
-    const res = await loginApi(credentials);
-    console.log("الرد من الـ API:", res.data);
-
-    const finalUser = res.data.data;
-    const token = res.data.token;
-
-    console.log("البيانات التي سيتم حفظها:", finalUser);
+    const finalUser = {
+      id: "local-user",
+      fullName: credentials.fullName || credentials.name || "مستخدم تجريبي",
+      email: credentials.email || "",
+      role: credentials.role || "student",
+    };
 
     setUser(finalUser);
     localStorage.setItem("user", JSON.stringify(finalUser));
-
-    if (token) {
-      localStorage.setItem("token", token);
-    }
-
-    return { user: finalUser, token };
+    return { user: finalUser };
   };
 
   const updateUser = (updatedUser) => {
@@ -50,7 +43,6 @@ export const AuthContextProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
-    localStorage.removeItem("token");
   };
 
   return (

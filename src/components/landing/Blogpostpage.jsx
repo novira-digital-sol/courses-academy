@@ -9,14 +9,16 @@ import {
     Eye,
     Share2,
     Link2,
-    GraduationCap,
     Check,
 } from "lucide-react";
-import {
-    getPublicBlogPostBySlug,
-    getPublicBlogPostsByCategory,
-    getAssetUrl,
-} from "../../services/APIService"; // ⚠️ عدّل المسار حسب مكان الملف عندك
+import { blogPosts } from "../../data/staticData";
+
+const getPublicBlogPostBySlug = async (slug) => ({
+    data: { data: { blogPost: blogPosts.find((post) => post.slug === slug) } },
+});
+const getPublicBlogPostsByCategory = async (slug) => ({
+    data: { data: { blogPosts: blogPosts.filter((post) => post.category?.slug === slug) } },
+});
 
 const formatDate = (isoDate) => {
     if (!isoDate) return "";
@@ -40,7 +42,7 @@ const FallbackCover = () => (
 );
 
 const CoverImage = ({ post, small }) => {
-    const url = getAssetUrl(post.coverImage);
+    const url = post.coverImage;
     if (!url) return <FallbackCover />;
     return (
         <div className="w-full h-full relative">

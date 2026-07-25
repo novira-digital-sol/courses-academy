@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Check, Crown, Loader2, AlertCircle } from "lucide-react";
-// ⚠️ عدّل المسار ده حسب مكان ملف الـ api عندك في المشروع
-import { getAllPackages } from "../../services/APIService";
+import React, { useMemo, useState } from "react";
+import { Check, Crown } from "lucide-react";
+import { packages } from "../../data/staticData";
 
 // باقة التجربة المجانية مش باقة حقيقية من الباك إند، ثابتة تسويقياً فقط
 const FREE_TRIAL_PLAN = {
@@ -22,8 +21,11 @@ const FREE_TRIAL_PLAN = {
 };
 
 const ANNUAL_DISCOUNT = 0.2;
+const ACTIVE_PACKAGES = packages
+  .filter((pkg) => pkg.isActive)
+  .sort((a, b) => a.price - b.price);
 
-const mapApiPackage = (pkg, isAnnual, isPopular) => {
+const mapPackage = (pkg, isAnnual, isPopular) => {
   const monthly = pkg.price;
   const annual = Math.round(monthly * 12 * (1 - ANNUAL_DISCOUNT));
 
@@ -51,41 +53,15 @@ const mapApiPackage = (pkg, isAnnual, isPopular) => {
 
 const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(false);
-  const [apiPackages, setApiPackages] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchPackages = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const res = await getAllPackages();
-        const active = (res.data.data || [])
-          .filter((p) => p.isActive)
-          .sort((a, b) => a.price - b.price);
-        setApiPackages(active);
-      } catch (err) {
-        setError(
-          err?.response?.data?.message ||
-            "تعذر تحميل الباقات، حاول مرة أخرى لاحقاً",
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPackages();
-  }, []);
-
   // أغلى باقة تتعامل كـ "الأكثر اختياراً"
   const plans = useMemo(() => {
-    if (apiPackages.length === 0) return [FREE_TRIAL_PLAN];
-    const popularId = apiPackages[apiPackages.length - 1].id;
-    const mapped = apiPackages.map((pkg) =>
-      mapApiPackage(pkg, isAnnual, pkg.id === popularId),
+    if (ACTIVE_PACKAGES.length === 0) return [FREE_TRIAL_PLAN];
+    const popularId = ACTIVE_PACKAGES[ACTIVE_PACKAGES.length - 1].id;
+    const mapped = ACTIVE_PACKAGES.map((pkg) =>
+      mapPackage(pkg, isAnnual, pkg.id === popularId),
     );
     return [FREE_TRIAL_PLAN, ...mapped];
-  }, [apiPackages, isAnnual]);
+  }, [isAnnual]);
 
   return (
     <section className="py-20 font-sans" dir="rtl" id="pricing">
@@ -132,21 +108,7 @@ const Pricing = () => {
           </div>
         </div>
 
-        {loading && (
-          <div className="flex items-center justify-center py-16 text-[#8C9198]">
-            <Loader2 size={20} className="animate-spin ml-2" />
-            <span className="text-[14px]">جاري تحميل الباقات...</span>
-          </div>
-        )}
-
-        {!loading && error && (
-          <div className="flex items-center justify-center gap-2 py-6 text-red-600 text-[14px]">
-            <AlertCircle size={16} />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {!loading && (
+        {
           <div className="grid md:grid-cols-3 gap-6 items-stretch">
             {plans.map((plan) => (
               <div
@@ -196,7 +158,7 @@ const Pricing = () => {
               </div>
             ))}
           </div>
-        )}
+        }
       </div>
     </section>
   );

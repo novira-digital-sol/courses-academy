@@ -1,58 +1,9 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import logo from "../../assets/icons/logo.svg";
 import { Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
-import { isAdminRole } from "../../utils/roles";
-
-// ── الـ role بيحدد الداشبورد ──────────────────────────────────────────────
-// admin / super-admin → /admin-dashboard
-// teacher  → لو isActive=true يروح /teacher-dashboard، غير كده /account-state
-// student  → لو isActive=true يروح /student-dashboard، غير كده /register/success
-// parent   → /parent-dashboard (default)
-//
-// ملاحظة: زي الـ teacher بالظبط، بنعتمد على القيمة المخزّنة في الـ user
-// (isActive / registrationStatus / status) جوه الـ AuthContext، من غير ما
-// نضرب أي API إضافي (زي /auth/account-state اللي بترجع 404 حالياً).
-const goToDashboard = (user, navigate) => {
-  const role = user?.role;
-
-  if (isAdminRole(role)) {
-    navigate("/admin-dashboard");
-    return;
-  }
-
-  // if (role === "teacher") {
-  //   navigate(user?.registrationStatus === "approved" ? "/teacher-dashboard" : "/account-state");
-  //   return;
-  // }
-
-
-  if (role === "teacher") {
-    const isApproved =
-      user?.isActive === true ||
-      user?.registrationStatus === "active" ||
-      user?.status === "approved";
-
-    navigate(isApproved ? "/teacher-dashboard" : "/register/success");
-    return;
-  }
-
-  if (role === "student") {
-    const isApproved =
-      user?.isActive === true ||
-      user?.registrationStatus === "active" ||
-      user?.status === "approved";
-
-    navigate(isApproved ? "/student-dashboard" : "/register/success");
-    return;
-  }
-
-  navigate("/parent-dashboard");
-};
 
 const Navbar = () => {
-  const { user } = useContext(AuthContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -69,10 +20,6 @@ const Navbar = () => {
     const section = document.getElementById(id);
     if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
     setMenuOpen(false);
-  };
-
-  const handleDashboardClick = () => {
-    goToDashboard(user, navigate);
   };
 
   return (
@@ -110,34 +57,18 @@ const Navbar = () => {
 
           {/* DESKTOP BUTTONS */}
           <div className="hidden lg:flex items-center gap-3">
-            {user ? (
-              <div className="flex items-center gap-4">
-                <span className="text-[#123C91] font-medium text-[16px]">
-                  مرحباً، {user.fullName || "عزيزي المستخدم"}
-                </span>
-                <button
-                  onClick={handleDashboardClick}
-                  className="h-10 px-6 rounded-lg bg-[#123C91] text-white [&_svg]:text-white text-[16px] font-medium"
-                >
-                  لوحة التحكم
-                </button>
-              </div>
-            ) : (
-              <>
-                <button
-                  onClick={() => navigate("/select-account-type")}
-                  className="h-10 px-6 rounded-lg bg-[#123C91] text-white [&_svg]:text-white text-[16px] font-medium transition-none"
-                >
-                  إنشاء حساب
-                </button>
-                <button
-                  onClick={() => navigate("/login")}
-                  className="h-10 px-6 rounded-lg bg-[#F8FBFF] border border-[#1F293733] text-[#123C91] text-[16px] font-medium transition-all duration-300"
-                >
-                  تسجيل الدخول
-                </button>
-              </>
-            )}
+            <button
+              onClick={() => navigate("/select-account-type")}
+              className="h-10 px-6 rounded-lg bg-[#123C91] text-white [&_svg]:text-white text-[16px] font-medium transition-none"
+            >
+              إنشاء حساب
+            </button>
+            <button
+              onClick={() => navigate("/login")}
+              className="h-10 px-6 rounded-lg bg-[#F8FBFF] border border-[#1F293733] text-[#123C91] text-[16px] font-medium transition-all duration-300"
+            >
+              تسجيل الدخول
+            </button>
           </div>
 
           {/* MOBILE MENU BUTTON */}
@@ -185,34 +116,18 @@ const Navbar = () => {
 
         {/* BUTTONS */}
         <div className="mt-auto p-6 border-t border-(--border-light) flex flex-col gap-3">
-          {user ? (
-            <div className="flex flex-col gap-4">
-              <span className="text-[#123C91] font-medium text-[16px] text-center">
-                مرحباً، {user.fullName || "عزيزي المستخدم"}
-              </span>
-              <button
-                onClick={() => { handleDashboardClick(); setMenuOpen(false); }}
-                className="h-10 w-full rounded-lg bg-[#123C91] text-white [&_svg]:text-white text-[16px] font-medium"
-              >
-                لوحة التحكم
-              </button>
-            </div>
-          ) : (
-            <>
-              <button
-                onClick={() => { navigate("/select-account-type"); setMenuOpen(false); }}
-                className="h-10 w-full rounded-lg bg-[#123C91] text-white [&_svg]:text-white text-[16px] font-medium transition-none"
-              >
-                إنشاء حساب
-              </button>
-              <button
-                onClick={() => { navigate("/login"); setMenuOpen(false); }}
-                className="h-10 w-full rounded-lg bg-[#F8FBFF] border border-[#1F293733] text-[#123C91] text-[16px] font-medium transition-all duration-300"
-              >
-                تسجيل الدخول
-              </button>
-            </>
-          )}
+          <button
+            onClick={() => { navigate("/select-account-type"); setMenuOpen(false); }}
+            className="h-10 w-full rounded-lg bg-[#123C91] text-white [&_svg]:text-white text-[16px] font-medium transition-none"
+          >
+            إنشاء حساب
+          </button>
+          <button
+            onClick={() => { navigate("/login"); setMenuOpen(false); }}
+            className="h-10 w-full rounded-lg bg-[#F8FBFF] border border-[#1F293733] text-[#123C91] text-[16px] font-medium transition-all duration-300"
+          >
+            تسجيل الدخول
+          </button>
         </div>
       </aside>
     </>
