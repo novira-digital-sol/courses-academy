@@ -10,7 +10,7 @@ export default function Hero() {
         className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none"
       />
 
-      <div className="container-custom mx-auto relative z-10 pt-16 pb-4 lg:pb-8 flex flex-col lg:flex-row items-center justify-center min-h-[60vh]">
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-14 relative z-10 pt-16 pb-4 lg:pb-8 flex flex-col lg:flex-row items-center justify-center min-h-[60vh]">
 
         {/* TEXT SIDE */}
         <div className="flex-1 text-center lg:text-right lg:mr-10 px-4 -translate-y-4 lg:-translate-y-18">

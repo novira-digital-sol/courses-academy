@@ -35,7 +35,7 @@ const Navbar = () => {
           z-50
         "
       >
-        <div className="max-w-7xl mx-auto h-full flex items-center justify-between">
+        <div className="w-full max-w-[1600px] mx-auto h-full flex items-center justify-between">
 
           {/* LOGO */}
           <Link to="/" className="flex items-center shrink-0">
