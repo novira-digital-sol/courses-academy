@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Tajaw al:wght@300;400;500;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
 
 @import "tailwindcss";
 
@@ -37,6 +37,7 @@
 
 html {
   scroll-behavior: smooth;
+  direction: rtl;
 }
 
 /* ========================= GLOBAL RESET ========================= */
@@ -57,6 +58,20 @@ body {
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  direction: rtl;
+  text-align: right;
 }
 
 
@@ -238,4 +253,3 @@ section {
 .border-secondary {
   border-color: var(--secondary);
 }
-

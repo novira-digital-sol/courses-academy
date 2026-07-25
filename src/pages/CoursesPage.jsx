@@ -230,14 +230,14 @@ export default function CoursesPage() {
             )}
 
             {filteredCourses.length > 0 && totalPages > 1 && (
-              <nav className="mt-10 flex items-center justify-center gap-1.5" aria-label="صفحات الدورات" dir="ltr">
+              <nav className="mt-10 flex items-center justify-center gap-1.5" aria-label="صفحات الدورات" dir="rtl">
                 <button
                   onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
                   disabled={currentPage === 1}
                   className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#DDE4EC] bg-white text-[#657080] disabled:cursor-not-allowed disabled:opacity-40"
                   aria-label="الصفحة السابقة"
                 >
-                  <ChevronLeft size={16} />
+                  <ChevronRight size={16} />
                 </button>
 
                 {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
@@ -261,7 +261,7 @@ export default function CoursesPage() {
                   className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#DDE4EC] bg-white text-[#657080] disabled:cursor-not-allowed disabled:opacity-40"
                   aria-label="الصفحة التالية"
                 >
-                  <ChevronRight size={16} />
+                  <ChevronLeft size={16} />
                 </button>
               </nav>
             )}
