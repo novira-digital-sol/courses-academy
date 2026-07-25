@@ -1,6 +1,7 @@
-
+@import url('https://fonts.googleapis.com/css2?family=Tajaw al:wght@300;400;500;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
 
 @import "tailwindcss";
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -11,103 +12,230 @@
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  --primary: #123C91;
+  --primary-dark: #0F3278;
+  --secondary: #12C6B0;
+  --bg-light: #EAF4FF;
+  --bg-section: #F8FBFF;
+  --text-dark: #1F2937;
+  --text-light: #6B7280;
+  --white: #FFFFFF;
+  --border-light: #DBE7F5;
+
+
+  --sans: 'IBM Plex Sans Arabic', sans-serif;
+  --heading: 'Tajawal', sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ========================= GLOBAL RESET ========================= */
+
+/* =========================
+   BODY
+========================= */
+body {
+  direction: rtl;
+  text-align: right;
+
+  font-family: var(--sans);
+
+  background-color: var(--white);
+  color: var(--text-dark);
+
+  overflow-x: hidden;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+/* =========================
+   LINKS
+========================= */
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-body {
-  margin: 0;
+/* =========================
+   LISTS
+========================= */
+ul,
+ol {
+  list-style: none;
 }
 
-#root {
+/* =========================
+   IMAGES
+========================= */
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+button {
+  cursor: pointer;
+}
+
+
+/* =========================
+   INPUTS
+========================= */
+input,
+textarea,
+select {
+  font-family: var(--body-font);
+  outline: none;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+section {
+  padding: 90px 0;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+.container-custom {
   width: 100%;
-  max-width: none;
-  margin: 0;
-  text-align: center;
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  max-width: 1400px;
+
+  margin-inline: auto;
+
+  padding-inline: 20px;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+/* =========================
+   CUSTOM SCROLLBAR
+========================= */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+::-webkit-scrollbar-track {
+  background: #EDF4FF;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 30px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
+}
+
+
+/* =========================
+   TEXT SELECTION
+========================= */
+::selection {
+  background: var(--secondary);
+  color: white;
+}
+
+/* =========================
+   UTILITIES
+========================= */
+.text-gradient {
+  background: linear-gradient(90deg,
+      var(--primary),
+      var(--secondary));
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.shadow-custom {
+  box-shadow: var(--shadow);
+}
+
+.bg-main {
+  background-color: var(--bg-light);
+}
+
+.bg-section {
+  background-color: var(--bg-section);
+}
+
+.text-main {
+  color: var(--primary);
+}
+
+.text-secondary {
+  color: var(--secondary);
+}
+
+.border-main {
+  border-color: var(--border);
+}
+
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 1024px) {
+  section {
+    padding: 70px 0;
   }
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
+
+@media (max-width: 768px) {
+  section {
+    padding: 60px 0;
+  }
+
+  .container-custom {
+    padding-inline: 16px;
   }
 }
-p {
-  margin: 0;
+
+@media (max-width: 480px) {
+  section {
+    padding: 50px 0;
+  }
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+/* ================= DESIGN SYSTEM HELPERS ================= */
+
+.text-primary {
+  color: var(--primary);
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.text-secondary {
+  color: var(--secondary);
 }
+
+.bg-primary {
+  background-color: var(--primary);
+}
+
+.bg-secondary {
+  background-color: var(--secondary);
+}
+
+.border-primary {
+  border-color: var(--primary);
+}
+
+.border-secondary {
+  border-color: var(--secondary);
+}
+
