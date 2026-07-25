@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useContext } from "react";
-import { Toaster } from "react-hot-toast";
+// import { useContext } from "react";
+// import { Toaster } from "react-hot-toast";
 
 import HomeLayout from "./components/layout/HomeLayout";
 import Landing from "./pages/Landing";
@@ -10,15 +10,15 @@ import BlogPostPage from "./components/landing/Blogpostpage";
 
 
 function App() {
-  const { user } = useContext(AuthContext);
+  // const { user } = useContext(AuthContext);
 
   return (
     <>
-      <Toaster
+      {/* <Toaster
         position="top-left"
         reverseOrder={false}
         toastOptions={{ style: { direction: "ltr" } }}
-      />
+      /> */}
 
       <Routes>
         {/* Landing */}
