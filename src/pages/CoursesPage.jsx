@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { ChevronDown, Filter, Search, SlidersHorizontal, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ChevronDown, ChevronLeft, ChevronRight, Filter, Search, SlidersHorizontal, X } from "lucide-react";
 import CourseCard from "../components/courses/CourseCard";
 import { courseCategories, courses } from "../data/staticData";
 
@@ -8,6 +8,7 @@ const prices = [
   { value: "free", label: "مجاني" },
   { value: "paid", label: "مدفوع" },
 ];
+const COURSES_PER_PAGE = 3;
 
 const CheckboxGroup = ({ title, items, selected, onToggle }) => (
   <fieldset className="border-b border-[#EDF0F4] pb-5">
@@ -40,6 +41,7 @@ export default function CoursesPage() {
   const [selectedLevels, setSelectedLevels] = useState([]);
   const [selectedPrices, setSelectedPrices] = useState([]);
   const [minimumRating, setMinimumRating] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const toggleValue = (setter) => (value) => {
     setter((current) =>
@@ -82,6 +84,16 @@ export default function CoursesPage() {
       if (sortBy === "rating") return b.rating - a.rating;
       return b.students - a.students;
     });
+  }, [categories, minimumRating, query, selectedLevels, selectedPrices, sortBy]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredCourses.length / COURSES_PER_PAGE));
+  const paginatedCourses = filteredCourses.slice(
+    (currentPage - 1) * COURSES_PER_PAGE,
+    currentPage * COURSES_PER_PAGE,
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
   }, [categories, minimumRating, query, selectedLevels, selectedPrices, sortBy]);
 
   return (
@@ -207,7 +219,7 @@ export default function CoursesPage() {
           <main>
             {filteredCourses.length ? (
               <div className={`grid gap-5 sm:grid-cols-2 ${filterOpen ? "xl:grid-cols-3" : "lg:grid-cols-3"}`}>
-                {filteredCourses.map((course) => (
+                {paginatedCourses.map((course) => (
                   <CourseCard key={course.id} course={course} />
                 ))}
               </div>
@@ -215,6 +227,43 @@ export default function CoursesPage() {
               <div className="rounded-lg border border-[#E1E7EF] bg-[#FAFBFD] py-20 text-center text-[#7B8490]">
                 لا توجد دورات مطابقة للفلاتر المختارة.
               </div>
+            )}
+
+            {filteredCourses.length > 0 && totalPages > 1 && (
+              <nav className="mt-10 flex items-center justify-center gap-1.5" aria-label="صفحات الدورات" dir="ltr">
+                <button
+                  onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                  disabled={currentPage === 1}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#DDE4EC] bg-white text-[#657080] disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label="الصفحة السابقة"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+
+                {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`h-9 min-w-9 rounded-lg border px-2 text-sm font-semibold transition-colors ${
+                      currentPage === page
+                        ? "border-[#123C91] bg-[#123C91] text-white"
+                        : "border-[#DDE4EC] bg-white text-[#556171] hover:border-[#123C91]"
+                    }`}
+                    aria-current={currentPage === page ? "page" : undefined}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                  disabled={currentPage === totalPages}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#DDE4EC] bg-white text-[#657080] disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label="الصفحة التالية"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </nav>
             )}
           </main>
         </div>
