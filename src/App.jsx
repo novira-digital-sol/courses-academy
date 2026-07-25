@@ -7,6 +7,8 @@ import Landing from "./pages/Landing";
 import AllBlogsPage from "./components/landing/AllBlogsPage";
 
 import BlogPostPage from "./components/landing/Blogpostpage";
+import CoursesPage from "./pages/CoursesPage";
+import CourseDetailsPage from "./pages/CourseDetailsPage";
 
 
 function App() {
@@ -26,6 +28,8 @@ function App() {
           <Route index element={<Landing />} />
           <Route path="/blogs" element={<AllBlogsPage />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />
+          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/courses/:slug" element={<CourseDetailsPage />} />
         </Route>
 
         

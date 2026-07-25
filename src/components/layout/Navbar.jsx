@@ -9,6 +9,7 @@ const Navbar = () => {
 
   const links = [
     { title: "الرئيسية", id: "home" },
+    { title: "الدورات", path: "/courses" },
     { title: "الباقات", id: "pricing" },
     { title: "عن الأكاديمية", id: "features" },
     { title: "المميزات", id: "services" },
@@ -20,6 +21,14 @@ const Navbar = () => {
     const section = document.getElementById(id);
     if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
     setMenuOpen(false);
+  };
+
+  const handleNavItem = (item) => {
+    if (item.path) {
+      goTo(item.path);
+      return;
+    }
+    scrollToSection(item.id);
   };
 
   const goTo = (path) => {
@@ -41,8 +50,8 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-6 xl:gap-8">
             {links.map((item) => (
               <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
+                key={item.id || item.path}
+                onClick={() => handleNavItem(item)}
                 className="relative inline-flex items-center text-[16px] font-medium text-primary transition-all duration-300 hover:text-[#12C6B0]! hover:scale-105 after:content-[''] after:absolute after:right-0 after:-bottom-1 after:h-0.5 after:w-full after:scale-x-0 after:origin-right after:bg-[#12C6B0] after:transition-transform after:duration-300 hover:after:scale-x-100"
               >
                 {item.title}
@@ -98,8 +107,8 @@ const Navbar = () => {
         <div className="flex flex-col gap-6 p-6">
           {links.map((item) => (
             <button
-              key={item.id}
-              onClick={() => scrollToSection(item.id)}
+              key={item.id || item.path}
+              onClick={() => handleNavItem(item)}
               className="text-primary hover:text-[#12C6B0]! text-[16px] font-medium transition-colors duration-300"
             >
               {item.title}
