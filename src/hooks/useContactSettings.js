@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getContactSettings } from "../services/APIService";
+// import { getContactSettings } from "../services/APIService";
 
 export const whatsappLink = (number) => {
   const digits = String(number || "").replace(/\D/g, "");
