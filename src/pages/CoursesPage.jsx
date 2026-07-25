@@ -1,9 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight, Filter, Minus, Search, SlidersHorizontal } from "lucide-react";
 import CourseCard from "../components/courses/CourseCard";
-import { courseCategories, courses } from "../data/staticData";
+import { courses } from "../data/staticData";
 
-const levels = ["مبتدئ", "متوسط", "متقدم", "جميع المستويات"];
+const classifications = ["تقنية", "تأسيس أطفال", "تربية"];
+const subjects = ["لغة عربية", "رياضيات", "فيزياء", "كيمياء"];
+const stages = ["ابتدائي", "إعدادي", "ثانوي", "جامعي", "غير ذلك"];
+const grades = ["الصف الأول الثانوي", "الصف الثاني", "الصف الثالث"];
+const languages = ["عربي", "إنجليزي"];
+const levels = ["مبتدئ", "متوسط", "متقدم"];
 const prices = [
   { value: "free", label: "مجاني" },
   { value: "paid", label: "مدفوع" },
@@ -37,10 +42,13 @@ export default function CoursesPage() {
   const [query, setQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
   const [filterOpen, setFilterOpen] = useState(true);
-  const [categories, setCategories] = useState([]);
+  const [selectedClassifications, setSelectedClassifications] = useState([]);
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [selectedStages, setSelectedStages] = useState([]);
+  const [selectedGrades, setSelectedGrades] = useState([]);
+  const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [selectedLevels, setSelectedLevels] = useState([]);
   const [selectedPrices, setSelectedPrices] = useState([]);
-  const [minimumRating, setMinimumRating] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
   const toggleValue = (setter) => (value) => {
@@ -52,14 +60,23 @@ export default function CoursesPage() {
   };
 
   const resetFilters = () => {
-    setCategories([]);
+    setSelectedClassifications([]);
+    setSelectedSubjects([]);
+    setSelectedStages([]);
+    setSelectedGrades([]);
+    setSelectedLanguages([]);
     setSelectedLevels([]);
     setSelectedPrices([]);
-    setMinimumRating(0);
   };
 
   const activeFilterCount =
-    categories.length + selectedLevels.length + selectedPrices.length + (minimumRating ? 1 : 0);
+    selectedClassifications.length +
+    selectedSubjects.length +
+    selectedStages.length +
+    selectedGrades.length +
+    selectedLanguages.length +
+    selectedLevels.length +
+    selectedPrices.length;
 
   const filteredCourses = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -68,14 +85,30 @@ export default function CoursesPage() {
         !normalizedQuery ||
         course.title.toLowerCase().includes(normalizedQuery) ||
         course.instructor.toLowerCase().includes(normalizedQuery);
-      const matchesCategory = !categories.length || categories.includes(course.category);
+      const matchesClassification =
+        !selectedClassifications.length || selectedClassifications.includes(course.classification);
+      const matchesSubject =
+        !selectedSubjects.length ||
+        selectedSubjects.includes(course.category) ||
+        (selectedSubjects.includes("لغة عربية") && course.category === "لغات");
+      const matchesStage = !selectedStages.length || selectedStages.includes(course.stage);
+      const matchesGrade = !selectedGrades.length || selectedGrades.includes(course.grade);
+      const matchesLanguage = !selectedLanguages.length || selectedLanguages.includes(course.language);
       const matchesLevel = !selectedLevels.length || selectedLevels.includes(course.level);
       const matchesPrice =
         !selectedPrices.length ||
         (selectedPrices.includes("free") && course.price === 0) ||
         (selectedPrices.includes("paid") && course.price > 0);
-      const matchesRating = course.rating >= minimumRating;
-      return matchesQuery && matchesCategory && matchesLevel && matchesPrice && matchesRating;
+      return (
+        matchesQuery &&
+        matchesClassification &&
+        matchesSubject &&
+        matchesStage &&
+        matchesGrade &&
+        matchesLanguage &&
+        matchesLevel &&
+        matchesPrice
+      );
     });
 
     return [...result].sort((a, b) => {
@@ -84,7 +117,17 @@ export default function CoursesPage() {
       if (sortBy === "rating") return b.rating - a.rating;
       return b.students - a.students;
     });
-  }, [categories, minimumRating, query, selectedLevels, selectedPrices, sortBy]);
+  }, [
+    query,
+    selectedClassifications,
+    selectedSubjects,
+    selectedStages,
+    selectedGrades,
+    selectedLanguages,
+    selectedLevels,
+    selectedPrices,
+    sortBy,
+  ]);
 
   const totalPages = Math.max(1, Math.ceil(filteredCourses.length / COURSES_PER_PAGE));
   const paginatedCourses = filteredCourses.slice(
@@ -94,7 +137,17 @@ export default function CoursesPage() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [categories, minimumRating, query, selectedLevels, selectedPrices, sortBy]);
+  }, [
+    query,
+    selectedClassifications,
+    selectedSubjects,
+    selectedStages,
+    selectedGrades,
+    selectedLanguages,
+    selectedLevels,
+    selectedPrices,
+    sortBy,
+  ]);
 
   return (
     <div className="min-h-screen bg-white py-14" dir="rtl">
@@ -156,9 +209,33 @@ export default function CoursesPage() {
               <div className="space-y-5">
                 <CheckboxGroup
                   title="التصنيف"
-                  items={courseCategories.filter((item) => item !== "الكل")}
-                  selected={categories}
-                  onToggle={toggleValue(setCategories)}
+                  items={classifications}
+                  selected={selectedClassifications}
+                  onToggle={toggleValue(setSelectedClassifications)}
+                />
+                <CheckboxGroup
+                  title="المادة"
+                  items={subjects}
+                  selected={selectedSubjects}
+                  onToggle={toggleValue(setSelectedSubjects)}
+                />
+                <CheckboxGroup
+                  title="المرحلة"
+                  items={stages}
+                  selected={selectedStages}
+                  onToggle={toggleValue(setSelectedStages)}
+                />
+                <CheckboxGroup
+                  title="الصف"
+                  items={grades}
+                  selected={selectedGrades}
+                  onToggle={toggleValue(setSelectedGrades)}
+                />
+                <CheckboxGroup
+                  title="اللغة"
+                  items={languages}
+                  selected={selectedLanguages}
+                  onToggle={toggleValue(setSelectedLanguages)}
                 />
                 <CheckboxGroup
                   title="المستوى"
@@ -173,24 +250,6 @@ export default function CoursesPage() {
                   onToggle={toggleValue(setSelectedPrices)}
                 />
 
-                <fieldset>
-                  <legend className="mb-3 text-sm font-bold text-[#1F2937]">التقييم</legend>
-                  <div className="space-y-2.5">
-                    {[4.5, 4, 3].map((rating) => (
-                      <label key={rating} className="flex cursor-pointer items-center gap-2 text-sm text-[#667180]">
-                        <input
-                          type="radio"
-                          name="rating"
-                          checked={minimumRating === rating}
-                          onChange={() => setMinimumRating(rating)}
-                          className="h-4 w-4 accent-[#123C91]"
-                        />
-                        <span className="text-amber-500">★★★★★</span>
-                        <span>+{rating}</span>
-                      </label>
-                    ))}
-                  </div>
-                </fieldset>
               </div>
 
               <button className="mt-6 h-11 w-full rounded-lg bg-[#123C91] text-sm font-bold text-white">
