@@ -28,7 +28,7 @@ export default function FeaturedCourses() {
         <div className="mt-10 text-center">
           <Link
             to="/courses"
-            className="inline-flex h-12 items-center gap-2 rounded-lg border border-[#D5DCE5] px-7 font-semibold text-[#123C91] transition-colors hover:bg-[#123C91] hover:text-white"
+            className="inline-flex h-12 items-center gap-2 rounded-lg border border-[#D5DCE5] px-7 font-semibold text-[#123C91] "
           >
             عرض جميع الدورات <ArrowLeft size={18} />
           </Link>
