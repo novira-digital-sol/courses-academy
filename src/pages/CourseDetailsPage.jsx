@@ -1,109 +1,203 @@
-import { Link, useParams } from "react-router-dom";
-import { Award, BookOpen, Check, Clock, PlayCircle, Star, Users } from "lucide-react";
-import CourseCard from "../components/courses/CourseCard";
-import { courses } from "../data/staticData";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  BookOpen, CalendarDays, Check, ChevronDown, ChevronLeft, Clock3,
+  FileText, Globe2, Heart, LockKeyhole, Share2, Star, Users, Video,
+} from "lucide-react";
+import pythonCover from "../assets/courses/python-course.png";
+
+const lessons = [
+  ["ما هي البرمجة ولماذا Python؟", "04:45", true],
+  ["تثبيت Python وبيئة العمل", "20:15"],
+  ["كتابة أول برنامج بلغة Python", "15:20"],
+  ["المتغيرات وأنواع البيانات", "18:35"],
+];
+
+const reviews = [
+  ["أحمد سامي", "أ.س", "شرح رائع وبسيط جدًا، استفدت من التطبيق العملي."],
+  ["سارة علي", "س.ع", "الكورس منظم والمدرب يشرح كل خطوة بوضوح."],
+  ["محمد خالد", "م.خ", "أنصح به لكل شخص يريد أن يبدأ البرمجة."],
+  ["مريم حسن", "م.ح", "المحتوى ممتاز والتدريبات ساعدتني على الفهم."],
+  ["عمر محمود", "ع.م", "أسلوب الشرح واضح والمعلومات مرتبة بشكل ممتاز."],
+  ["نور أحمد", "ن.أ", "أحببت الأمثلة العملية وسهولة متابعة المحاضرات."],
+  ["يوسف علي", "ي.ع", "دورة مفيدة جدًا وساعدتني في كتابة أول برنامج."],
+  ["هدى محمد", "هـ.م", "تجربة ممتازة ومناسبة تمامًا للمبتدئين."],
+];
 
 export default function CourseDetailsPage() {
-  const { slug } = useParams();
-  const course = courses.find((item) => item.slug === slug);
-
-  if (!course) {
-    return (
-      <div className="min-h-[60vh] bg-[#F8FAFC] py-24 text-center" dir="rtl">
-        <h1 className="mb-5 text-3xl font-bold text-[#1F2937]">الدورة غير موجودة</h1>
-        <Link to="/courses" className="font-semibold text-[#123C91]">العودة إلى كل الدورات</Link>
-      </div>
-    );
-  }
-
-  const relatedCourses = courses
-    .filter((item) => item.id !== course.id && item.category === course.category)
-    .slice(0, 3);
+  const [openSection, setOpenSection] = useState(0);
+  const [showAllReviews, setShowAllReviews] = useState(false);
+  const toggleSection = (index) => setOpenSection((current) => current === index ? -1 : index);
 
   return (
-    <div className="bg-[#F8FAFC] py-12" dir="rtl">
-      <div className="mx-auto w-full max-w-[1360px] px-4 md:px-10">
-        <nav className="mb-8 text-sm text-[#7B8490]">
-          <Link to="/" className="hover:text-[#123C91]">الرئيسية</Link>
-          <span className="mx-2">/</span>
-          <Link to="/courses" className="hover:text-[#123C91]">الدورات</Link>
-          <span className="mx-2">/</span>
-          <span>{course.title}</span>
+    <div dir="rtl" className="min-h-screen bg-white pb-20 text-[#202936]">
+      <div className="mx-auto w-full max-w-290 px-4 pt-10 sm:px-6 lg:px-8">
+        <nav className="mb-9 flex items-center gap-2.5 text-[14px] text-[#8B94A0]">
+          <Link to="/" className="font-semibold text-[#123C91]">الرئيسية</Link>
+          <ChevronLeft size={12} />
+          <Link to="/courses" className="font-semibold text-[#123C91]">الدورات</Link>
+          <ChevronLeft size={12} />
+          <span>أساسيات البرمجة باستخدام Python</span>
         </nav>
 
-        <div className="grid items-start gap-8 lg:grid-cols-[1fr_340px]">
-          <main className="space-y-7">
-            <section className="overflow-hidden rounded-lg border border-[#E1E7EF] bg-white">
-              <div className="flex min-h-72 items-center justify-center bg-[#123C91]">
-                <PlayCircle size={92} strokeWidth={1.2} className="text-white" />
-              </div>
-              <div className="p-6 md:p-8">
-                <span className="mb-3 inline-block rounded bg-[#EAF4FF] px-3 py-1 text-sm font-semibold text-[#123C91]">
-                  {course.category}
-                </span>
-                <h1 className="mb-4 text-3xl font-bold leading-tight text-[#1F2937] md:text-4xl">{course.title}</h1>
-                <p className="text-lg leading-8 text-[#657080]">{course.description}</p>
-                <div className="mt-6 flex flex-wrap gap-6 text-sm text-[#657080]">
-                  <span className="flex items-center gap-2"><Star size={17} className="fill-amber-400 text-amber-400" /> {course.rating}</span>
-                  <span className="flex items-center gap-2"><Users size={17} /> {course.students} طالب</span>
-                  <span className="flex items-center gap-2"><Clock size={17} /> {course.duration} ساعة</span>
-                  <span className="flex items-center gap-2"><BookOpen size={17} /> {course.lessons} درس</span>
-                </div>
-              </div>
-            </section>
+        <div className="grid items-start gap-11 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <main>
+            <img
+              src={pythonCover}
+              alt="تعلم البرمجة بلغة Python"
+              className="w-full rounded-t-[6px] border border-[#E4E9EF] object-cover"
+            />
+            <div className="grid grid-cols-4 overflow-hidden rounded-b-[6px] border-x border-b border-[#E4E9EF] bg-[#F7FAFC]">
+              <Info icon={<CalendarDays size={13} />} label="آخر تحديث" value="8/2024" />
+              <Info icon={<Globe2 size={13} />} label="اللغة" value="العربية" />
+              <Info icon={<Star size={13} className="fill-[#F5A623] text-[#F5A623]" />} label="التقييم" value="4.7" />
+              <Info icon={<Users size={13} />} label="عدد الطلاب" value="250 طالبًا" />
+            </div>
 
-            <section className="rounded-lg border border-[#E1E7EF] bg-white p-6 md:p-8">
-              <h2 className="mb-5 text-2xl font-bold text-[#1F2937]">ماذا ستتعلم؟</h2>
-              <div className="grid gap-4 md:grid-cols-2">
-                {course.outcomes.map((outcome) => (
-                  <div key={outcome} className="flex items-start gap-3 text-[#4E5968]">
-                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#E5F8F4] text-[#0E9F8E]">
-                      <Check size={15} />
+            <Section title="تتضمن هذه الدورة ما يأتي:">
+              <ul className="space-y-2 text-[15px] leading-7 text-[#657181]">
+                <li>• أكثر من 10 ساعات من الفيديو حسب الطلب</li>
+                <li>• 5 مقالات وموارد قابلة للتحميل</li>
+                <li>• تمارين واختبارات عملية</li>
+                <li>• وصول كامل مدى الحياة وشهادة إتمام</li>
+              </ul>
+            </Section>
+
+            <Section title="محتوى الدورة">
+              <div className="mb-4 flex gap-5 text-[13px] text-[#7E8996]">
+                <span>3 أقسام</span><span>17 محاضرة</span><span>5 س 47 د</span>
+              </div>
+              <div className="overflow-hidden rounded-[4px] border border-[#DFE5EB]">
+                <button
+                  type="button"
+                  onClick={() => toggleSection(0)}
+                  aria-expanded={openSection === 0}
+                  className="flex w-full items-center justify-between bg-[#F7F8FA] px-4 py-3.5 text-right transition-colors hover:bg-[#F0F4F8]"
+                >
+                  <div>
+                    <p className="text-[15px] font-bold">القسم 1: مقدمة في Python</p>
+                    <p className="mt-1 text-[11px] text-[#89939F]">5 محاضرات • 58 دقيقة</p>
+                  </div>
+                  <ChevronDown size={18} className={`transition-transform duration-200 ${openSection === 0 ? "rotate-180" : ""}`} />
+                </button>
+                {openSection === 0 && lessons.map(([title, time, open]) => (
+                  <div key={title} className="flex items-center justify-between border-t border-[#ECF0F3] px-4 py-3.5 text-[14px]">
+                    <span className="flex items-center gap-2">
+                      {open ? <Video size={16} className="text-[#123C91]" /> : <LockKeyhole size={15} className="text-[#8B95A1]" />}
+                      {title}
                     </span>
-                    {outcome}
+                    <span className="text-[11px] text-[#89939F]">{time}</span>
+                  </div>
+                ))}
+                {["القسم 2: أساسيات وأوامر Python", "القسم 3: تمارين ومشاريع"].map((title, index) => (
+                  <div key={title} className="border-t border-[#DFE5EB]">
+                    <button
+                      type="button"
+                      onClick={() => toggleSection(index + 1)}
+                      aria-expanded={openSection === index + 1}
+                      className="flex w-full items-center justify-between bg-[#F7F8FA] px-4 py-3.5 text-right text-[14px] font-bold transition-colors hover:bg-[#F0F4F8]"
+                    >
+                      <span>{title}</span>
+                      <span className="flex items-center gap-4 text-[11px] font-normal text-[#89939F]">
+                        6 دروس • ساعة
+                        <ChevronDown size={17} className={`transition-transform duration-200 ${openSection === index + 1 ? "rotate-180" : ""}`} />
+                      </span>
+                    </button>
+                    {openSection === index + 1 && (
+                      <div className="border-t border-[#ECF0F3] bg-white px-4 py-4 text-[14px] text-[#687382]">
+                        سيتم عرض دروس هذا القسم هنا عند توفرها.
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
-            </section>
+            </Section>
 
-            <section className="rounded-lg border border-[#E1E7EF] bg-white p-6 md:p-8">
-              <h2 className="mb-4 text-2xl font-bold text-[#1F2937]">عن الدورة</h2>
-              <p className="leading-8 text-[#657080]">
-                تجمع هذه الدورة بين الشرح المبسط والتطبيق العملي. المحتوى مقسم إلى دروس قصيرة،
-                ومع كل وحدة توجد تدريبات تساعدك على قياس تقدمك وتثبيت المعلومات.
+            <Section title="المتطلبات">
+              <List items={["لا يشترط وجود خبرة سابقة في البرمجة", "جهاز كمبيوتر واتصال بالإنترنت", "تثبيت Python وبيئة العمل", "الرغبة في التعلم والتطبيق"]} />
+            </Section>
+
+            <Section title="وصف الدورة">
+              <p className="text-[15px] leading-8 text-[#687382]">
+                هذه الدورة هي دليلك المتكامل لتعلم البرمجة بلغة Python من البداية. ستتعلم المفاهيم
+                الأساسية بأسلوب بسيط وواضح، ثم تطبقها في مجموعة من التدريبات والمشروعات العملية
+                التي تساعدك على اكتساب مهارة حقيقية.
               </p>
+            </Section>
+
+            <Section title="لمن هذه الدورة؟">
+              <List items={["المبتدئون في مجال البرمجة", "الطلاب الراغبون في تعلم Python", "كل من يريد دخول مجال تطوير البرمجيات", "لا تحتاج إلى أي خبرة سابقة"]} />
+            </Section>
+
+            <section className="!py-9">
+              <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+                <h2 className="text-[20px] font-extrabold">4.7 من تقييمات الدورة • 250 من التقييمات</h2>
+                <div className="flex gap-0.5 text-[#F5A623]">{[1,2,3,4,5].map(n => <Star key={n} size={16} className="fill-current" />)}</div>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {(showAllReviews ? reviews : reviews.slice(0, 4)).map(([name, initials, text]) => (
+                  <article key={name} className="rounded-[6px] border border-[#E1E6EC] p-5">
+                    <div className="flex gap-4">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F2D2B8] text-[12px] font-bold">{initials}</span>
+                      <div>
+                        <h3 className="text-[14px] font-bold">{name}</h3>
+                        <div className="my-1.5 flex text-[#F5A623]">{[1,2,3,4,5].map(n => <Star key={n} size={11} className="fill-current" />)}</div>
+                        <p className="text-[14px] leading-7 text-[#727D8A]">{text}</p>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAllReviews((visible) => !visible)}
+                className="mx-auto mt-5 block rounded-md px-4 py-2 text-[14px] font-bold text-[#123C91] transition-colors hover:bg-[#EEF4FF]"
+              >
+                {showAllReviews ? "عرض تقييمات أقل" : "عرض جميع التقييمات"}
+              </button>
             </section>
           </main>
 
-          <aside className="rounded-lg border border-[#DDE4EC] bg-white p-6 lg:sticky lg:top-6">
-            <div className="mb-5 flex items-end justify-between">
-              <strong className="text-3xl text-[#123C91]">{course.price ? `${course.price} ج.م` : "مجاني"}</strong>
-              <span className="text-sm text-[#7B8490]">وصول كامل</span>
+          <aside className="order-first border border-[#DDE3E9] bg-white p-7 shadow-[0_3px_14px_rgba(22,44,77,.05)] lg:order-none lg:sticky lg:top-5">
+            <h1 className="text-[24px] font-extrabold leading-9">تعلم البرمجة بلغة Python من الصفر</h1>
+            <p className="mt-3 text-[14px] font-semibold text-[#123C91]">أكاديمية نوفيرا</p>
+            <div className="my-6 grid grid-cols-3 border-y border-[#EDF0F3] py-5 text-center">
+              <Metric label="عدد الطلاب" value="1,200" />
+              <Metric label="مدة الدورة" value="17.5 ساعة" bordered />
+              <Metric label="السعر" value="249 ج.م" price />
             </div>
-            <button className="mb-5 h-12 w-full rounded-lg bg-[#123C91] font-bold text-white hover:bg-[#0E327A]">
-              اشترك في الدورة
-            </button>
-            <ul className="space-y-4 border-t border-[#EDF0F4] pt-5 text-sm text-[#556171]">
-              <li className="flex items-center justify-between"><span className="flex items-center gap-2"><Clock size={17} /> المدة</span><strong>{course.duration} ساعة</strong></li>
-              <li className="flex items-center justify-between"><span className="flex items-center gap-2"><BookOpen size={17} /> الدروس</span><strong>{course.lessons}</strong></li>
-              <li className="flex items-center justify-between"><span className="flex items-center gap-2"><Award size={17} /> المستوى</span><strong>{course.level}</strong></li>
+            <p className="mb-6 text-[14px] font-bold">المحاضر: <span className="font-normal">أحمد محمد</span></p>
+            <ul className="space-y-4 text-[#5F6A78]">
+              <AsideRow icon={<Clock3 size={14}/>} text="12 ساعة من المحتوى التعليمي" />
+              <AsideRow icon={<Video size={14}/>} text="فيديوهات عالية الجودة" />
+              <AsideRow icon={<FileText size={14}/>} text="ملفات ومصادر قابلة للتحميل" />
+              <AsideRow icon={<BookOpen size={14}/>} text="وصول كامل مدى الحياة" />
+              <AsideRow icon={<Check size={14}/>} text="شهادة إتمام الدورة" />
             </ul>
-            <div className="mt-6 rounded-lg bg-[#F7F9FC] p-4">
-              <p className="mb-1 text-xs text-[#7B8490]">المدرس</p>
-              <p className="font-bold text-[#1F2937]">{course.instructor}</p>
+            <button className="mt-7 h-12 w-full rounded-[4px] bg-[#123C91] text-[15px] font-bold text-white hover:bg-[#0F3278]">اشترك في الدورة الآن</button>
+            <div className="mt-3.5 flex gap-3">
+              <button className="flex h-10 flex-1 items-center justify-center gap-2 border border-[#DDE3E9] text-[13px] text-[#65707E]"><Heart size={15}/> المفضلة</button>
+              <button className="flex h-10 flex-1 items-center justify-center gap-2 border border-[#DDE3E9] text-[13px] text-[#65707E]"><Share2 size={15}/> مشاركة</button>
             </div>
           </aside>
         </div>
-
-        {relatedCourses.length > 0 && (
-          <section className="mt-14">
-            <h2 className="mb-6 text-2xl font-bold text-[#1F2937]">دورات مشابهة</h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {relatedCourses.map((item) => <CourseCard key={item.id} course={item} />)}
-            </div>
-          </section>
-        )}
       </div>
     </div>
   );
+}
+
+function Info({ icon, label, value }) {
+  return <div className="flex min-h-16 items-center justify-center gap-2 border-l border-[#E4E9EF] px-2 last:border-0"><span className="text-[#123C91]">{icon}</span><span><small className="block text-[11px] text-[#939CA7]">{label}</small><b className="text-[13px] text-[#505A68]">{value}</b></span></div>;
+}
+function Section({ title, children }) {
+  return <section className="!py-9"><h2 className="mb-5 text-[22px] font-extrabold leading-8">{title}</h2>{children}</section>;
+}
+function List({ items }) {
+  return <ul className="space-y-3 text-[16px] leading-7 text-[#687382]">{items.map(x => <li key={x} className="flex items-center gap-2.5"><Check size={16} className="shrink-0 text-[#123C91]"/>{x}</li>)}</ul>;
+}
+function Metric({ label, value, bordered, price }) {
+  return <div className={bordered ? "border-x border-[#EDF0F3]" : ""}><small className="block text-[11px] text-[#8B95A1]">{label}</small><b className={price ? "text-[20px] text-[#123C91]" : "text-[14px]"}>{value}</b></div>;
+}
+function AsideRow({ icon, text }) {
+  return <li className="flex items-center gap-2 text-[14px]">{icon}{text}</li>;
 }
