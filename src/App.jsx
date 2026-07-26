@@ -12,6 +12,7 @@ import CourseDetailsPage from "./pages/CourseDetailsPage";
 import InstructorPage from "./pages/InstructorPage";
 import MyCourseDetailsPage from "./pages/MyCourseDetailsPage";
 import CoursePlayerPage from "./pages/CoursePlayerPage";
+import TeacherHome from "./pages/teacher/TeacherHome";
 
 function App() {
   // const { user } = useContext(AuthContext);
@@ -32,18 +33,21 @@ function App() {
           <Route path="/blog/:slug" element={<BlogPostPage />} />
           {/* <Route path="/courses" element={<CoursesPage />} />
           <Route path="/courses/:slug" element={<CourseDetailsPage />} /> */}
-           <Route path="/courses" element={<CoursesPage />} />
-        <Route path="/courses/:slug" element={<CourseDetailsPage />} />
-        <Route path="/instructor/:slug" element={<InstructorPage />} />
-        <Route path="/my-courses/:slug" element={<MyCourseDetailsPage />} />
+          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/courses/:slug" element={<CourseDetailsPage />} />
+          <Route path="/instructor/:slug" element={<InstructorPage />} />
+          <Route path="/my-courses/:slug" element={<MyCourseDetailsPage />} />
         </Route>
 
-        
 
-      
+        {/* ✅ Teacher — محمي بـ TeacherGuard */}
+        <Route path="/teacher-dashboard" element={<TeacherGuard><TeacherHome /></TeacherGuard>} />
 
 
-      <Route path="/learn/:slug" element={<CoursePlayerPage />} />
+
+
+
+        <Route path="/learn/:slug" element={<CoursePlayerPage />} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
