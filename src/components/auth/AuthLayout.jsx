@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import img1 from "../../assets/slide1.png";
-import img2 from "../../assets/slide2.png";
-import img3 from "../../assets/slide3.png";
+import heroImage from "../../assets/hero.png";
+
+const img1 = heroImage;
+const img2 = heroImage;
+const img3 = heroImage;
 
 const slides = [
   { image: img1, title: "منظومة تعليمية متكاملة", desc: "نجمع بين الطلاب وأولياء الأمور والمعلمين في منصة واحدة لتجربة تعليمية أكثر تنظيماً وفعالية." },

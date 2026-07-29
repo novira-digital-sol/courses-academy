@@ -1,38 +1,40 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState } from "react";
+import { login as loginRequest } from "../services/APIService";
 
 export const AuthContext = createContext();
 
-export const AuthContextProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
+const readSavedUser = () => {
+  try {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
-  });
+  } catch {
+    localStorage.removeItem("user");
+    return null;
+  }
+};
 
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) {
-      try {
-        const parsedUser = JSON.parse(savedUser);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error("خطأ في قراءة بيانات المستخدم:", error);
-        localStorage.removeItem("user");
-        setUser(null);
-      }
-    }
-  }, []);
+export const AuthContextProvider = ({ children }) => {
+  const [user, setUser] = useState(readSavedUser);
 
   const login = async (credentials) => {
-    const finalUser = {
-      id: "local-user",
-      fullName: credentials.fullName || credentials.name || "مستخدم تجريبي",
-      email: credentials.email || "",
-      role: credentials.role || "student",
-    };
+    const response = await loginRequest(credentials);
+    const payload = response.data?.data ?? response.data;
+    const finalUser = payload?.user ?? payload;
+    const token =
+      payload?.token ??
+      payload?.accessToken ??
+      response.data?.token ??
+      response.data?.accessToken;
+
+    if (!finalUser || typeof finalUser !== "object") {
+      throw new Error("Invalid login response");
+    }
 
     setUser(finalUser);
     localStorage.setItem("user", JSON.stringify(finalUser));
-    return { user: finalUser };
+    if (token) localStorage.setItem("token", token);
+
+    return { ...payload, user: finalUser };
   };
 
   const updateUser = (updatedUser) => {
@@ -43,6 +45,7 @@ export const AuthContextProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   return (

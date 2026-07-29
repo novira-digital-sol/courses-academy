@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import logo from "../../assets/icons/logo.svg";
 import { AuthContext } from "../../context/AuthContext";
-import { isAdminRole } from "../../utils/roles";
+import { getDashboardPath, isAdminRole } from "../../utils/roles";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,6 +19,9 @@ const LoginForm = () => {
     setLoading(true);
     try {
       const data = await login(credentials);
+      toast.success("تم تسجيل الدخول بنجاح!");
+      navigate(getDashboardPath(data?.user?.role), { replace: true });
+      return;
       toast.success("تم تسجيل الدخول بنجاح!");
 
       const role = data?.user?.role;

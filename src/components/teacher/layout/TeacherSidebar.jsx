@@ -1,7 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-import { useSidebarUnread } from "../../../api/useSidebarUnread";
 
 import logo from "../../../assets/icons/loogo.svg";
 import toggleIcon from "../../../assets/icons/sidebar-toggle.png";
@@ -18,7 +17,7 @@ import settingsIcon from "../../../assets/icons/settings.png";
 import logoutIcon from "../../../assets/icons/logout.png";
 
 const TeacherSidebar = ({ isOpen, setIsOpen }) => {
-  const unread = useSidebarUnread();
+  const unread = { messages: false, notifications: false };
   const menu = [
     { title: "لوحة التحكم", icon: dashboardIcon, path: "/teacher-dashboard" },
     { title: "المجموعات", icon: childrenIcon, path: "/teacher/groups" },
