@@ -1,40 +1,45 @@
-import { createContext, useState } from "react";
-import { login as loginRequest } from "../services/APIService";
+import { createContext, useState, useEffect } from "react";
+import { login as loginApi } from "../services/APIService";
 
 export const AuthContext = createContext();
 
-const readSavedUser = () => {
-  try {
+export const AuthContextProvider = ({ children }) => {
+  const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
-  } catch {
-    localStorage.removeItem("user");
-    return null;
-  }
-};
+  });
 
-export const AuthContextProvider = ({ children }) => {
-  const [user, setUser] = useState(readSavedUser);
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error("خطأ في قراءة بيانات المستخدم:", error);
+        localStorage.removeItem("user");
+        setUser(null);
+      }
+    }
+  }, []);
 
   const login = async (credentials) => {
-    const response = await loginRequest(credentials);
-    const payload = response.data?.data ?? response.data;
-    const finalUser = payload?.user ?? payload;
-    const token =
-      payload?.token ??
-      payload?.accessToken ??
-      response.data?.token ??
-      response.data?.accessToken;
+    const res = await loginApi(credentials);
+    console.log("الرد من الـ API:", res.data);
 
-    if (!finalUser || typeof finalUser !== "object") {
-      throw new Error("Invalid login response");
-    }
+    const finalUser = res.data.data;
+    const token = res.data.token;
+
+    console.log("البيانات التي سيتم حفظها:", finalUser);
 
     setUser(finalUser);
     localStorage.setItem("user", JSON.stringify(finalUser));
-    if (token) localStorage.setItem("token", token);
 
-    return { ...payload, user: finalUser };
+    if (token) {
+      localStorage.setItem("token", token);
+    }
+
+    return { user: finalUser, token };
   };
 
   const updateUser = (updatedUser) => {
