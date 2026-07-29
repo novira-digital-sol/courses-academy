@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import TeacherSidebar from "./TeacherSidebar";
-import Breadcrumbs from "../../../pages/shared/Breadcrumbs";
+// import Breadcrumbs from "../../../pages/shared/Breadcrumbs";
 
 const MOBILE_BREAKPOINT = 768;
 
@@ -39,7 +39,7 @@ const TeacherLayout = ({ children }) => {
         />
       </div>
       <main className="flex-1 h-full overflow-y-auto p-3 md:p-6">
-         <Breadcrumbs homeTo="/teacher-dashboard" />
+         {/* <Breadcrumbs homeTo="/teacher-dashboard" /> */}
 
         {children}
       </main>

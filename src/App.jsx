@@ -41,7 +41,7 @@ function App() {
 
 
         {/* ✅ Teacher — محمي بـ TeacherGuard */}
-        <Route path="/teacher-dashboard" element={<TeacherGuard><TeacherHome /></TeacherGuard>} />
+        <Route path="/teacher-dashboard" element={<TeacherHome />} />
 
 
 
