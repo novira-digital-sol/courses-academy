@@ -133,7 +133,15 @@ const TeacherSidebar = ({ isOpen, setIsOpen }) => {
                 )}
                 </span>
 
-                {isOpen && <span>{item.title}</span>}
+                {isOpen && (
+                  <span
+                    className={
+                      isActive ? "!text-[#123C91]" : "!text-white"
+                    }
+                  >
+                    {item.title}
+                  </span>
+                )}
               </>
             )}
           </NavLink>
