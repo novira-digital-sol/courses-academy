@@ -156,13 +156,26 @@ const CountryDropdown = ({
 // اتبنى بـ <select> أصلي (مش custom dropdown) عشان يفتح ويختار بشكل مضمون
 // 100% على كل المتصفحات من غير مشاكل z-index أو ref.
 const PhoneCodeDropdown = ({ value, onChange, countries = [], loading }) => {
+  const selectedCountry = countries.find((country) => country.id === value);
+  const selectedCode = normalizePhoneCode(selectedCountry?.phoneCode);
+
   return (
-    <div className="relative w-auto min-w-24 shrink-0 border-l border-[#1F293733]">
+    <div className="relative w-24 shrink-0 border-r border-[#1F293733] bg-[#E5E7EB]">
+      <div
+        aria-hidden="true"
+        className="flex h-12 items-center justify-center gap-1 px-2 text-[13px] text-[#374151]"
+      >
+        <span className="min-w-10 text-center" dir="ltr">
+          {loading ? "..." : selectedCode || "الكود"}
+        </span>
+        <ChevronDown size={13} className="shrink-0 text-[#6B7280]" />
+      </div>
       <select
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         disabled={loading}
-        className="h-12 pl-6 pr-2 appearance-none bg-[#E5E7EB] text-[#374151] text-[13px] outline-none cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed w-full"
+        aria-label="كود الدولة"
+        className="absolute inset-0 h-12 w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
       >
         <option value="" disabled>
           {loading ? "..." : "الكود"}
@@ -176,10 +189,6 @@ const PhoneCodeDropdown = ({ value, onChange, countries = [], loading }) => {
           );
         })}
       </select>
-      <ChevronDown
-        size={13}
-        className="absolute left-2 top-1/2 -translate-y-1/2 text-[#6B7280] pointer-events-none"
-      />
     </div>
   );
 };
@@ -613,7 +622,7 @@ const RegisterForm = ({ type }) => {
                 placeholder="رقم الهاتف"
                 value={formData.phone}
                 onChange={handleChange}
-                className="flex-1 h-full px-3 bg-transparent outline-none text-[14px] text-[#1F2937] placeholder:text-[#9CA3AF]"
+                className="min-w-0 flex-1 h-full px-3 bg-transparent outline-none text-[14px] text-[#1F2937] placeholder:text-[#9CA3AF]"
                 required
               />
             </div>
