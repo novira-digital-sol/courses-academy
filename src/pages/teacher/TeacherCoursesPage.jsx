@@ -135,12 +135,12 @@ const TeacherCoursesPage = () => {
     <TeacherLayout>
       <section
         dir="rtl"
-        className="min-h-full rounded-xl bg-[#F7F8FC] p-3 text-right font-['IBM_Plex_Sans_Arabic'] sm:p-5"
+        className="-mt-3 min-h-full rounded-xl bg-[#F7F8FC] p-3 text-right font-['IBM_Plex_Sans_Arabic'] sm:p-5 md:-mt-20"
       >
         <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-xl font-bold text-[#123C91]">إدارة الدورات</h1>
-            <p className="mt-1 text-xs text-[#667085]">
+            <h2 className="font-['IBM_Plex_Sans_Arabic'] font-semibold text-[24px] leading-8 text-primary w-full text-right mb-4">إدارة الدورات</h2>
+             <p className="text-gray-500 font-medium -mt-3 px-2">
               إنشاء وتعديل الدورات التعليمية
             </p>
           </div>
