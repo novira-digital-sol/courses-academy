@@ -150,13 +150,13 @@ const Navbar = () => {
                 <span className="text-[#123C91] font-medium text-[16px]">
                   مرحباً، {user.fullName || "عزيزي المستخدم"}
                 </span>
-                <button
+                {/* <button
                   onClick={handleLogout}
                   className="flex h-10 items-center gap-2 rounded-lg border border-red-200 px-4 text-[16px] font-medium text-red-600 transition-colors hover:bg-red-50"
                 >
                   <LogOut size={18} />
                   تسجيل الخروج
-                </button>
+                </button> */}
                 <button
                   onClick={handleDashboardClick}
                   className="h-10 px-6 rounded-lg bg-[#123C91] text-white [&_svg]:text-white text-[16px] font-medium"
