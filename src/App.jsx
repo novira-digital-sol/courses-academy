@@ -29,6 +29,7 @@ import InstructorPage from "./pages/InstructorPage";
 import MyCourseDetailsPage from "./pages/MyCourseDetailsPage";
 import CoursePlayerPage from "./pages/CoursePlayerPage";
 import TeacherHome from "./pages/teacher/TeacherHome";
+import TeacherCoursesPage from "./pages/teacher/TeacherCoursesPage";
 import DashboardPage from "./pages/DashboardPage";
 
 function App() {
@@ -76,6 +77,7 @@ function App() {
 
         {/* ✅ Teacher — محمي بـ TeacherGuard */}
         <Route path="/teacher-dashboard" element={<TeacherHome />} />
+        <Route path="/teacher/courses" element={<TeacherCoursesPage />} />
         <Route path="/student-dashboard" element={<DashboardPage role="student" />} />
         <Route path="/parent-dashboard" element={<DashboardPage role="parent" />} />
         <Route path="/admin-dashboard" element={<DashboardPage role="admin" />} />
