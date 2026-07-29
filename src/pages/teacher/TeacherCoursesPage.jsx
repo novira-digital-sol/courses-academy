@@ -1,20 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   BookOpen,
-  CheckCircle2,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Clock3,
   EllipsisVertical,
   Plus,
   Search,
   Share2,
   SquarePen,
   Trash2,
-  WalletCards,
 } from "lucide-react";
 import TeacherLayout from "../../components/teacher/layout/TeacherLayout";
+import CoursesStatusBar from "../../components/teacher/courses/CoursesStatusBar";
 import { courses as sourceCourses } from "../../data/staticData";
 
 const COURSE_STATUSES = [
@@ -41,23 +39,6 @@ const statusStyles = {
 
 const formatMoney = (value) =>
   `${Number(value || 0).toLocaleString("ar-EG")} جنيه`;
-
-const StatCard = ({ label, value, icon: Icon, iconClass, valueSuffix }) => (
-  <div className="flex min-h-24 items-center justify-between rounded-lg border border-[#E5E7EB] bg-white p-4">
-    <div>
-      <p className="text-xl font-bold text-[#1F2937]">
-        {value}
-        {valueSuffix && (
-          <span className="mr-1 text-sm font-semibold">{valueSuffix}</span>
-        )}
-      </p>
-      <p className="mt-1 text-xs text-[#667085]">{label}</p>
-    </div>
-    <span className={`rounded-md p-2 ${iconClass}`}>
-      <Icon size={20} />
-    </span>
-  </div>
-);
 
 const TeacherCoursesPage = () => {
   const [search, setSearch] = useState("");
@@ -153,31 +134,12 @@ const TeacherCoursesPage = () => {
           </button>
         </div>
 
-        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <StatCard
-            label="إجمالي الدورات"
-            value={teacherCourses.length}
-            icon={BookOpen}
-            iconClass="bg-[#EAF2FF] text-[#3567C8]"
-          />
-          <StatCard
-            label="منشور"
-            value={publishedCount}
-            icon={CheckCircle2}
-            iconClass="bg-[#DDF7E8] text-[#17864B]"
-          />
-          <StatCard
-            label="قيد المراجعة"
-            value={pendingCount}
-            icon={Clock3}
-            iconClass="bg-[#FFF2C8] text-[#C47A00]"
-          />
-          <StatCard
-            label="إجمالي الأرباح"
-            value={Number(totalRevenue).toLocaleString("ar-EG")}
-            valueSuffix="جنيه"
-            icon={WalletCards}
-            iconClass="bg-[#DDFBF6] text-[#12A895]"
+        <div className="mb-4">
+          <CoursesStatusBar
+            total={teacherCourses.length}
+            published={publishedCount}
+            pending={pendingCount}
+            revenue={totalRevenue}
           />
         </div>
 

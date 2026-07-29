@@ -1,36 +1,65 @@
-import { DollarSign } from "lucide-react";
+import {
+    BookOpen,
+    CheckCircle2,
+    Clock3,
+    WalletCards,
+} from "lucide-react";
 
 const CoursesStatusBar = ({
-    total = 20000,
-    available = 13000,
-    withdrawn = 7000,
-    pending = 3000,
+    total = 0,
+    published = 0,
+    pending = 0,
+    revenue = 0,
 }) => {
     const stats = [
-        { label: "إجمالي الأرباح", value: total, color: "text-[#12C6B0]", bg: "bg-[#12C6B026]"},
-        { label: "الرصيد المتاح", value: available, color: "text-[#123C91]", bg: "bg-[#EAF4FF]" },
-        { label: "إجمالي المسحوب", value: withdrawn, color: "text-[#00A63E]", bg: "bg-[#00A63E26]" },
-        { label: "قيد المراجعة", value: pending, color: "text-[#F59E0B]", bg: "bg-[#F59E0B26]" },
+        {
+            label: "إجمالي الدورات",
+            value: total,
+            icon: BookOpen,
+            iconClass: "bg-[#EAF2FF] text-[#3567C8]",
+        },
+        {
+            label: "منشور",
+            value: published,
+            icon: CheckCircle2,
+            iconClass: "bg-[#DDF7E8] text-[#17864B]",
+        },
+        {
+            label: "قيد المراجعة",
+            value: pending,
+            icon: Clock3,
+            iconClass: "bg-[#FFF2C8] text-[#C47A00]",
+        },
+        {
+            label: "إجمالي الأرباح",
+            value: `${Number(revenue).toLocaleString("ar-EG")} جنيه`,
+            icon: WalletCards,
+            iconClass: "bg-[#DDFBF6] text-[#12A895]",
+        },
     ];
 
-    const fmt = (n) => `EGP ${Number(n).toLocaleString("en-EG")}`;
-
     return (
-         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {stats.map((s) => (
+        <div
+            dir="rtl"
+            className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"
+        >
+            {stats.map(({ label, value, icon: Icon, iconClass }) => (
                 <div
-                    key={s.label}
-                    className="bg-white border border-gray-100 rounded-xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-all"
-                    dir="rtl"
+                    key={label}
+                className="bg-white border border-gray-100 rounded-xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-all"
                 >
-                    <div className={`p-3 rounded-lg ${s.bg} shrink-0`}>
-                        <DollarSign size={22} className={s.color} />
+                    <div className={`shrink-0 rounded-lg p-3 ${iconClass}`}>
+                        <Icon size={20} />
                     </div>
                     <div className="text-right">
-                        <h3 className={`text-xl font-bold text-[#1F2937]`}>{fmt(s.value)}</h3>
-                        <p className="text-[#575F69] text-sm mt-1">{s.label}</p>
+                        <h3 className="text-xl font-bold text-[#1F2937]">
+                            {typeof value === "number"
+                                ? value.toLocaleString("ar-EG")
+                                : value}
+                        </h3>
+                        <p className="mt-1 text-sm text-[#575F69]">{label}</p>
                     </div>
-
+                   
                 </div>
             ))}
         </div>
