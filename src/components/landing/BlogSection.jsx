@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Megaphone, Sigma } from "lucide-react";
-import { blogPosts } from "../../data/staticData";
-
-const getPublicBlogPosts = async () => ({ data: { data: blogPosts } });
+import { getPublicBlogPosts, getAssetUrl } from "../../services/APIService"; // ⚠️ عدّل المسار حسب مكان الملف عندك
 
 const FALLBACK_VARIANTS = ["announcement", "math"];
 
@@ -53,7 +51,7 @@ const FallbackCover = ({ variant }) => {
 };
 
 const CoverImage = ({ post, fallbackVariant }) => {
-    const url = post.coverImage;
+    const url = getAssetUrl(post.coverImage);
 
     if (!url) return <FallbackCover variant={fallbackVariant} />;
     
