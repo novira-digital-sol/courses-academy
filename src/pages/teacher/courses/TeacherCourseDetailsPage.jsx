@@ -76,16 +76,32 @@ const StatCard = ({ icon: Icon, value, label, accent }) => (
 );
 
 const OverviewTab = ({ course, coverSrc, totalLessons }) => {
+  const [showCover, setShowCover] = useState(false);
   const courseUrl = `${window.location.origin}/courses/${course.slug || course.id}`;
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
+    <div className="grid gap-5 lg:grid-cols-[360px_minmax(0,1fr)]">
       <aside className="space-y-4">
         <div className="overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
-          <img src={coverSrc} alt={course.title} className="aspect-video w-full object-cover" />
+          <button
+            type="button"
+            onClick={() => setShowCover(true)}
+            className="block aspect-video w-full overflow-hidden bg-[#EEF2F6]"
+            aria-label="عرض صورة الدورة بالحجم الكامل"
+          >
+            <img
+              src={coverSrc}
+              alt={course.title}
+              width="1672"
+              height="941"
+              loading="eager"
+              decoding="async"
+              className="h-full w-full object-contain [image-rendering:auto]"
+            />
+          </button>
           <div className="flex items-center justify-between px-4 py-3 text-xs text-[#667085]">
             <span>مدة العرض {course.duration || 0}:42</span>
-            <button type="button" className="font-semibold text-[#123C91]">معاينة</button>
+            <button type="button" onClick={() => setShowCover(true)} className="font-semibold text-[#123C91]">عرض بالحجم الكامل</button>
           </div>
         </div>
         <div className="rounded-xl bg-[#1F2937] p-5 text-white">
@@ -98,6 +114,33 @@ const OverviewTab = ({ course, coverSrc, totalLessons }) => {
           </div>
         </div>
       </aside>
+
+      {showCover && (
+        <div
+          className="fixed inset-0 z-[100] grid place-items-center bg-black/80 p-4 sm:p-8"
+          role="dialog"
+          aria-modal="true"
+          aria-label="صورة الدورة"
+          onClick={() => setShowCover(false)}
+        >
+          <button
+            type="button"
+            onClick={() => setShowCover(false)}
+            className="absolute top-5 left-5 grid h-10 w-10 place-items-center rounded-full bg-white text-[#1F2937]"
+            aria-label="إغلاق الصورة"
+          >
+            ×
+          </button>
+          <img
+            src={coverSrc}
+            alt={course.title}
+            width="1672"
+            height="941"
+            className="max-h-full max-w-full rounded-xl object-contain shadow-2xl [image-rendering:auto]"
+            onClick={(event) => event.stopPropagation()}
+          />
+        </div>
+      )}
 
       <div className="rounded-xl border border-[#E5E7EB] bg-white p-5">
         <h3 className="font-bold text-[#1F2937]">وصف الدورة</h3>
@@ -275,8 +318,11 @@ const TeacherCourseDetailsPage = () => {
   const coverSrc = uploadedCover || coverMap[course.cover] || pythonCover;
 
   return (
-    <TeacherLayout>
-      <section dir="rtl" className="-mt-3 min-h-full rounded-xl bg-[#F7F8FC] p-3 text-right font-['IBM_Plex_Sans_Arabic'] sm:p-5 md:-mt-20">
+    <TeacherLayout contentClassName="!overflow-hidden">
+      <section
+        dir="rtl"
+        className="h-full overflow-y-auto overscroll-contain rounded-xl bg-[#F7F8FC] p-3 pb-10 text-right font-['IBM_Plex_Sans_Arabic'] sm:p-5 sm:pb-12"
+      >
         <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
           <div>
             <div className="mb-3 flex items-center gap-2 text-xs text-[#667085]"><Link to="/teacher/courses" className="font-semibold text-[#123C91]">الدورات</Link><ChevronLeft size={13} /><span>تفاصيل الدورة</span></div>
