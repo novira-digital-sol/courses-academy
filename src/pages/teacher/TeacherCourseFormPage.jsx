@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 import {
-  BookOpen,
+  BadgeCheck,
   ChevronLeft,
   ChevronRight,
   Film,
   Image as ImageIcon,
   Plus,
+  DollarSign,
   Trash2,
   UploadCloud,
   X,
@@ -40,6 +41,7 @@ const EMPTY_COURSE = {
   curriculum: [],
   pricingType: "paid",
   price: "",
+  discountPercent: "",
   status: "مسودة",
 };
 
@@ -252,6 +254,17 @@ const TeacherCourseFormPage = () => {
       ).length,
     0,
   );
+  const coursePrice = Math.max(0, Number(course.price) || 0);
+  const discountPercent = Math.min(
+    100,
+    Math.max(0, Number(course.discountPercent) || 0),
+  );
+  const discountAmount = coursePrice * (discountPercent / 100);
+  const priceAfterDiscount = coursePrice - discountAmount;
+  const platformFee = priceAfterDiscount * 0.15;
+  const teacherNet = priceAfterDiscount - platformFee;
+  const money = (value) =>
+    `${Number(value).toLocaleString("ar-EG", { maximumFractionDigits: 2 })} ج.م`;
 
   return (
     <TeacherLayout contentClassName="!overflow-hidden !p-0">
@@ -429,19 +442,93 @@ const TeacherCourseFormPage = () => {
 
             {step === 2 && (
               <div className="mx-4 space-y-5 sm:mx-6 lg:mx-8">
-                <div><h2 className="font-bold text-[#1F2937]">تسعير الدورة</h2><p className="mt-1 text-xs text-[#667085]">حدد نوع وسعر الدورة.</p></div>
+                <div>
+                  <h2 className="font-bold text-[#1F2937]">تسعير الدورة</h2>
+                  <p className="mt-1 text-xs text-[#667085]">
+                    حدد سعر الدورة ونوع التسعير، ويمكنك إضافة خصومات.
+                  </p>
+                </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  {[["paid", "مدفوعة", "أدخل سعرًا مناسبًا للدورة"], ["free", "مجانية", "إتاحة الدورة للطلاب مجانًا"]].map(([value, title, description]) => (
-                    <button key={value} onClick={() => update("pricingType", value)} className={`min-h-32 rounded-xl border p-5 text-right ${course.pricingType === value ? "border-[#123C91] bg-[#EAF2FF]" : "border-[#E5E7EB]"}`}>
-                      <BookOpen className={course.pricingType === value ? "text-[#123C91]" : "text-[#667085]"} />
-                      <strong className="mt-3 block">{title}</strong><span className="text-xs text-[#667085]">{description}</span>
-                    </button>
-                  ))}
+                  <button
+                    type="button"
+                    onClick={() => update("pricingType", "paid")}
+                    className={`min-h-32 rounded-xl border p-5 text-right transition ${
+                      course.pricingType === "paid"
+                        ? "border-[#123C91] bg-[#EAF2FF]"
+                        : "border-[#E5E7EB] bg-white"
+                    }`}
+                  >
+                    <span className={`grid h-10 w-10 place-items-center rounded-lg ${
+                      course.pricingType === "paid"
+                        ? "bg-[#123C91] text-white"
+                        : "bg-[#F2F4F7] text-[#667085]"
+                    }`}>
+                      <DollarSign size={20} />
+                    </span>
+                    <strong className="mt-3 block">مدفوعة</strong>
+                    <span className="mt-1 block text-xs text-[#667085]">
+                      حدد سعرًا مناسبًا للدورة قبل نشرها
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => update("pricingType", "free")}
+                    className={`min-h-32 rounded-xl border p-5 text-right transition ${
+                      course.pricingType === "free"
+                        ? "border-[#123C91] bg-[#EAF2FF]"
+                        : "border-[#E5E7EB] bg-white"
+                    }`}
+                  >
+                    <span className={`grid h-10 w-10 place-items-center rounded-lg ${
+                      course.pricingType === "free"
+                        ? "bg-[#123C91] text-white"
+                        : "bg-[#F2F4F7] text-[#667085]"
+                    }`}>
+                      <BadgeCheck size={20} />
+                    </span>
+                    <strong className="mt-3 block">مجانية</strong>
+                    <span className="mt-1 block text-xs text-[#667085]">
+                      إتاحة الدورة لجميع الطلاب مجانًا
+                    </span>
+                  </button>
                 </div>
                 {course.pricingType === "paid" && (
-                  <label className="block space-y-1 text-sm">سعر الدورة بالجنيه *
-                    <input type="number" min="1" className={inputClass} value={course.price} onChange={(e) => update("price", e.target.value)} />
-                  </label>
+                  <>
+                    <label className="block space-y-2 text-sm font-medium text-[#1F2937]">
+                      السعر بالجنيه المصري *
+                      <input type="number" min="1" className={inputClass} value={course.price} onChange={(e) => update("price", e.target.value)} placeholder="أدخل سعر الدورة" />
+                    </label>
+                    <label className="block space-y-2 text-sm font-medium text-[#1F2937]">
+                      نسبة الخصم
+                      <input type="number" min="0" max="100" className={inputClass} value={course.discountPercent || ""} onChange={(e) => update("discountPercent", e.target.value)} placeholder="أدخل النسبة" />
+                    </label>
+                    <div className="overflow-hidden rounded-xl bg-[#EAF4FF] text-sm text-[#344054]">
+                      <div className="flex items-center justify-between px-5 py-3">
+                        <strong className="text-[#123C91]">سعر الدورة</strong>
+                        <span>{money(coursePrice)}</span>
+                      </div>
+                      {discountPercent > 0 && (
+                        <>
+                          <div className="flex items-center justify-between border-t border-[#D7E7FC] px-5 py-3">
+                            <span>الخصم ({discountPercent}%)</span>
+                            <span>- {money(discountAmount)}</span>
+                          </div>
+                          <div className="flex items-center justify-between border-t border-[#D7E7FC] px-5 py-3">
+                            <span>السعر بعد الخصم</span>
+                            <strong>{money(priceAfterDiscount)}</strong>
+                          </div>
+                        </>
+                      )}
+                      <div className="flex items-center justify-between border-t border-[#D7E7FC] px-5 py-3">
+                        <strong className="text-[#123C91]">رسوم المنصة (15%)</strong>
+                        <span>- {money(platformFee)}</span>
+                      </div>
+                      <div className="flex items-center justify-between border-t border-[#D7E7FC] px-5 py-4 font-bold">
+                        <span>صافي أرباحك</span>
+                        <span>{money(teacherNet)}</span>
+                      </div>
+                    </div>
+                  </>
                 )}
               </div>
             )}
