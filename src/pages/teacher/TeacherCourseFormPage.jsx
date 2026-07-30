@@ -50,37 +50,218 @@ const EMPTY_COURSE = {
 
 const STEPS = ["المعلومات الأساسية", "بناء المحتوى", "التسعير", "المراجعة"];
 const inputClass =
-  "h-11 w-full rounded-lg border border-[#E5E5E5] bg-[#F9FAFA] px-4 text-right font-['IBM_Plex_Sans_Arabic'] text-[13px] text-[#1F2937] outline-none transition-all placeholder:text-[#8C9198] focus:border-[#123C91] focus:ring-2 focus:ring-[#123C91]/15 sm:h-12 sm:text-[14px]";
+  "mt-2 h-11 w-full rounded-lg border border-[#E5E5E5] bg-[#F9FAFA] px-4 text-right font-['IBM_Plex_Sans_Arabic'] text-[13px] text-[#1F2937] outline-none transition-all placeholder:text-[11px] placeholder:font-normal placeholder:text-[#8C9198] focus:border-[#123C91] focus:ring-2 focus:ring-[#123C91]/15 sm:h-12 sm:text-[14px] sm:placeholder:text-[12px]";
 
-const UploadBox = ({ label, accept, value, onChange, icon: Icon }) => {
+const UploadBox = ({ label, accept, value, onChange, onRemove, icon: Icon }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [pendingFile, setPendingFile] = useState(null);
+  const isVideo = accept.startsWith("video/");
+  const previewUrl =
+    value && typeof value === "object" ? value.previewUrl || value.dataUrl : "";
+
   const handleFile = (file) => {
     if (!file) return;
-    onChange({ name: file.name, type: file.type, size: file.size });
+    setPendingFile({
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      previewUrl: URL.createObjectURL(file),
+    });
   };
 
+  const openModal = () => {
+    setPendingFile(
+      value && typeof value === "object" ? value : null,
+    );
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setPendingFile(null);
+    setIsOpen(false);
+  };
+
+  const confirmFile = () => {
+    if (!pendingFile) return;
+    onChange(pendingFile);
+    setIsOpen(false);
+  };
+
+  const pendingPreviewUrl = pendingFile?.previewUrl || pendingFile?.dataUrl;
+
   return (
-    <label className="block space-y-3 text-right text-sm font-medium text-[#1F2937]">
-      <span>{label}</span>
-      <span className="flex min-h-28 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-[#D8DCE2] bg-[#FCFCFD] px-5 py-5 text-center transition hover:border-[#123C91] hover:bg-[#F7FAFF]">
-        <span className="mb-2 grid h-10 w-10 place-items-center rounded-md bg-[#EAF2FF] text-[#123C91]">
-          <Icon size={20} strokeWidth={1.8} />
-        </span>
-        <span className="text-base font-medium text-[#575F69]">
-          {value?.name || `رفع ${label}`}
-        </span>
-        {value?.name && (
-          <span className="mt-2 max-w-full truncate text-xs text-[#123C91]">
-            اضغط لاختيار ملف آخر
+    <div className="block text-right text-sm font-medium text-[#1F2937]">
+      <span className="mb-3 block">{label}</span>
+      {previewUrl ? (
+        <div className="overflow-hidden rounded-xl border border-[#D8DCE2] bg-[#F8FAFC]">
+          <div className="flex min-h-48 items-center justify-center bg-[#EEF2F6]">
+            {isVideo ? (
+              <video
+                src={previewUrl}
+                controls
+                className="max-h-64 w-full bg-black object-contain"
+              >
+                متصفحك لا يدعم تشغيل الفيديو.
+              </video>
+            ) : (
+              <img
+                src={previewUrl}
+                alt={`معاينة ${label}`}
+                className="max-h-64 w-full object-contain"
+              />
+            )}
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3">
+            <span className="min-w-0 flex-1 truncate text-xs font-normal text-[#667085]">
+              {value.name}
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={openModal}
+                className="cursor-pointer rounded-md border border-[#D0D5DD] bg-white px-3 py-2 text-xs font-semibold text-[#475467] transition hover:border-[#123C91] hover:text-[#123C91]"
+              >
+                تغيير
+              </button>
+              <button
+                type="button"
+                onClick={onRemove}
+                className="rounded-md border border-[#FECACA] bg-white px-3 py-2 text-xs font-semibold text-[#D92D20] transition hover:bg-[#FFF5F5]"
+              >
+                حذف
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={openModal}
+          className="flex min-h-48 w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D8DCE2] bg-[#FCFCFD] px-5 py-5 text-center transition hover:border-[#123C91] hover:bg-[#F7FAFF]"
+        >
+          <span className="mb-3 grid h-11 w-11 place-items-center rounded-lg bg-[#EAF2FF] text-[#123C91]">
+            <Icon size={21} strokeWidth={1.8} />
           </span>
-        )}
-        <input
-          type="file"
-          accept={accept}
-          className="sr-only"
-          onChange={(event) => handleFile(event.target.files?.[0])}
-        />
-      </span>
-    </label>
+          <span className="text-sm font-semibold text-[#575F69]">
+            رفع {label}
+          </span>
+          <span className="mt-1.5 text-[11px] font-normal text-[#8C9198]">
+            اضغط هنا لاختيار الملف
+          </span>
+        </button>
+      )}
+
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] grid place-items-center bg-black/50 p-4">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`إضافة ${label}`}
+            className="w-full max-w-xl overflow-hidden rounded-2xl bg-white shadow-2xl"
+          >
+            <div className="flex items-center justify-between border-b border-[#EAECF0] px-5 py-4">
+              <div>
+                <h3 className="text-base font-bold text-[#1F2937]">
+                  {previewUrl ? `تغيير ${label}` : `إضافة ${label}`}
+                </h3>
+                <p className="mt-1 text-xs font-normal text-[#667085]">
+                  اختر {isVideo ? "ملف فيديو" : "صورة"} ثم راجع المعاينة قبل الإضافة.
+                </p>
+              </div>
+              <button
+                type="button"
+                aria-label="إغلاق"
+                onClick={closeModal}
+                className="rounded-md p-2 text-[#667085] transition hover:bg-[#F2F4F7]"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="p-5">
+              {pendingPreviewUrl ? (
+                <div className="overflow-hidden rounded-xl border border-[#D8DCE2]">
+                  <div className="flex min-h-56 items-center justify-center bg-[#EEF2F6]">
+                    {isVideo ? (
+                      <video
+                        src={pendingPreviewUrl}
+                        controls
+                        className="max-h-80 w-full bg-black object-contain"
+                      >
+                        متصفحك لا يدعم تشغيل الفيديو.
+                      </video>
+                    ) : (
+                      <img
+                        src={pendingPreviewUrl}
+                        alt={`معاينة ${label}`}
+                        className="max-h-80 w-full object-contain"
+                      />
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between gap-3 p-3">
+                    <span className="min-w-0 flex-1 truncate text-xs font-normal text-[#667085]">
+                      {pendingFile.name}
+                    </span>
+                    <label className="cursor-pointer rounded-md border border-[#D0D5DD] px-3 py-2 text-xs font-semibold text-[#475467] hover:border-[#123C91] hover:text-[#123C91]">
+                      اختيار ملف آخر
+                      <input
+                        type="file"
+                        accept={accept}
+                        className="sr-only"
+                        onChange={(event) => handleFile(event.target.files?.[0])}
+                      />
+                    </label>
+                  </div>
+                </div>
+              ) : (
+                <label
+                  onDragOver={(event) => event.preventDefault()}
+                  onDrop={(event) => {
+                    event.preventDefault();
+                    handleFile(event.dataTransfer.files?.[0]);
+                  }}
+                  className="flex min-h-64 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#C9D3E0] bg-[#F9FBFD] px-6 text-center transition hover:border-[#123C91] hover:bg-[#F5F8FF]"
+                >
+                  <span className="mb-3 grid h-12 w-12 place-items-center rounded-xl bg-[#EAF2FF] text-[#123C91]">
+                    <UploadCloud size={23} />
+                  </span>
+                  <strong className="text-sm text-[#344054]">
+                    اسحب الملف هنا أو اضغط للاختيار
+                  </strong>
+                  <span className="mt-2 text-[11px] font-normal text-[#8C9198]">
+                    {isVideo ? "MP4 أو WebM أو MOV" : "PNG أو JPG أو WebP"}
+                  </span>
+                  <input
+                    type="file"
+                    accept={accept}
+                    className="sr-only"
+                    onChange={(event) => handleFile(event.target.files?.[0])}
+                  />
+                </label>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end gap-3 border-t border-[#EAECF0] bg-[#FCFCFD] px-5 py-4">
+              <button
+                type="button"
+                onClick={closeModal}
+                className="h-10 rounded-md border border-[#D0D5DD] bg-white px-5 text-sm font-medium text-[#475467]"
+              >
+                إلغاء
+              </button>
+              <button
+                type="button"
+                disabled={!pendingFile}
+                onClick={confirmFile}
+                className="h-10 rounded-md bg-[#123C91] px-6 text-sm font-semibold text-white transition hover:bg-[#0E327A] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {previewUrl ? "حفظ التغيير" : "إضافة"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -361,6 +542,7 @@ const TeacherCourseFormPage = () => {
                     accept="image/png,image/jpeg,image/webp"
                     value={course.cover}
                     onChange={(file) => update("cover", file)}
+                    onRemove={() => update("cover", "")}
                     icon={ImageIcon}
                   />
                   <UploadBox
@@ -368,6 +550,7 @@ const TeacherCourseFormPage = () => {
                     accept="video/mp4,video/webm,video/quicktime"
                     value={course.promoVideo}
                     onChange={(file) => update("promoVideo", file)}
+                    onRemove={() => update("promoVideo", "")}
                     icon={Film}
                   />
                 </div>
