@@ -7,6 +7,8 @@ import {
   Image as ImageIcon,
   Plus,
   Trash2,
+  UploadCloud,
+  X,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -136,6 +138,8 @@ const TeacherCourseFormPage = () => {
     [courseId],
   );
   const [step, setStep] = useState(0);
+  const [contentModal, setContentModal] = useState(null);
+  const [quizModal, setQuizModal] = useState(null);
   const [course, setCourse] = useState(() => ({
     ...EMPTY_COURSE,
     ...existingCourse,
@@ -202,9 +206,52 @@ const TeacherCourseFormPage = () => {
     updateSection(sectionId, {
       lessons: [
         ...(course.curriculum.find((section) => section.id === sectionId)?.lessons || []),
-        { id: crypto.randomUUID(), title: "", type: "فيديو" },
+        { id: crypto.randomUUID(), title: "", type: "فيديو", duration: 0, preview: false, attachments: [], quiz: [] },
       ],
     });
+
+  const updateLesson = (sectionId, lessonId, patch) => {
+    const section = course.curriculum.find((item) => item.id === sectionId);
+    if (!section) return;
+    updateSection(sectionId, {
+      lessons: section.lessons.map((lesson) =>
+        lesson.id === lessonId ? { ...lesson, ...patch } : lesson,
+      ),
+    });
+  };
+
+  const activeModalLesson = (modal) => {
+    const section = course.curriculum.find((item) => item.id === modal?.sectionId);
+    return section?.lessons.find((lesson) => lesson.id === modal?.lessonId);
+  };
+
+  const openQuizBuilder = (sectionId, lesson) => {
+    if (!lesson.quiz?.length) {
+      updateLesson(sectionId, lesson.id, {
+        quiz: [{
+          id: crypto.randomUUID(),
+          text: "",
+          options: ["", "", "", ""],
+          correctIndex: 0,
+          points: 0,
+        }],
+      });
+    }
+    setQuizModal({ sectionId, lessonId: lesson.id });
+  };
+
+  const totalLessons = course.curriculum.reduce(
+    (sum, section) => sum + section.lessons.length,
+    0,
+  );
+  const totalContent = course.curriculum.reduce(
+    (sum, section) =>
+      sum +
+      section.lessons.filter(
+        (lesson) => lesson.attachments?.length || lesson.quiz?.length,
+      ).length,
+    0,
+  );
 
   return (
     <TeacherLayout contentClassName="!overflow-hidden !p-0">
@@ -313,9 +360,21 @@ const TeacherCourseFormPage = () => {
 
             {step === 1 && (
               <div className="mx-4 space-y-4 sm:mx-6 lg:mx-8">
-                <div className="flex items-center justify-between gap-3">
-                  <div><h2 className="font-bold text-[#1F2937]">بناء المحتوى</h2><p className="mt-1 text-xs text-[#667085]">قسّم الدورة إلى أقسام ودروس.</p></div>
-                  <button onClick={addSection} className="flex items-center gap-2 rounded-lg bg-[#123C91] px-4 py-2 text-sm text-white"><Plus size={16} /> إضافة قسم</button>
+                <div>
+                  <h2 className="font-bold text-[#1F2937]">بناء المنهج الدراسي</h2>
+                  <p className="mt-1 text-xs text-[#667085]">
+                    قم ببناء وتنظيم محتوى دورتك التعليمية خطوة بخطوة لتجربة تعلم متكاملة للطلاب.
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex flex-wrap gap-4 text-xs text-[#667085]">
+                    <span>{course.curriculum.length} أقسام</span>
+                    <span>{totalLessons} دروس</span>
+                    <span>{totalContent} دروس بمحتوى</span>
+                  </div>
+                  <button onClick={addSection} className="flex items-center gap-2 rounded-lg bg-[#123C91] px-4 py-2 text-sm text-white">
+                    <Plus size={16} /> إضافة قسم / وحدة
+                  </button>
                 </div>
                 {course.curriculum.length === 0 && (
                   <button onClick={addSection} className="flex min-h-48 w-full flex-col items-center justify-center rounded-xl border border-dashed border-[#D0D5DD] text-[#667085]">
@@ -331,11 +390,34 @@ const TeacherCourseFormPage = () => {
                     </div>
                     <div className="space-y-2 p-3">
                       {section.lessons.map((lesson, lessonIndex) => (
-                        <div key={lesson.id} className="grid items-center gap-2 md:grid-cols-[32px_1fr_150px_40px]">
-                          <span className="text-center text-xs text-[#667085]">{lessonIndex + 1}</span>
-                          <input className={inputClass} value={lesson.title} onChange={(e) => updateSection(section.id, { lessons: section.lessons.map((item) => item.id === lesson.id ? { ...item, title: e.target.value } : item) })} placeholder="عنوان الدرس" />
-                          <select className={inputClass} value={lesson.type} onChange={(e) => updateSection(section.id, { lessons: section.lessons.map((item) => item.id === lesson.id ? { ...item, type: e.target.value } : item) })}><option>فيديو</option><option>ملف</option><option>اختبار</option></select>
-                          <button onClick={() => updateSection(section.id, { lessons: section.lessons.filter((item) => item.id !== lesson.id) })} className="p-2 text-red-600"><Trash2 size={16} /></button>
+                        <div key={lesson.id} className="rounded-lg border border-[#EAECF0] p-3">
+                          <div className="grid items-center gap-2 lg:grid-cols-[32px_minmax(180px,1fr)_120px_90px_auto_40px]">
+                            <span className="text-center text-xs text-[#667085]">{lessonIndex + 1}</span>
+                            <input className={inputClass} value={lesson.title} onChange={(e) => updateLesson(section.id, lesson.id, { title: e.target.value })} placeholder="اكتب عنوان الدرس..." />
+                            <select className={inputClass} value={lesson.type} onChange={(e) => updateLesson(section.id, lesson.id, { type: e.target.value })}>
+                              <option>فيديو</option><option>ملف</option><option>اختبار</option>
+                            </select>
+                            <input type="number" min="0" className={inputClass} value={lesson.duration || ""} onChange={(e) => updateLesson(section.id, lesson.id, { duration: Number(e.target.value) })} placeholder="المدة" />
+                            <label className="flex items-center gap-2 whitespace-nowrap text-xs text-[#475467]">
+                              <input type="checkbox" checked={Boolean(lesson.preview)} onChange={(e) => updateLesson(section.id, lesson.id, { preview: e.target.checked })} className="accent-[#12C6B0]" />
+                              معاينة مجانية
+                            </label>
+                            <button onClick={() => updateSection(section.id, { lessons: section.lessons.filter((item) => item.id !== lesson.id) })} className="p-2 text-red-600"><Trash2 size={16} /></button>
+                          </div>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {lesson.type === "اختبار" ? (
+                              <button onClick={() => openQuizBuilder(section.id, lesson)} className="rounded-md border border-[#12C6B0] bg-[#E8FFFC] px-4 py-2 text-xs font-semibold text-[#087F72]">
+                                {lesson.quiz?.length ? "تعديل الاختبار" : "بناء الاختبار"}
+                              </button>
+                            ) : (
+                              <button onClick={() => setContentModal({ sectionId: section.id, lessonId: lesson.id })} className="rounded-md border border-[#D0D5DD] px-4 py-2 text-xs font-semibold text-[#475467]">
+                                {lesson.attachments?.length ? "تغيير المحتوى" : "إضافة محتوى +"}
+                              </button>
+                            )}
+                            {lesson.attachments?.map((file) => (
+                              <span key={file.name} className="rounded-md bg-[#F2F4F7] px-3 py-2 text-xs text-[#475467]">{file.name}</span>
+                            ))}
+                          </div>
                         </div>
                       ))}
                       <button onClick={() => addLesson(section.id)} className="flex items-center gap-1 py-2 text-sm font-semibold text-[#123C91]"><Plus size={15} /> إضافة درس</button>
@@ -387,6 +469,122 @@ const TeacherCourseFormPage = () => {
               </div>
             </div>
           </section>
+
+          {contentModal && (
+            <div className="fixed inset-0 z-70 grid place-items-center bg-black/45 p-4">
+              <div dir="rtl" className="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl">
+                <div className="mb-4 flex items-start justify-between">
+                  <div>
+                    <h3 className="font-bold text-[#1F2937]">ملفات الدرس</h3>
+                    <p className="mt-1 text-xs text-[#667085]">{activeModalLesson(contentModal)?.title || "الدرس"}</p>
+                  </div>
+                  <button onClick={() => setContentModal(null)} className="p-1 text-[#667085]"><X size={18} /></button>
+                </div>
+                <label className="flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D0D5DD] text-center text-sm text-[#475467]">
+                  <UploadCloud className="mb-3 text-[#123C91]" size={30} />
+                  اسحب الملفات هنا أو اضغط للاختيار
+                  <span className="mt-1 text-xs text-[#98A2B3]">PDF, DOCX, JPG, PPT</span>
+                  <input
+                    type="file"
+                    multiple
+                    className="sr-only"
+                    onChange={(event) => {
+                      const lesson = activeModalLesson(contentModal);
+                      const files = Array.from(event.target.files || []).map((file) => ({
+                        name: file.name,
+                        type: file.type,
+                        size: file.size,
+                      }));
+                      updateLesson(contentModal.sectionId, contentModal.lessonId, {
+                        attachments: [...(lesson?.attachments || []), ...files],
+                      });
+                    }}
+                  />
+                </label>
+                <div className="mt-5 flex gap-3">
+                  <button onClick={() => setContentModal(null)} className="flex-1 rounded-lg border border-[#D0D5DD] py-2.5 text-sm">إلغاء</button>
+                  <button onClick={() => setContentModal(null)} className="flex-1 rounded-lg bg-[#123C91] py-2.5 text-sm font-semibold text-white">تأكيد</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {quizModal && activeModalLesson(quizModal) && (
+            <div className="fixed inset-0 z-70 overflow-y-auto bg-[#F7F8FC] p-4 sm:p-7">
+              <div dir="rtl" className="mx-auto max-w-5xl">
+                <div className="mb-5 flex items-start justify-between">
+                  <div><h2 className="text-xl font-bold text-[#1F2937]">بناء الاختبار</h2><p className="mt-1 text-sm text-[#667085]">{activeModalLesson(quizModal).title || "اختبار الدرس"}</p></div>
+                  <button onClick={() => setQuizModal(null)} className="p-2 text-[#667085]"><X /></button>
+                </div>
+                <div className="mb-4 rounded-lg bg-[#EAF4FF] p-3 text-sm text-[#475467]">
+                  أضف الأسئلة وحدد الإجابة الصحيحة لكل سؤال. يمكنك إضافة 4 خيارات لكل سؤال.
+                </div>
+                <div className="space-y-4">
+                  {activeModalLesson(quizModal).quiz.map((question, questionIndex) => (
+                    <div key={question.id} className="rounded-xl border border-[#E5E7EB] bg-white p-5">
+                      <div className="mb-4 flex items-center justify-between">
+                        <strong>السؤال {questionIndex + 1}</strong>
+                        <button
+                          onClick={() => updateLesson(quizModal.sectionId, quizModal.lessonId, {
+                            quiz: activeModalLesson(quizModal).quiz.filter((item) => item.id !== question.id),
+                          })}
+                          className="text-red-600"
+                        ><Trash2 size={17} /></button>
+                      </div>
+                      <label className="block space-y-2 text-sm">نص السؤال
+                        <textarea
+                          className={`${inputClass} h-20 py-3`}
+                          value={question.text}
+                          onChange={(event) => updateLesson(quizModal.sectionId, quizModal.lessonId, {
+                            quiz: activeModalLesson(quizModal).quiz.map((item) => item.id === question.id ? { ...item, text: event.target.value } : item),
+                          })}
+                          placeholder="اكتب سؤالك هنا..."
+                        />
+                      </label>
+                      <p className="mt-4 mb-2 text-xs text-[#667085]">الاختيارات — اضغط على الدائرة لتحديد الإجابة الصحيحة</p>
+                      <div className="space-y-2">
+                        {question.options.map((option, optionIndex) => (
+                          <label key={optionIndex} className={`flex items-center gap-3 rounded-lg border p-3 ${question.correctIndex === optionIndex ? "border-[#12C6B0] bg-[#E8FFFC]" : "border-[#E5E7EB]"}`}>
+                            <input
+                              type="radio"
+                              checked={question.correctIndex === optionIndex}
+                              onChange={() => updateLesson(quizModal.sectionId, quizModal.lessonId, {
+                                quiz: activeModalLesson(quizModal).quiz.map((item) => item.id === question.id ? { ...item, correctIndex: optionIndex } : item),
+                              })}
+                              className="accent-[#12C6B0]"
+                            />
+                            <input
+                              className="w-full bg-transparent text-sm outline-none"
+                              value={option}
+                              onChange={(event) => updateLesson(quizModal.sectionId, quizModal.lessonId, {
+                                quiz: activeModalLesson(quizModal).quiz.map((item) => item.id === question.id ? { ...item, options: item.options.map((value, index) => index === optionIndex ? event.target.value : value) } : item),
+                              })}
+                              placeholder={`الخيار ${optionIndex + 1}`}
+                            />
+                          </label>
+                        ))}
+                      </div>
+                      <label className="mt-4 flex items-center justify-end gap-2 text-sm">درجة السؤال
+                        <input type="number" min="0" className="h-10 w-24 rounded-lg border border-[#E5E7EB] px-3" value={question.points} onChange={(event) => updateLesson(quizModal.sectionId, quizModal.lessonId, {
+                          quiz: activeModalLesson(quizModal).quiz.map((item) => item.id === question.id ? { ...item, points: Number(event.target.value) } : item),
+                        })} />
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={() => updateLesson(quizModal.sectionId, quizModal.lessonId, {
+                    quiz: [...activeModalLesson(quizModal).quiz, { id: crypto.randomUUID(), text: "", options: ["", "", "", ""], correctIndex: 0, points: 0 }],
+                  })}
+                  className="mt-4 font-semibold text-[#123C91]"
+                ><Plus size={16} className="inline" /> إضافة سؤال</button>
+                <div className="mt-6 flex justify-between gap-3">
+                  <button onClick={() => setQuizModal(null)} className="rounded-lg border border-[#D0D5DD] px-8 py-3">إلغاء</button>
+                  <button onClick={() => { setQuizModal(null); toast.success("تم حفظ الاختبار"); }} className="rounded-lg bg-[#123C91] px-10 py-3 font-semibold text-white">حفظ الاختبار</button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </TeacherLayout>
