@@ -16,12 +16,12 @@ import {
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import TeacherLayout from "../../components/teacher/layout/TeacherLayout";
-import CourseStepsNavigation from "../../components/teacher/courses/CourseStepsNavigation";
+import TeacherLayout from "../../../components/teacher/layout/TeacherLayout";
+import CourseStepsNavigation from "../../../components/teacher/courses/CourseStepsNavigation";
 import {
   getTeacherCourse,
   saveTeacherCourse,
-} from "../../utils/teacherCoursesStorage";
+} from "../../../utils/teacherCoursesStorage";
 
 const EMPTY_COURSE = {
   title: "",

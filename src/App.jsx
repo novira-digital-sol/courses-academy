@@ -52,8 +52,9 @@ import InstructorPage from "./pages/InstructorPage";
 import MyCourseDetailsPage from "./pages/MyCourseDetailsPage";
 import CoursePlayerPage from "./pages/CoursePlayerPage";
 import TeacherHome from "./pages/teacher/TeacherHome";
-import TeacherCoursesPage from "./pages/teacher/TeacherCoursesPage";
-import TeacherCourseFormPage from "./pages/teacher/TeacherCourseFormPage";
+import TeacherCoursesPage from "./pages/teacher/courses/TeacherCoursesPage";
+import TeacherCourseFormPage from "./pages/teacher/courses/TeacherCourseFormPage";
+import TeacherCourseDetailsPage from "./pages/teacher/courses/TeacherCourseDetailsPage";
 import GroupsPage from "./pages/teacher/groups/GroupsPage";
 import GroupLessonsPage from "./pages/teacher/groups/GroupLessonsPage";
 import GroupStudentsPage from "./pages/teacher/groups/GroupStudentsPage";
@@ -176,6 +177,7 @@ function App() {
         <Route path="/teacher-dashboard" element={<TeacherGuard><TeacherHome /></TeacherGuard>} />
         <Route path="/teacher/courses" element={<TeacherGuard><TeacherCoursesPage /></TeacherGuard>} />
         <Route path="/teacher/courses/new" element={<TeacherGuard><TeacherCourseFormPage /></TeacherGuard>} />
+        <Route path="/teacher/courses/:courseId" element={<TeacherGuard><TeacherCourseDetailsPage /></TeacherGuard>} />
         <Route path="/teacher/courses/:courseId/edit" element={<TeacherGuard><TeacherCourseFormPage /></TeacherGuard>} />
         <Route path="/teacher/groups" element={<TeacherGuard><GroupsPage /></TeacherGuard>} />
         <Route path="/teacher/groups/:groupId/lessons" element={<TeacherGuard><GroupLessonsPage /></TeacherGuard>} />

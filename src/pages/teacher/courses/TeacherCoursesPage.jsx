@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
   BookOpen,
@@ -14,12 +14,12 @@ import {
   Star,
   Trash2,
 } from "lucide-react";
-import TeacherLayout from "../../components/teacher/layout/TeacherLayout";
-import CoursesStatusBar from "../../components/teacher/courses/CoursesStatusBar";
+import TeacherLayout from "../../../components/teacher/layout/TeacherLayout";
+import CoursesStatusBar from "../../../components/teacher/courses/CoursesStatusBar";
 import {
   deleteTeacherCourse,
   getTeacherCourses,
-} from "../../utils/teacherCoursesStorage";
+} from "../../../utils/teacherCoursesStorage";
 
 const statusStyles = {
   منشور: "bg-[#DDF7E8] text-[#17864B]",
@@ -233,9 +233,12 @@ const TeacherCoursesPage = () => {
                         <span className="rounded-md bg-[#EAF2FF] p-2 text-[#3567C8]">
                           <BookOpen size={18} />
                         </span>
-                        <span className="font-semibold text-[#1F2937]">
+                        <Link
+                          to={`/teacher/courses/${course.id}`}
+                          className="font-semibold text-[#1F2937] transition hover:text-[#123C91] hover:underline"
+                        >
                           {course.title}
-                        </span>
+                        </Link>
                       </div>
                     </td>
                     <td className="px-4 py-4">
