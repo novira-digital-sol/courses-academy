@@ -11,6 +11,7 @@ import {
   Search,
   Share2,
   SquarePen,
+  Star,
   Trash2,
 } from "lucide-react";
 import TeacherLayout from "../../components/teacher/layout/TeacherLayout";
@@ -218,6 +219,7 @@ const TeacherCoursesPage = () => {
                   <th className="px-4 py-3">عنوان الدورة</th>
                   <th className="px-4 py-3">التصنيف</th>
                   <th className="px-4 py-3">الطلاب</th>
+                  <th className="px-4 py-3">التقييم</th>
                   <th className="px-4 py-3">الأرباح</th>
                   <th className="px-4 py-3">الحالة</th>
                   <th className="px-4 py-3 text-center">الإجراءات</th>
@@ -242,6 +244,20 @@ const TeacherCoursesPage = () => {
                       </span>
                     </td>
                     <td className="px-4 py-4">{course.students}</td>
+                    <td className="px-4 py-4">
+                      {Number.isFinite(Number(course.rating)) ? (
+                        <span className="inline-flex items-center gap-1.5" dir="ltr">
+                          <Star
+                            size={14}
+                            className="fill-[#F5A623] text-[#F5A623]"
+                            aria-hidden="true"
+                          />
+                          <span>{Number(course.rating).toFixed(1)}</span>
+                        </span>
+                      ) : (
+                        <span className="text-[#98A2B3]">—</span>
+                      )}
+                    </td>
                     <td className="px-4 py-4">{formatMoney(course.revenue)}</td>
                     <td className="px-4 py-4">
                       <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[course.status]}`}>
