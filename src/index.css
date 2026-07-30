@@ -1,6 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
 
 @import "tailwindcss";
+
+.teacher-main-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.teacher-main-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
 @source "./**/*.{js,jsx}";
 
 :root {

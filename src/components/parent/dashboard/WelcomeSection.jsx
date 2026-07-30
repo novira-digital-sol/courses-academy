@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import studentsImg from "../../../assets/student.svg";
+import studentsImg from "../../../assets/small dashbord.svg";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 

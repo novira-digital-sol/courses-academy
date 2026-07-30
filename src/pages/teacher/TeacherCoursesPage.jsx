@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   BookOpen,
   ChevronDown,
@@ -13,22 +15,10 @@ import {
 } from "lucide-react";
 import TeacherLayout from "../../components/teacher/layout/TeacherLayout";
 import CoursesStatusBar from "../../components/teacher/courses/CoursesStatusBar";
-import { courses as sourceCourses } from "../../data/staticData";
-
-const COURSE_STATUSES = [
-  "قيد المراجعة",
-  "منشور",
-  "منشور",
-  "قيد المراجعة",
-  "مسودة",
-  "مرفوض",
-];
-
-const teacherCourses = sourceCourses.map((course, index) => ({
-  ...course,
-  status: COURSE_STATUSES[index % COURSE_STATUSES.length],
-  revenue: course.price * Math.max(1, Math.round(course.students * 0.1)),
-}));
+import {
+  deleteTeacherCourse,
+  getTeacherCourses,
+} from "../../utils/teacherCoursesStorage";
 
 const statusStyles = {
   منشور: "bg-[#DDF7E8] text-[#17864B]",
@@ -41,12 +31,15 @@ const formatMoney = (value) =>
   `${Number(value || 0).toLocaleString("ar-EG")} جنيه`;
 
 const TeacherCoursesPage = () => {
+  const navigate = useNavigate();
+  const [teacherCourses, setTeacherCourses] = useState(getTeacherCourses);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("الكل");
   const [sort, setSort] = useState("الأحدث");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [actionsMenu, setActionsMenu] = useState(null);
+  const [detailsCourse, setDetailsCourse] = useState(null);
 
   const filteredCourses = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -65,7 +58,7 @@ const TeacherCoursesPage = () => {
       if (sort === "الاسم") return a.title.localeCompare(b.title, "ar");
       return teacherCourses.indexOf(a) - teacherCourses.indexOf(b);
     });
-  }, [search, sort, status]);
+  }, [search, sort, status, teacherCourses]);
 
   const totalPages = Math.max(1, Math.ceil(filteredCourses.length / pageSize));
 
@@ -112,6 +105,32 @@ const TeacherCoursesPage = () => {
     });
   };
 
+  const handleAction = async (action) => {
+    const selectedCourse = teacherCourses.find(
+      (course) => String(course.id) === String(actionsMenu?.courseId),
+    );
+    setActionsMenu(null);
+    if (!selectedCourse) return;
+
+    if (action === "details") setDetailsCourse(selectedCourse);
+    if (action === "edit") navigate(`/teacher/courses/${selectedCourse.id}/edit`);
+    if (action === "share") {
+      const url = `${window.location.origin}/courses/${selectedCourse.slug}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        toast.success("تم نسخ رابط الدورة");
+      } catch {
+        toast.error("تعذر نسخ الرابط");
+      }
+    }
+    if (action === "delete") {
+      if (!window.confirm(`هل تريد حذف دورة "${selectedCourse.title}"؟`)) return;
+      deleteTeacherCourse(selectedCourse.id);
+      setTeacherCourses(getTeacherCourses());
+      toast.success("تم حذف الدورة");
+    }
+  };
+
   return (
     <TeacherLayout>
       <section
@@ -127,6 +146,7 @@ const TeacherCoursesPage = () => {
           </div>
           <button
             type="button"
+            onClick={() => navigate("/teacher/courses/new")}
             className="inline-flex h-10 w-fit items-center justify-center gap-2 rounded-md bg-[#123C91] px-5 text-sm font-semibold text-white transition hover:bg-[#0E327A]"
           >
             <Plus size={17} />
@@ -328,16 +348,16 @@ const TeacherCoursesPage = () => {
               style={{ top: actionsMenu.top, left: actionsMenu.left }}
             >
               {[
-                { label: "عرض التفاصيل", icon: BookOpen },
-                { label: "تعديل", icon: SquarePen },
-                { label: "مشاركة", icon: Share2 },
-                { label: "حذف", icon: Trash2, danger: true },
-              ].map(({ label, icon: Icon, danger }) => (
+                { action: "details", label: "عرض التفاصيل", icon: BookOpen },
+                { action: "edit", label: "تعديل", icon: SquarePen },
+                { action: "share", label: "مشاركة", icon: Share2 },
+                { action: "delete", label: "حذف", icon: Trash2, danger: true },
+              ].map(({ action, label, icon: Icon, danger }) => (
                 <button
                   type="button"
                   role="menuitem"
                   key={label}
-                  onClick={() => setActionsMenu(null)}
+                  onClick={() => handleAction(action)}
                   className={`flex w-full items-center justify-start gap-2 px-4 py-2 text-right transition hover:bg-white/10 ${
                     danger ? "hover:text-[#FFB4B4]" : ""
                   }`}
@@ -348,6 +368,25 @@ const TeacherCoursesPage = () => {
               ))}
             </div>
           </>
+        )}
+
+        {detailsCourse && (
+          <div className="fixed inset-0 z-60 grid place-items-center bg-black/45 p-4">
+            <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl" dir="rtl">
+              <div className="mb-5 flex items-start justify-between gap-3">
+                <div><h2 className="text-xl font-bold text-[#123C91]">{detailsCourse.title}</h2><p className="mt-1 text-sm text-[#667085]">{detailsCourse.category} · {detailsCourse.level}</p></div>
+                <button onClick={() => setDetailsCourse(null)} className="rounded-lg px-3 py-1 text-xl text-[#667085] hover:bg-gray-100">×</button>
+              </div>
+              <p className="mb-5 text-sm leading-7 text-[#475467]">{detailsCourse.description || detailsCourse.shortDescription || "لا يوجد وصف"}</p>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="rounded-lg bg-[#F7F8FC] p-3"><span className="block text-[#667085]">الحالة</span><strong>{detailsCourse.status}</strong></div>
+                <div className="rounded-lg bg-[#F7F8FC] p-3"><span className="block text-[#667085]">السعر</span><strong>{detailsCourse.price ? formatMoney(detailsCourse.price) : "مجانية"}</strong></div>
+                <div className="rounded-lg bg-[#F7F8FC] p-3"><span className="block text-[#667085]">الأقسام</span><strong>{detailsCourse.curriculum?.length || 0}</strong></div>
+                <div className="rounded-lg bg-[#F7F8FC] p-3"><span className="block text-[#667085]">الطلاب</span><strong>{detailsCourse.students || 0}</strong></div>
+              </div>
+              <button onClick={() => navigate(`/teacher/courses/${detailsCourse.id}/edit`)} className="mt-5 w-full rounded-lg bg-[#123C91] py-3 font-semibold text-white">تعديل الدورة</button>
+            </div>
+          </div>
         )}
       </section>
     </TeacherLayout>

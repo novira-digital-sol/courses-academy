@@ -14,11 +14,34 @@ import AccountStatePage from "./pages/auth/AccountStatePage";
 import { AccountTypePage } from "./pages/auth/AccountTypePage";
 import { AuthContext } from "./context/AuthContext";
 
+import Home from "./pages/parent/Home";
+import AddChildPage from "./pages/parent/add-child/AddChildPage";
+import LessonsSchedule from "./pages/parent/LessonsSchedule";
+import Notifications from "./pages/parent/Notifications";
+import SubscriptionPage from "./pages/parent/SubscriptionPage";
+import ChildrenPage from "./pages/parent/ChildrenPage";
+import Messages from "./pages/parent/Messages";
+import AccountSettingsPage from "./pages/parent/AccountSettings";
+
 import StudentDetailsPages from "./pages/auth/StudentDetailsPages";
 import StudentSubjectsPages from "./pages/auth/StudentSubjectsPages";
 import StudentPackagesPage from "./pages/auth/StudentPackagesPage";
 import StudentOrderSummaryPage from "./pages/auth/StudentOrderSummaryPage";
 import RegisterSuccessPage from "./pages/auth/RegisterSuccessPage";
+import SubscriptionOrderStatusPage from "./pages/student/SubscriptionOrderStatusPage";
+import StudentHome from "./pages/student/StudentHome";
+import StudentGroupsPage from "./pages/student/StudentGroupsPage";
+import StudentSchedulePage from "./pages/student/SchedulePage";
+import StudentAccountSettingsPage from "./pages/student/StudentAccountSettingsPage";
+import StudentNotifications from "./pages/student/Notifications";
+import StudentSubscriptionPage from "./pages/student/StudentSubscriptionPage";
+import StudentMessagess from "./pages/student/messages/Messages";
+import StudentAssignmentsPage from "./pages/student/assignments/StudentAssignmentsPage";
+import StudentGroupLessonsPage from "./pages/student/groupLessons/Studentgrouplessonspage";
+import StudentLessonDetailsPage from "./pages/student/groupLessons/Studentlessondetailspage";
+import LessonFilesPage from "./pages/student/groupLessons/Lessonfilespage";
+import RenewalPage from "./pages/subscription/RenewalPage";
+import AddSubjectPage from "./pages/subscription/AddSubjectPage";
 
 import AllBlogsPage from "./components/landing/AllBlogsPage";
 
@@ -30,7 +53,52 @@ import MyCourseDetailsPage from "./pages/MyCourseDetailsPage";
 import CoursePlayerPage from "./pages/CoursePlayerPage";
 import TeacherHome from "./pages/teacher/TeacherHome";
 import TeacherCoursesPage from "./pages/teacher/TeacherCoursesPage";
-import DashboardPage from "./pages/DashboardPage";
+import TeacherCourseFormPage from "./pages/teacher/TeacherCourseFormPage";
+import GroupsPage from "./pages/teacher/groups/GroupsPage";
+import GroupLessonsPage from "./pages/teacher/groups/GroupLessonsPage";
+import GroupStudentsPage from "./pages/teacher/groups/GroupStudentsPage";
+import StudentDetailsPage from "./pages/teacher/groups/StudentDetailsPage";
+import CreateLessonPage from "./components/teacher/groups/lessons/CreateLessonPage";
+import CreateSchedulePage from "./components/teacher/groups/lessons/CreateSchedulePage";
+import LessonDetailsPage from "./pages/teacher/groups/LessonDetailsPage";
+import AttendanceRegistrationPage from "./pages/teacher/groups/AttendanceRegistrationPage";
+import AssignmentsPage from "./pages/teacher/assignments/AssignmentsPage";
+import AddAssignmentPage from "./components/teacher/assignments/AddAssignmentPage";
+import AssignmentDetailsPage from "./pages/teacher/assignments/AssignmentDetailsPage";
+import Schedule from "./pages/teacher/schedule/Schedule";
+import Notificationss from "./pages/teacher/notifications/Notifications";
+import TeacherMessages from "./pages/teacher/messages/Messages";
+import TeacherAccountSettingsPage from "./pages/teacher/TeacherAccountSettingsPage";
+import EarningsPage from "./pages/teacher/EarningsPage";
+import SessionDetailsPage from "./pages/shared/SessionDetailsPage";
+
+import TeacherGuard from "./guards/TeacherGuard";
+import StudentGuard from "./guards/StudentGuard";
+
+import AdminHome from "./pages/admin/AdminHome";
+import AdminSchedulePage from "./pages/admin/SchedulePage";
+import AdminAccountSettingsPage from "./pages/admin/AdminAccountSettingsPage";
+import AdminNotificationss from "./pages/admin/notifications/Notifications";
+import UsersPage from "./pages/admin/users/Userspage";
+import GroupsPages from "./pages/admin/groups/Groupspage";
+import AttendancePage from "./pages/admin/groups/attendance/AttendancePage";
+import CreateGroupPages from "./pages/admin/groups/CreateGroupPage";
+import SupervisorsPage from "./pages/admin/supervisors/SupervisorsPage";
+import TeachersPage from "./pages/admin/teachers/TeachersPage";
+import TeacherSessionsPage from "./pages/admin/teachers/TeacherSessionsPage";
+import RecordingsPages from "./pages/admin/recordings/RecordingsPage";
+import AdminMessages from "./pages/admin/messages/Adminmessages";
+import SubscriptionsPage from "./pages/admin/subscriptions/SubscriptionsPage";
+import SubscriptionRequestsPage from "./pages/admin/subscriptions/SubscriptionRequestsPage";
+import ActivateSubscriptionPage from "./pages/admin/subscriptions/ActivateSubscriptionPage";
+import SubscriptionDetailsPage from "./pages/admin/subscriptions/SubscriptionDetailsPage";
+import SubscriptionOrderReviewPage from "./pages/admin/subscriptions/SubscriptionOrderReviewPage";
+import AdminPaymentsPage from "./pages/admin/payments/AdminPaymentsPage";
+import PaymentDetailsPage from "./pages/admin/payments/PaymentDetailsPage";
+import CreateCurriculumPage from "./pages/admin/curriculum/CreateCurriculumPage";
+import AddSubscriptionPage from "./pages/admin/subscriptions/Addsubscriptionpage";
+import BlogsPage from "./pages/admin/BlogsPage.jsx/BlogsPage";
+import BlogFormPage from "./pages/admin/BlogsPage.jsx/BlogFormPage";
 
 function App() {
   const { user } = useContext(AuthContext);
@@ -66,8 +134,8 @@ function App() {
         <Route path="/register/subjects" element={<StudentSubjectsPages />} />
         <Route path="/register/packages" element={<StudentPackagesPage />} />
         <Route path="/register/order-summary" element={<StudentOrderSummaryPage />} />
-        <Route path="/subscription-orders/:orderId/status" element={user ? <RegisterSuccessPage /> : <Navigate to="/login" replace />} />
-        <Route path="/payment/success" element={user ? <RegisterSuccessPage /> : <Navigate to="/login" replace />} />
+        <Route path="/subscription-orders/:orderId/status" element={user ? <SubscriptionOrderStatusPage /> : <Navigate to="/login" replace />} />
+        <Route path="/payment/success" element={user ? <SubscriptionOrderStatusPage /> : <Navigate to="/login" replace />} />
         <Route path="/register/success" element={<RegisterSuccessPage />} />
         <Route path="/register/teacher-details" element={<TeacherDetailsPage />} />
         <Route path="/pending" element={<PendingPage />} />
@@ -75,16 +143,86 @@ function App() {
 
 
 
-        {/* ✅ Teacher — محمي بـ TeacherGuard */}
-        <Route path="/teacher-dashboard" element={<TeacherHome />} />
-        <Route path="/teacher/courses" element={<TeacherCoursesPage />} />
-        <Route path="/student-dashboard" element={<DashboardPage role="student" />} />
-        <Route path="/parent-dashboard" element={<DashboardPage role="parent" />} />
-        <Route path="/admin-dashboard" element={<DashboardPage role="admin" />} />
+        {/* Parent */}
+        <Route path="/parent-dashboard" element={user ? <Home /> : <Navigate to="/login" replace />} />
+        <Route path="/parent-dashboard/add-child" element={user ? <AddChildPage /> : <Navigate to="/login" replace />} />
+        <Route path="/parent/schedule" element={user ? <LessonsSchedule /> : <Navigate to="/login" replace />} />
+        <Route path="/parent/classrooms/:classroomId/sessions/:sessionId" element={user ? <SessionDetailsPage role="parent" /> : <Navigate to="/login" replace />} />
+        <Route path="/parent/children" element={user ? <ChildrenPage /> : <Navigate to="/login" replace />} />
+        <Route path="/parent/notifications" element={user ? <Notifications /> : <Navigate to="/login" replace />} />
+        <Route path="/parent/subscription" element={user ? <SubscriptionPage /> : <Navigate to="/login" replace />} />
+        <Route path="/parent/subscriptions/:id/renew" element={user ? <RenewalPage role="parent" /> : <Navigate to="/login" replace />} />
+        <Route path="/parent/subscriptions/:id/add-subject" element={user ? <AddSubjectPage role="parent" /> : <Navigate to="/login" replace />} />
+        <Route path="/parent/students/:studentId/subscription/packages" element={user ? <StudentPackagesPage /> : <Navigate to="/login" replace />} />
+        <Route path="/parent/messages" element={user ? <Messages /> : <Navigate to="/login" replace />} />
+        <Route path="/parent/settings" element={user ? <AccountSettingsPage /> : <Navigate to="/login" replace />} />
 
+        {/* Student */}
+        <Route path="/student-dashboard" element={<StudentGuard><StudentHome /></StudentGuard>} />
+        <Route path="/student/settings" element={<StudentGuard><StudentAccountSettingsPage /></StudentGuard>} />
+        <Route path="/student/notifications" element={<StudentGuard><StudentNotifications /></StudentGuard>} />
+        <Route path="/student/subscription" element={<StudentGuard><StudentSubscriptionPage /></StudentGuard>} />
+        <Route path="/student/subscriptions/:id/renew" element={<StudentGuard><RenewalPage role="student" /></StudentGuard>} />
+        <Route path="/student/subscriptions/:id/add-subject" element={<StudentGuard><AddSubjectPage role="student" /></StudentGuard>} />
+        <Route path="/student/messages" element={<StudentGuard><StudentMessagess /></StudentGuard>} />
+        <Route path="/student/assignments" element={<StudentGuard><StudentAssignmentsPage /></StudentGuard>} />
+        <Route path="/student/schedule" element={<StudentGuard><StudentSchedulePage /></StudentGuard>} />
+        <Route path="/student/groups" element={<StudentGuard><StudentGroupsPage /></StudentGuard>} />
+        <Route path="/student/groups/:groupId/lessons" element={<StudentGuard><StudentGroupLessonsPage /></StudentGuard>} />
+        <Route path="/student/groups/:groupId/lessons/:lessonId" element={<StudentGuard><StudentLessonDetailsPage /></StudentGuard>} />
+        <Route path="/student/groups/:groupId/lessons/:lessonId/files" element={<StudentGuard><LessonFilesPage /></StudentGuard>} />
 
+        {/* Teacher */}
+        <Route path="/teacher-dashboard" element={<TeacherGuard><TeacherHome /></TeacherGuard>} />
+        <Route path="/teacher/courses" element={<TeacherGuard><TeacherCoursesPage /></TeacherGuard>} />
+        <Route path="/teacher/courses/new" element={<TeacherGuard><TeacherCourseFormPage /></TeacherGuard>} />
+        <Route path="/teacher/courses/:courseId/edit" element={<TeacherGuard><TeacherCourseFormPage /></TeacherGuard>} />
+        <Route path="/teacher/groups" element={<TeacherGuard><GroupsPage /></TeacherGuard>} />
+        <Route path="/teacher/groups/:groupId/lessons" element={<TeacherGuard><GroupLessonsPage /></TeacherGuard>} />
+        <Route path="/teacher/groups/:groupId/students" element={<TeacherGuard><GroupStudentsPage /></TeacherGuard>} />
+        <Route path="/teacher/groups/:groupId/students/:studentId" element={<TeacherGuard><StudentDetailsPage /></TeacherGuard>} />
+        <Route path="/teacher/groups/:groupId/lessons/new" element={<TeacherGuard><CreateLessonPage /></TeacherGuard>} />
+        <Route path="/teacher/groups/:groupId/lessons/schedule/new" element={<TeacherGuard><CreateSchedulePage /></TeacherGuard>} />
+        <Route path="/teacher/groups/:groupId/lessons/:lessonId" element={<TeacherGuard><LessonDetailsPage /></TeacherGuard>} />
+        <Route path="/teacher/groups/:groupId/lessons/:lessonId/attendance" element={<TeacherGuard><AttendanceRegistrationPage /></TeacherGuard>} />
+        <Route path="/teacher/tasks" element={<TeacherGuard><AssignmentsPage /></TeacherGuard>} />
+        <Route path="/assignments/new" element={<TeacherGuard><AddAssignmentPage /></TeacherGuard>} />
+        <Route path="/teacher/assignments/:assignmentId" element={<TeacherGuard><AssignmentDetailsPage /></TeacherGuard>} />
+        <Route path="/teacher/schedule" element={<TeacherGuard><Schedule /></TeacherGuard>} />
+        <Route path="/teacher/notifications" element={<TeacherGuard><Notificationss /></TeacherGuard>} />
+        <Route path="/teacher/messages" element={<TeacherGuard><TeacherMessages /></TeacherGuard>} />
+        <Route path="/teacher/settings" element={<TeacherGuard><TeacherAccountSettingsPage /></TeacherGuard>} />
+        <Route path="/teacher/earnings" element={<TeacherGuard><EarningsPage /></TeacherGuard>} />
 
-
+        {/* Admin */}
+        <Route path="/admin-dashboard" element={user ? <AdminHome /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/settings" element={user ? <AdminAccountSettingsPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/notifications" element={user ? <AdminNotificationss /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/users" element={user ? <UsersPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/groups" element={user ? <GroupsPages /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/groups/:groupId/lessons" element={user ? <GroupLessonsPage role="admin" /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/groups/:groupId/lessons/new" element={user ? <CreateLessonPage role="admin" /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/schedule" element={user ? <AdminSchedulePage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/classrooms/:classroomId/sessions/:sessionId" element={user ? <SessionDetailsPage role="admin" /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/groups/:groupId/attendance" element={user ? <AttendancePage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/groups/new" element={user ? <CreateGroupPages /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/supervisors" element={user ? <SupervisorsPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/teachers" element={user ? <TeachersPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/teachers/:teacherId/sessions/:sessionStatus" element={user ? <TeacherSessionsPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/records" element={user ? <RecordingsPages /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/messages" element={user ? <AdminMessages /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/subscription" element={user ? <SubscriptionsPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/subscriptions/requests" element={user ? <SubscriptionRequestsPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/subscriptions/requests/:id/activate" element={user ? <ActivateSubscriptionPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/subscriptions/add" element={user ? <AddSubscriptionPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/subscriptions/:id" element={user ? <SubscriptionDetailsPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/subscription-orders/:id" element={user ? <SubscriptionOrderReviewPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/payments" element={user ? <AdminPaymentsPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/payments/:id" element={user ? <PaymentDetailsPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/curriculum/create" element={user ? <CreateCurriculumPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/blogs" element={user ? <BlogsPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/blogs/add" element={user ? <BlogFormPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/blogs/:id/edit" element={user ? <BlogFormPage /> : <Navigate to="/login" replace />} />
 
         <Route path="/learn/:slug" element={<CoursePlayerPage />} />
 

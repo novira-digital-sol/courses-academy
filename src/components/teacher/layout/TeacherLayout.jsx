@@ -30,7 +30,7 @@ const TeacherLayout = ({ children }) => {
   }, []);
 
   return (
-    <div className="h-screen flex bg-[#F5F7FB] overflow-hidden">
+    <div className="fixed inset-0 flex overflow-hidden bg-[#F5F7FB]">
      
       <div className="h-full shrink-0">
         <TeacherSidebar
@@ -38,7 +38,7 @@ const TeacherLayout = ({ children }) => {
           setIsOpen={setIsOpen}
         />
       </div>
-      <main className="flex-1 h-full overflow-y-auto p-3 md:p-6">
+      <main className="teacher-main-scroll flex-1 h-full overflow-y-auto p-3 md:p-6">
          {/* <Breadcrumbs homeTo="/teacher-dashboard" /> */}
 
         {children}

@@ -52,6 +52,7 @@ const TeacherSidebar = ({ isOpen, setIsOpen }) => {
         flex
         flex-col
         h-full
+        overflow-hidden
         justify-between
         bg-[#1F2937]
         border-l
@@ -86,7 +87,7 @@ const TeacherSidebar = ({ isOpen, setIsOpen }) => {
       </div>
 
       {/* Menu */}
-      <div className="flex-1 px-3 mt-4 overflow-y-auto">
+      <div className="flex-1 px-3 mt-4">
         {menu.map((item) => (
           <NavLink
             key={item.path}
