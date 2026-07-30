@@ -318,10 +318,10 @@ const TeacherCourseDetailsPage = () => {
   const coverSrc = uploadedCover || coverMap[course.cover] || pythonCover;
 
   return (
-    <TeacherLayout contentClassName="!overflow-hidden">
-      <section
+    <TeacherLayout>
+      <div
         dir="rtl"
-        className="h-full overflow-y-auto overscroll-contain rounded-xl bg-[#F7F8FC] p-3 pb-10 text-right font-['IBM_Plex_Sans_Arabic'] sm:p-5 sm:pb-12"
+        className="min-h-full rounded-xl bg-[#F7F8FC] p-3 pb-10 text-right font-['IBM_Plex_Sans_Arabic'] sm:p-5 sm:pb-12"
       >
         <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -349,7 +349,7 @@ const TeacherCourseDetailsPage = () => {
         {activeTab === "students" && <StudentsTab course={course} />}
         {activeTab === "reviews" && <ReviewsTab course={course} />}
         {activeTab === "earnings" && <EarningsTab course={course} />}
-      </section>
+      </div>
     </TeacherLayout>
   );
 };

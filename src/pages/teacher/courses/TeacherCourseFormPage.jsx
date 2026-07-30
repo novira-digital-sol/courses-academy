@@ -451,10 +451,10 @@ const TeacherCourseFormPage = () => {
     `${Number(value).toLocaleString("ar-EG", { maximumFractionDigits: 2 })} ج.م`;
 
   return (
-    <TeacherLayout contentClassName="!overflow-hidden !p-0">
+    <TeacherLayout contentClassName="!p-0">
       <div
         dir="rtl"
-        className="course-form-scroll h-full overflow-y-auto bg-[#F7F8FC] px-5 pt-1 pb-5 text-right sm:px-8"
+        className="min-h-screen bg-[#F7F8FC] px-5 pt-1 pb-5 text-right sm:px-8"
       >
         <div className="mx-auto w-full max-w-none">
           <div className="mb-4">

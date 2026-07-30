@@ -134,9 +134,9 @@ const TeacherCoursesPage = () => {
 
   return (
     <TeacherLayout>
-      <section
+      <div
         dir="rtl"
-        className="-mt-3 min-h-full rounded-xl bg-[#F7F8FC] p-3 text-right font-['IBM_Plex_Sans_Arabic'] sm:p-5 md:-mt-20"
+        className="min-h-full rounded-xl bg-[#F7F8FC] p-3 text-right font-['IBM_Plex_Sans_Arabic'] sm:p-5"
       >
         <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -407,7 +407,7 @@ const TeacherCoursesPage = () => {
             </div>
           </div>
         )}
-      </section>
+      </div>
     </TeacherLayout>
   );
 };

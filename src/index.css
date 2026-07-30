@@ -8,9 +8,9 @@
 }
 
 .teacher-main-scroll::-webkit-scrollbar {
+  display: none;
   width: 0;
   height: 0;
-  display: none;
 }
 
 .course-form-scroll {
