@@ -9,7 +9,7 @@ const getInitialSidebarState = () => {
   return window.innerWidth >= MOBILE_BREAKPOINT;
 };
 
-const TeacherLayout = ({ children }) => {
+const TeacherLayout = ({ children, contentClassName = "" }) => {
 
   const [isOpen, setIsOpen] = useState(getInitialSidebarState);
 
@@ -38,7 +38,7 @@ const TeacherLayout = ({ children }) => {
           setIsOpen={setIsOpen}
         />
       </div>
-      <main className="teacher-main-scroll flex-1 h-full overflow-y-auto p-3 md:p-6">
+      <main className={`teacher-main-scroll flex-1 h-full overflow-y-auto p-3 md:p-6 ${contentClassName}`}>
          {/* <Breadcrumbs homeTo="/teacher-dashboard" /> */}
 
         {children}

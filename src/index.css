@@ -12,6 +12,10 @@
   height: 0;
   display: none;
 }
+
+.course-form-scroll {
+  scrollbar-gutter: stable;
+}
 @source "./**/*.{js,jsx}";
 
 :root {

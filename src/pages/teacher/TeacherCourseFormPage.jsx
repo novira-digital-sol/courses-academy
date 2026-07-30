@@ -26,6 +26,12 @@ const EMPTY_COURSE = {
   description: "",
   shortDescription: "",
   requirements: "",
+  outcomes: [],
+  targetAudience: "",
+  academicCurriculum: "",
+  academicStage: "",
+  academicGrade: "",
+  subject: "",
   tags: [],
   cover: "",
   promoVideo: "",
@@ -42,18 +48,15 @@ const inputClass =
 const UploadBox = ({ label, accept, value, onChange, icon: Icon }) => {
   const handleFile = (file) => {
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () =>
-      onChange({ name: file.name, type: file.type, dataUrl: reader.result });
-    reader.readAsDataURL(file);
+    onChange({ name: file.name, type: file.type, size: file.size });
   };
 
   return (
     <label className="block space-y-3 text-right text-sm font-medium text-[#1F2937]">
       <span>{label}</span>
-      <span className="flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D8DCE2] bg-[#FCFCFD] px-5 py-8 text-center transition hover:border-[#123C91] hover:bg-[#F7FAFF]">
-        <span className="mb-4 grid h-16 w-16 place-items-center rounded-xl bg-[#EAF2FF] text-[#123C91]">
-          <Icon size={30} strokeWidth={1.8} />
+      <span className="flex min-h-28 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-[#D8DCE2] bg-[#FCFCFD] px-5 py-5 text-center transition hover:border-[#123C91] hover:bg-[#F7FAFF]">
+        <span className="mb-2 grid h-10 w-10 place-items-center rounded-md bg-[#EAF2FF] text-[#123C91]">
+          <Icon size={20} strokeWidth={1.8} />
         </span>
         <span className="text-base font-medium text-[#575F69]">
           {value?.name || `رفع ${label}`}
@@ -70,6 +73,57 @@ const UploadBox = ({ label, accept, value, onChange, icon: Icon }) => {
           onChange={(event) => handleFile(event.target.files?.[0])}
         />
       </span>
+    </label>
+  );
+};
+
+const TagsField = ({ label, values = [], onChange, placeholder }) => {
+  const [text, setText] = useState("");
+  const addValue = () => {
+    const value = text.trim();
+    if (!value || values.includes(value)) return;
+    onChange([...values, value]);
+    setText("");
+  };
+
+  return (
+    <label className="block space-y-2 text-right text-sm font-medium text-[#1F2937]">
+      <span>{label}</span>
+      <input
+        className={inputClass}
+        value={text}
+        onChange={(event) => setText(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            addValue();
+          }
+        }}
+        onBlur={addValue}
+        placeholder={placeholder}
+      />
+      <span className="block text-xs font-normal text-[#8C9198]">
+        اكتب قيمة واحدة ثم اضغط Enter لإضافتها
+      </span>
+      {values.length > 0 && (
+        <span className="flex flex-wrap gap-2">
+          {values.map((value) => (
+            <span key={value} className="inline-flex items-center gap-2 rounded-md border border-[#DCE6F5] bg-[#F7FAFF] px-3 py-1.5 text-xs font-normal text-[#344054]">
+              {value}
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.preventDefault();
+                  onChange(values.filter((item) => item !== value));
+                }}
+                className="text-[#98A2B3] hover:text-red-500"
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </span>
+      )}
     </label>
   );
 };
@@ -153,9 +207,12 @@ const TeacherCourseFormPage = () => {
     });
 
   return (
-    <TeacherLayout>
-      <div dir="rtl" className="min-h-full bg-[#F7F8FC] p-6 text-right">
-        <div className="mx-auto ">
+    <TeacherLayout contentClassName="!overflow-hidden !p-0">
+      <div
+        dir="rtl"
+        className="course-form-scroll h-full overflow-y-auto bg-[#F7F8FC] px-5 pt-1 pb-5 text-right sm:px-8"
+      >
+        <div className="mx-auto w-full max-w-none">
           <div className="mb-4">
             <h1 className="text-[16px] font-bold text-[#123C91]">
               {existingCourse ? "تعديل الدورة" : "إنشاء دورة جديدة"}
@@ -169,9 +226,9 @@ const TeacherCourseFormPage = () => {
             <CourseStepsNavigation currentStep={step + 1} />
           </div>
 
-          <section className="rounded-2xl border border-[#E5E5E5] bg-white px-6 py-7 shadow-[0px_0px_3px_0px_rgba(0,0,0,0.08)] sm:px-9 sm:py-8 lg:px-12">
+          <section className="rounded-2xl border border-[#E5E5E5] bg-white px-8 py-7 shadow-[0px_0px_3px_0px_rgba(0,0,0,0.08)] sm:px-12 sm:py-8 lg:px-16">
             {step === 0 && (
-              <div className="space-y-7 px-1 sm:px-2">
+              <div className="mx-4 space-y-7 sm:mx-6 lg:mx-8">
                 <div>
                   <h2 className="text-right font-['IBM_Plex_Sans_Arabic'] text-[18px] font-medium text-[#1F2937] sm:text-[20px] ">المعلومات الأساسية</h2>
                   <p className="mt-1 text-right font-['IBM_Plex_Sans_Arabic'] text-[14px] text-[#575F69] sm:text-[16px]">أدخل بيانات الدورة التي ستظهر للطلاب.</p>
@@ -184,29 +241,55 @@ const TeacherCourseFormPage = () => {
                     <input dir="ltr" className={`${inputClass} text-left`} value={course.titleEn} onChange={(e) => update("titleEn", e.target.value)} placeholder="Introduction to Programming" />
                   </label>
                 </div>
-                <label className="block space-y-2 text-right text-[15px] font-medium text-[#1F2937] sm:text-[17px]">الوصف المختصر
-                  <textarea className={`${inputClass} h-24 py-3 sm:h-28`} value={course.shortDescription} onChange={(e) => update("shortDescription", e.target.value)} />
+                <label className="block space-y-2 text-right text-sm font-medium text-[#1F2937]">وصف الدورة
+                  <textarea className={`${inputClass} h-20 py-3 sm:h-20`} value={course.description} onChange={(e) => update("description", e.target.value)} placeholder="اكتب وصفًا شاملًا للدورة..." />
                 </label>
-                <label className="block space-y-2 text-right text-[15px] font-medium text-[#1F2937] sm:text-[17px]">الوصف الكامل
-                  <textarea className={`${inputClass} h-32 py-3 sm:h-36`} value={course.description} onChange={(e) => update("description", e.target.value)} />
+                <label className="block space-y-2 text-right text-sm font-medium text-[#1F2937]">متطلبات الدورة
+                  <textarea className={`${inputClass} h-20 py-3 sm:h-20`} value={course.requirements} onChange={(e) => update("requirements", e.target.value)} placeholder="اكتب متطلبات الالتحاق بالدورة..." />
                 </label>
+                <TagsField
+                  label="ماذا سيتعلم الطالب؟"
+                  values={course.outcomes}
+                  onChange={(values) => update("outcomes", values)}
+                  placeholder="اكتب ناتج تعلم مثل: إتقان الأساسيات"
+                />
+                <label className="block space-y-2 text-right text-sm font-medium text-[#1F2937]">لمن هذه الدورة؟
+                  <input className={inputClass} value={course.targetAudience || ""} onChange={(e) => update("targetAudience", e.target.value)} placeholder="اكتب الفئات المستهدفة بهذه الدورة..." />
+                </label>
+                <TagsField
+                  label="الوسوم"
+                  values={course.tags}
+                  onChange={(values) => update("tags", values)}
+                  placeholder="مثال: برمجة، مبتدئين"
+                />
                 <div className="grid gap-5 md:grid-cols-3">
-                  <label className="space-y-2 text-sm">التصنيف *
+                  <label className="space-y-2 text-right text-sm font-medium text-[#1F2937]">التصنيف *
                     <select className={inputClass} value={course.category} onChange={(e) => update("category", e.target.value)}>
                       <option value="">اختر التصنيف</option>
                       {["برمجة", "رياضيات", "علوم", "لغات", "مهارات"].map((item) => <option key={item}>{item}</option>)}
                     </select>
                   </label>
-                  <label className="space-y-2 text-sm">المستوى *
+                  <label className="space-y-2 text-right text-sm font-medium text-[#1F2937]">المستوى *
                     <select className={inputClass} value={course.level} onChange={(e) => update("level", e.target.value)}>
                       <option value="">اختر المستوى</option>
                       {["مبتدئ", "متوسط", "متقدم", "جميع المستويات"].map((item) => <option key={item}>{item}</option>)}
                     </select>
                   </label>
-                  <label className="space-y-2 text-sm">لغة الدورة
+                  <label className="space-y-2 text-right text-sm font-medium text-[#1F2937]">لغة الشرح *
                     <select className={inputClass} value={course.language} onChange={(e) => update("language", e.target.value)}>
                       <option>عربي</option><option>إنجليزي</option>
                     </select>
+                  </label>
+                </div>
+                <div className="grid gap-5 md:grid-cols-3">
+                  <label className="space-y-2 text-right text-sm font-medium text-[#1F2937]">المرحلة
+                    <select className={inputClass} value={course.academicStage || ""} onChange={(e) => update("academicStage", e.target.value)}><option value="">اختر المرحلة</option><option>ابتدائي</option><option>إعدادي</option><option>ثانوي</option><option>جامعي</option></select>
+                  </label>
+                  <label className="space-y-2 text-right text-sm font-medium text-[#1F2937]">الصف الدراسي
+                    <select className={inputClass} value={course.academicGrade || ""} onChange={(e) => update("academicGrade", e.target.value)}><option value="">اختر الصف</option><option>الأول</option><option>الثاني</option><option>الثالث</option></select>
+                  </label>
+                  <label className="space-y-2 text-right text-sm font-medium text-[#1F2937]">المادة
+                    <select className={inputClass} value={course.subject || ""} onChange={(e) => update("subject", e.target.value)}><option value="">اختر المادة</option><option>برمجة</option><option>رياضيات</option><option>علوم</option><option>لغة عربية</option></select>
                   </label>
                 </div>
                 <div className="grid gap-6 border-t border-[#EAECF0] pt-6 md:grid-cols-2">
@@ -229,7 +312,7 @@ const TeacherCourseFormPage = () => {
             )}
 
             {step === 1 && (
-              <div className="space-y-4">
+              <div className="mx-4 space-y-4 sm:mx-6 lg:mx-8">
                 <div className="flex items-center justify-between gap-3">
                   <div><h2 className="font-bold text-[#1F2937]">بناء المحتوى</h2><p className="mt-1 text-xs text-[#667085]">قسّم الدورة إلى أقسام ودروس.</p></div>
                   <button onClick={addSection} className="flex items-center gap-2 rounded-lg bg-[#123C91] px-4 py-2 text-sm text-white"><Plus size={16} /> إضافة قسم</button>
@@ -263,7 +346,7 @@ const TeacherCourseFormPage = () => {
             )}
 
             {step === 2 && (
-              <div className="space-y-5">
+              <div className="mx-4 space-y-5 sm:mx-6 lg:mx-8">
                 <div><h2 className="font-bold text-[#1F2937]">تسعير الدورة</h2><p className="mt-1 text-xs text-[#667085]">حدد نوع وسعر الدورة.</p></div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   {[["paid", "مدفوعة", "أدخل سعرًا مناسبًا للدورة"], ["free", "مجانية", "إتاحة الدورة للطلاب مجانًا"]].map(([value, title, description]) => (
@@ -282,7 +365,7 @@ const TeacherCourseFormPage = () => {
             )}
 
             {step === 3 && (
-              <div className="space-y-5">
+              <div className="mx-4 space-y-5 sm:mx-6 lg:mx-8">
                 <div><h2 className="font-bold text-[#1F2937]">مراجعة الدورة</h2><p className="mt-1 text-xs text-[#667085]">تأكد من البيانات قبل الإرسال.</p></div>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="rounded-xl border border-[#E5E7EB] p-4"><h3 className="mb-3 font-bold">المعلومات الأساسية</h3><dl className="space-y-2 text-sm"><div><dt className="text-[#667085]">العنوان</dt><dd>{course.title}</dd></div><div><dt className="text-[#667085]">التصنيف والمستوى</dt><dd>{course.category} · {course.level}</dd></div><div><dt className="text-[#667085]">اللغة</dt><dd>{course.language}</dd></div></dl></div>
@@ -292,7 +375,7 @@ const TeacherCourseFormPage = () => {
               </div>
             )}
 
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-[#EAECF0] pt-5">
+            <div className="mx-4 mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-[#EAECF0] pt-5 sm:mx-6 lg:mx-8">
               <button onClick={() => step === 0 ? navigate("/teacher/courses") : setStep((current) => current - 1)} className="flex items-center gap-2 rounded-lg border border-[#D0D5DD] px-5 py-2.5 text-sm"><ChevronRight size={16} /> {step === 0 ? "إلغاء" : "السابق"}</button>
               <div className="flex gap-3">
                 <button onClick={() => save("مسودة")} className="rounded-lg border border-[#D0D5DD] px-5 py-2.5 text-sm">حفظ كمسودة</button>
