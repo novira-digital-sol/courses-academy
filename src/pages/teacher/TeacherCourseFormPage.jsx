@@ -472,7 +472,7 @@ const TeacherCourseFormPage = () => {
 
           <section className="rounded-2xl border border-[#E5E5E5] bg-white px-8 py-7 shadow-[0px_0px_3px_0px_rgba(0,0,0,0.08)] sm:px-12 sm:py-8 lg:px-16">
             {step === 0 && (
-              <div className="mx-4 space-y-7 sm:mx-6 lg:mx-8">
+              <div className="mx-4 space-y-7 sm:mx-6 lg:mx-8 -mt-12">
                 <div>
                   <h2 className="text-right font-['IBM_Plex_Sans_Arabic'] text-[18px] font-medium text-[#1F2937] sm:text-[20px] ">المعلومات الأساسية</h2>
                   <p className="mt-1 text-right font-['IBM_Plex_Sans_Arabic'] text-[14px] text-[#575F69] sm:text-[16px]">أدخل بيانات الدورة التي ستظهر للطلاب.</p>
@@ -558,15 +558,15 @@ const TeacherCourseFormPage = () => {
             )}
 
             {step === 1 && (
-              <div className="mx-0 space-y-5 sm:mx-2 lg:mx-4">
+              <div className="mx-0 space-y-5 sm:mx-2 lg:mx-4 -mt-12">
                 <div>
                   <h2 className="text-[17px] font-semibold text-[#1F2937]">بناء المنهج الدراسي</h2>
-                  <p className="mt-1.5 text-[13px] text-[#667085]">
+                  <p className="mt-1.5 text-[14px] text-[#667085]">
                     قم ببناء وتنظيم محتوى دورتك التعليمية خطوة بخطوة لتجربة تعلم متكاملة للطلاب.
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-[#667085]">
+                  <div className="flex flex-wrap items-center gap-4 text-[14px] text-[#667085]">
                     <span className="inline-flex items-center gap-1.5"><Layers3 size={14} className="text-[#123C91]" />{course.curriculum.length} أقسام</span>
                     <span className="inline-flex items-center gap-1.5"><Video size={14} className="text-[#123C91]" />{totalLessons} دروس</span>
                     <span>{totalContent} دروس بمحتوى</span>
@@ -635,10 +635,10 @@ const TeacherCourseFormPage = () => {
             )}
 
             {step === 2 && (
-              <div className="mx-4 space-y-5 sm:mx-6 lg:mx-8">
+              <div className="mx-4 space-y-5 sm:mx-6 lg:mx-8 -mt-12">
                 <div>
                   <h2 className="font-bold text-[#1F2937]">تسعير الدورة</h2>
-                  <p className="mt-1 text-xs text-[#667085]">
+                  <p className="mt-1 text-[14px] text-[#667085]">
                     حدد سعر الدورة ونوع التسعير، ويمكنك إضافة خصومات.
                   </p>
                 </div>
@@ -660,7 +660,7 @@ const TeacherCourseFormPage = () => {
                       <DollarSign size={20} />
                     </span>
                     <strong className="mt-3 block">مدفوعة</strong>
-                    <span className="mt-1 block text-xs text-[#667085]">
+                    <span className="mt-1 block text-[14px] text-[#667085]">
                       حدد سعرًا مناسبًا للدورة قبل نشرها
                     </span>
                   </button>
@@ -728,11 +728,11 @@ const TeacherCourseFormPage = () => {
             )}
 
             {step === 3 && (
-              <div className="mx-4 space-y-5 sm:mx-6 lg:mx-8">
-                <div><h2 className="font-bold text-[#1F2937]">مراجعة الدورة</h2><p className="mt-1 text-xs text-[#667085]">تأكد من البيانات قبل الإرسال.</p></div>
+              <div className="mx-4 space-y-5 sm:mx-6 lg:mx-8 -mt-12">
+                <div><h2 className="font-bold text-[#1F2937]">مراجعة الدورة</h2><p className="mt-1 text-[14px] text-[#667085]">تأكد من البيانات قبل الإرسال.</p></div>
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-xl border border-[#E5E7EB] p-4"><h3 className="mb-3 font-bold">المعلومات الأساسية</h3><dl className="space-y-2 text-sm"><div><dt className="text-[#667085]">العنوان</dt><dd>{course.title}</dd></div><div><dt className="text-[#667085]">التصنيف والمستوى</dt><dd>{course.category} · {course.level}</dd></div><div><dt className="text-[#667085]">اللغة</dt><dd>{course.language}</dd></div></dl></div>
-                  <div className="rounded-xl border border-[#E5E7EB] p-4"><h3 className="mb-3 font-bold">المحتوى والتسعير</h3><dl className="space-y-2 text-sm"><div><dt className="text-[#667085]">الأقسام</dt><dd>{course.curriculum.length} قسم</dd></div><div><dt className="text-[#667085]">الدروس</dt><dd>{course.curriculum.reduce((sum, section) => sum + section.lessons.length, 0)} درس</dd></div><div><dt className="text-[#667085]">السعر</dt><dd>{course.pricingType === "free" ? "مجانية" : `${course.price} جنيه`}</dd></div></dl></div>
+                  <div className="rounded-xl border border-[#E5E7EB] p-4"><h3 className="mb-3 font-bold">المعلومات الأساسية</h3><dl className="space-y-2 text-[14px]"><div><dt className="text-[#667085]">العنوان</dt><dd>{course.title}</dd></div><div><dt className="text-[#667085]">التصنيف والمستوى</dt><dd>{course.category} · {course.level}</dd></div><div><dt className="text-[#667085]">اللغة</dt><dd>{course.language}</dd></div></dl></div>
+                  <div className="rounded-xl border border-[#E5E7EB] p-4"><h3 className="mb-3 font-bold">المحتوى والتسعير</h3><dl className="space-y-2 text-[14px]"><div><dt className="text-[#667085]">الأقسام</dt><dd>{course.curriculum.length} قسم</dd></div><div><dt className="text-[#667085]">الدروس</dt><dd>{course.curriculum.reduce((sum, section) => sum + section.lessons.length, 0)} درس</dd></div><div><dt className="text-[#667085]">السعر</dt><dd>{course.pricingType === "free" ? "مجانية" : `${course.price} جنيه`}</dd></div></dl></div>
                 </div>
                 <div className="rounded-lg bg-[#EAF4FF] p-3 text-sm text-[#123C91]">بعد الإرسال ستصبح الدورة قيد المراجعة قبل النشر.</div>
               </div>
