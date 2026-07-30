@@ -4,11 +4,14 @@ import {
   ChevronLeft,
   ChevronRight,
   Film,
+  GripVertical,
   Image as ImageIcon,
+  Layers3,
   Plus,
   DollarSign,
   Trash2,
   UploadCloud,
+  Video,
   X,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -372,20 +375,20 @@ const TeacherCourseFormPage = () => {
             )}
 
             {step === 1 && (
-              <div className="mx-4 space-y-4 sm:mx-6 lg:mx-8">
+              <div className="mx-0 space-y-5 sm:mx-2 lg:mx-4">
                 <div>
-                  <h2 className="font-bold text-[#1F2937]">بناء المنهج الدراسي</h2>
-                  <p className="mt-1 text-xs text-[#667085]">
+                  <h2 className="text-[17px] font-semibold text-[#1F2937]">بناء المنهج الدراسي</h2>
+                  <p className="mt-1.5 text-[13px] text-[#667085]">
                     قم ببناء وتنظيم محتوى دورتك التعليمية خطوة بخطوة لتجربة تعلم متكاملة للطلاب.
                   </p>
                 </div>
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex flex-wrap gap-4 text-xs text-[#667085]">
-                    <span>{course.curriculum.length} أقسام</span>
-                    <span>{totalLessons} دروس</span>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-[#667085]">
+                    <span className="inline-flex items-center gap-1.5"><Layers3 size={14} className="text-[#123C91]" />{course.curriculum.length} أقسام</span>
+                    <span className="inline-flex items-center gap-1.5"><Video size={14} className="text-[#123C91]" />{totalLessons} دروس</span>
                     <span>{totalContent} دروس بمحتوى</span>
                   </div>
-                  <button onClick={addSection} className="flex items-center gap-2 rounded-lg bg-[#123C91] px-4 py-2 text-sm text-white">
+                  <button type="button" onClick={addSection} className="flex h-10 items-center gap-2 rounded-md bg-[#123C91] px-5 text-sm font-semibold text-white hover:bg-[#0E327A]">
                     <Plus size={16} /> إضافة قسم / وحدة
                   </button>
                 </div>
@@ -395,45 +398,53 @@ const TeacherCourseFormPage = () => {
                   </button>
                 )}
                 {course.curriculum.map((section, sectionIndex) => (
-                  <div key={section.id} className="overflow-hidden rounded-xl border border-[#E5E7EB]">
-                    <div className="flex items-center gap-3 bg-[#F1F7FF] p-3">
-                      <span className="grid h-7 w-7 place-items-center rounded-full bg-[#123C91] text-xs text-white">{sectionIndex + 1}</span>
-                      <input className={`${inputClass} flex-1 bg-white`} value={section.title} onChange={(e) => updateSection(section.id, { title: e.target.value })} />
-                      <button onClick={() => removeSection(section.id)} className="p-2 text-red-600"><Trash2 size={17} /></button>
+                  <div key={section.id} className="overflow-hidden rounded-xl border border-[#DDE2E8] bg-white">
+                    <div className="flex items-center gap-2 border-b border-[#E7EBF0] bg-[#EEF6FF] px-4 py-3">
+                      <GripVertical size={16} className="shrink-0 text-[#98A2B3]" />
+                      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#123C91] text-xs font-semibold text-white">{sectionIndex + 1}</span>
+                      <input aria-label={`عنوان القسم ${sectionIndex + 1}`} className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-[#344054] outline-none" value={section.title} onChange={(e) => updateSection(section.id, { title: e.target.value })} />
+                      <button type="button" aria-label="حذف القسم" onClick={() => removeSection(section.id)} className="rounded p-1 text-[#98A2B3] hover:bg-white hover:text-red-600"><X size={15} /></button>
                     </div>
-                    <div className="space-y-2 p-3">
+                    <div>
                       {section.lessons.map((lesson, lessonIndex) => (
-                        <div key={lesson.id} className="rounded-lg border border-[#EAECF0] p-3">
-                          <div className="grid items-center gap-2 lg:grid-cols-[32px_minmax(180px,1fr)_120px_90px_auto_40px]">
-                            <span className="text-center text-xs text-[#667085]">{lessonIndex + 1}</span>
-                            <input className={inputClass} value={lesson.title} onChange={(e) => updateLesson(section.id, lesson.id, { title: e.target.value })} placeholder="اكتب عنوان الدرس..." />
-                            <select className={inputClass} value={lesson.type} onChange={(e) => updateLesson(section.id, lesson.id, { type: e.target.value })}>
+                        <div key={lesson.id} className="border-b border-[#EAECF0] px-4 py-3 last:border-b-0">
+                          <div className="grid items-center gap-2 xl:grid-cols-[18px_26px_minmax(170px,1fr)_105px_80px_auto_auto_34px]">
+                            <GripVertical size={15} className="text-[#B0B7C3]" />
+                            <span className="grid h-6 w-6 place-items-center rounded-full bg-[#F1F4F8] text-[11px] text-[#667085]">{lessonIndex + 1}</span>
+                            <input className="h-9 min-w-0 rounded-md border border-transparent px-2 text-sm text-[#344054] outline-none placeholder:text-[#98A2B3] focus:border-[#D0D5DD]" value={lesson.title} onChange={(e) => updateLesson(section.id, lesson.id, { title: e.target.value })} placeholder="اكتب عنوان الدرس..." />
+                            <select className="h-9 rounded-md border border-[#D0D5DD] bg-white px-2 text-xs text-[#475467] outline-none" value={lesson.type} onChange={(e) => updateLesson(section.id, lesson.id, { type: e.target.value })}>
                               <option>فيديو</option><option>ملف</option><option>اختبار</option>
                             </select>
-                            <input type="number" min="0" className={inputClass} value={lesson.duration || ""} onChange={(e) => updateLesson(section.id, lesson.id, { duration: Number(e.target.value) })} placeholder="المدة" />
-                            <label className="flex items-center gap-2 whitespace-nowrap text-xs text-[#475467]">
-                              <input type="checkbox" checked={Boolean(lesson.preview)} onChange={(e) => updateLesson(section.id, lesson.id, { preview: e.target.checked })} className="accent-[#12C6B0]" />
-                              معاينة مجانية
+                            <label className="flex h-9 items-center justify-center gap-1 rounded-md border border-[#E1E5EA] bg-[#FAFAFA] px-2 text-xs text-[#667085]">
+                              <input type="number" min="0" className="w-8 bg-transparent text-center outline-none" value={lesson.duration || ""} onChange={(e) => updateLesson(section.id, lesson.id, { duration: Number(e.target.value) })} placeholder="0" />
+                              <span>د</span>
                             </label>
-                            <button onClick={() => updateSection(section.id, { lessons: section.lessons.filter((item) => item.id !== lesson.id) })} className="p-2 text-red-600"><Trash2 size={16} /></button>
-                          </div>
-                          <div className="mt-3 flex flex-wrap gap-2">
+                            <label className="flex items-center gap-2 whitespace-nowrap text-xs text-[#475467]">
+                              <button type="button" role="switch" aria-checked={Boolean(lesson.preview)} onClick={() => updateLesson(section.id, lesson.id, { preview: !lesson.preview })} className={`relative h-5 w-9 rounded-full transition ${lesson.preview ? "bg-[#12C6B0]" : "bg-[#D0D5DD]"}`}>
+                                <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all ${lesson.preview ? "right-0.5" : "right-4"}`} />
+                              </button>
+                              معاينة
+                            </label>
                             {lesson.type === "اختبار" ? (
-                              <button onClick={() => openQuizBuilder(section.id, lesson)} className="rounded-md border border-[#12C6B0] bg-[#E8FFFC] px-4 py-2 text-xs font-semibold text-[#087F72]">
+                              <button onClick={() => openQuizBuilder(section.id, lesson)} className="h-9 rounded-md border border-[#12C6B0] bg-[#E8FFFC] px-3 text-xs font-semibold text-[#087F72]">
                                 {lesson.quiz?.length ? "تعديل الاختبار" : "بناء الاختبار"}
                               </button>
                             ) : (
-                              <button onClick={() => setContentModal({ sectionId: section.id, lessonId: lesson.id })} className="rounded-md border border-[#D0D5DD] px-4 py-2 text-xs font-semibold text-[#475467]">
+                              <button onClick={() => setContentModal({ sectionId: section.id, lessonId: lesson.id })} className="inline-flex h-9 items-center gap-1.5 rounded-md border border-[#D0D5DD] px-3 text-xs font-medium text-[#475467]">
+                                <Video size={14} />
                                 {lesson.attachments?.length ? "تغيير المحتوى" : "إضافة محتوى +"}
                               </button>
                             )}
+                            <button type="button" aria-label="حذف الدرس" onClick={() => updateSection(section.id, { lessons: section.lessons.filter((item) => item.id !== lesson.id) })} className="p-2 text-[#98A2B3] hover:text-red-600"><X size={15} /></button>
+                          </div>
+                          <div className="mt-2 flex flex-wrap gap-2">
                             {lesson.attachments?.map((file) => (
-                              <span key={file.name} className="rounded-md bg-[#F2F4F7] px-3 py-2 text-xs text-[#475467]">{file.name}</span>
+                              <span key={file.name} className="rounded-md bg-[#F2F4F7] px-3 py-1.5 text-xs text-[#475467]">{file.name}</span>
                             ))}
                           </div>
                         </div>
                       ))}
-                      <button onClick={() => addLesson(section.id)} className="flex items-center gap-1 py-2 text-sm font-semibold text-[#123C91]"><Plus size={15} /> إضافة درس</button>
+                      <button type="button" onClick={() => addLesson(section.id)} className="flex items-center gap-1 px-5 py-3 text-sm font-semibold text-[#123C91] hover:bg-[#F8FAFC]"><Plus size={15} /> إضافة درس</button>
                     </div>
                   </div>
                 ))}
