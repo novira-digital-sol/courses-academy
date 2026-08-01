@@ -40,7 +40,6 @@ const TeacherCoursesPage = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [actionsMenu, setActionsMenu] = useState(null);
-  const [detailsCourse, setDetailsCourse] = useState(null);
 
   const filteredCourses = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -113,7 +112,10 @@ const TeacherCoursesPage = () => {
     setActionsMenu(null);
     if (!selectedCourse) return;
 
-    if (action === "details") setDetailsCourse(selectedCourse);
+    if (action === "details") {
+      navigate(`/teacher/courses/${selectedCourse.id}`);
+      return;
+    }
     if (action === "edit") navigate(`/teacher/courses/${selectedCourse.id}/edit`);
     if (action === "share") {
       const url = `${window.location.origin}/courses/${selectedCourse.slug}`;
@@ -389,24 +391,6 @@ const TeacherCoursesPage = () => {
           </>
         )}
 
-        {detailsCourse && (
-          <div className="fixed inset-0 z-60 grid place-items-center bg-black/45 p-4">
-            <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl" dir="rtl">
-              <div className="mb-5 flex items-start justify-between gap-3">
-                <div><h2 className="text-xl font-bold text-[#123C91]">{detailsCourse.title}</h2><p className="mt-1 text-sm text-[#667085]">{detailsCourse.category} · {detailsCourse.level}</p></div>
-                <button onClick={() => setDetailsCourse(null)} className="rounded-lg px-3 py-1 text-xl text-[#667085] hover:bg-gray-100">×</button>
-              </div>
-              <p className="mb-5 text-sm leading-7 text-[#475467]">{detailsCourse.description || detailsCourse.shortDescription || "لا يوجد وصف"}</p>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div className="rounded-lg bg-[#F7F8FC] p-3"><span className="block text-[#667085]">الحالة</span><strong>{detailsCourse.status}</strong></div>
-                <div className="rounded-lg bg-[#F7F8FC] p-3"><span className="block text-[#667085]">السعر</span><strong>{detailsCourse.price ? formatMoney(detailsCourse.price) : "مجانية"}</strong></div>
-                <div className="rounded-lg bg-[#F7F8FC] p-3"><span className="block text-[#667085]">الأقسام</span><strong>{detailsCourse.curriculum?.length || 0}</strong></div>
-                <div className="rounded-lg bg-[#F7F8FC] p-3"><span className="block text-[#667085]">الطلاب</span><strong>{detailsCourse.students || 0}</strong></div>
-              </div>
-              <button onClick={() => navigate(`/teacher/courses/${detailsCourse.id}/edit`)} className="mt-5 w-full rounded-lg bg-[#123C91] py-3 font-semibold text-white">تعديل الدورة</button>
-            </div>
-          </div>
-        )}
       </div>
     </TeacherLayout>
   );
