@@ -46,7 +46,7 @@ export default function CourseCard({ course }) {
         <Link to={`/courses/${course.slug}`} className="mb-3 line-clamp-2 text-[17px] font-bold leading-7 text-[#1F2937] transition-colors group-hover:text-[#123C91]">{course.title}</Link>
 
         <div className="mb-4 flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#12C6B0] to-[#123C91] text-[13px] font-bold text-white">
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-linear-to-br from-[#12C6B0] to-[#123C91] text-[13px] font-bold text-white">
             {course.instructor.charAt(0)}
           </span>
           <span className="text-[14px] text-[#657080]">{course.instructor}</span>
