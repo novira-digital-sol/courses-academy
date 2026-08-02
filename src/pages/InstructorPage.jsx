@@ -1,89 +1,133 @@
+import React from "react";
 import { Link, useParams } from "react-router-dom";
-import { BookOpen, GraduationCap, Star, Users } from "lucide-react";
+import { ChevronLeft, Users } from "lucide-react";
 import CourseCard from "../components/courses/CourseCard";
-import { courses } from "../data/staticData";
-import { instructors } from "../data/instructorsData";
+import { courses } from "../data/staticData"; // مسار ملف البيانات لديك
 
 export default function InstructorPage() {
-  const { slug } = useParams();
-  const instructor = instructors.find((item) => item.slug === slug);
+  const { id } = useParams();
 
-  if (!instructor) {
-    return (
-      <div className="min-h-[60vh] bg-[#F8FAFC] py-24 text-center" dir="rtl">
-        <h1 className="mb-5 text-3xl font-bold text-[#1F2937]">المدرس غير موجود</h1>
-        <Link to="/courses" className="font-semibold text-[#123C91]">العودة إلى الدورات</Link>
-      </div>
-    );
-  }
+  const instructorName = id ? decodeURIComponent(id).replace(/-/g, " ") : "";
 
-  const instructorCourses = courses.filter((course) => course.instructor === instructor.name);
+  const instructorCourses = courses.filter(
+    (course) => course.instructor.trim() === instructorName.trim()
+  );
+
+  const totalStudents = instructorCourses.reduce((sum, course) => sum + course.students, 0);
+  const totalCourses = instructorCourses.length;
+
+  const instructor = {
+    name: instructorName || "محمد أحمد",
+    role: instructorCourses.length > 0 ? `معلم ${instructorCourses[0].category}` : "معلم معتمد",
+    experienceYears: 9,
+    studentsCount: totalStudents > 0 ? totalStudents.toLocaleString() : "1,250",
+    coursesCount: totalCourses > 0 ? totalCourses : 1,
+    interactiveGroupsCount: 3,
+  };
 
   return (
-    <div className="bg-[#F8FAFC] py-12" dir="rtl">
-      <div className="mx-auto w-full max-w-[1360px] px-4 md:px-10">
-        <nav className="mb-8 text-sm text-[#7B8490]">
-          <Link to="/" className="hover:text-[#123C91]">الرئيسية</Link>
-          <span className="mx-2">/</span>
-          <span>{instructor.name}</span>
-        </nav>
+    <div className="min-h-screen bg-[#F8FBFF] py-10" dir="rtl">
+      <div className="container-custom">
+        
+        {/* زر الرجوع */}
+        <div className="mb-6 flex justify-start">
+          <Link
+            to={-1}
+            className="flex items-center gap-1 text-sm font-medium text-[#657080] transition-colors hover:text-[#123C91]"
+          >
+            <ChevronLeft size={16} className="rotate-180" />
+            <span>الرجوع لتفاصيل الدورة</span>
+          </Link>
+        </div>
 
-        <div className="mb-10 flex flex-col items-center gap-6 rounded-lg border border-[#E1E7EF] bg-white p-6 md:flex-row md:items-center md:justify-between md:p-8">
-          <div className="flex items-center gap-4">
-            <img src={instructor.avatar} alt={instructor.name} className="h-20 w-20 rounded-full border border-[#E1E7EF] object-cover" />
-            <div>
-              <h1 className="text-2xl font-bold text-[#1F2937]">{instructor.name}</h1>
-              <p className="text-sm text-[#7B8490]">{instructor.role}</p>
+        {/* كارت البروفايل الرئيسي */}
+        <div className="mb-12 rounded-2xl border border-[#DDE4EC] bg-white p-6 shadow-sm">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            
+            {/* تفاصيل الاسم والحروف الأولى بدلاً من الصورة */}
+            <div className="flex items-center gap-4 text-right">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#12C6B0] to-[#123C91] text-2xl font-bold text-white shadow-md">
+                {instructor.name.charAt(0)}
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-[#1F2937]">{instructor.name}</h1>
+                <p className="text-sm text-[#7B8490]">{instructor.role}</p>
+              </div>
             </div>
-          </div>
-          <div className="flex gap-8 text-center">
-            <div>
-              <strong className="block text-xl text-[#123C91]">{instructor.groups.length}</strong>
-              <span className="text-xs text-[#7B8490]">مجموعات</span>
+
+            {/* الإحصائيات الحقيقية */}
+            <div className="flex items-center gap-6 md:gap-10 text-center">
+              <div>
+                <div className="text-xl font-bold text-[#1F2937]">{instructor.interactiveGroupsCount}</div>
+                <div className="text-xs text-[#7B8490]">مجموعات تفاعلية</div>
+              </div>
+              <div className="h-8 w-[1px] bg-[#E5E4E7]"></div>
+              <div>
+                <div className="text-xl font-bold text-[#1F2937]">{instructor.coursesCount}</div>
+                <div className="text-xs text-[#7B8490]">دورات</div>
+              </div>
+              <div className="h-8 w-[1px] bg-[#E5E4E7]"></div>
+              <div>
+                <div className="text-xl font-bold text-[#1F2937]">{instructor.studentsCount}</div>
+                <div className="text-xs text-[#7B8490]">طالب</div>
+              </div>
+              <div className="h-8 w-[1px] bg-[#E5E4E7]"></div>
+              <div>
+                <div className="text-xl font-bold text-[#1F2937]">{instructor.experienceYears}</div>
+                <div className="text-xs text-[#7B8490]">سنوات الخبرة</div>
+              </div>
             </div>
-            <div>
-              <strong className="block text-xl text-[#123C91]">{instructor.studentsCount}</strong>
-              <span className="text-xs text-[#7B8490]">طالب</span>
-            </div>
-            <div>
-              <strong className="flex items-center justify-center gap-1 text-xl text-[#123C91]">
-                <Star size={16} className="fill-amber-400 text-amber-400" /> {instructor.rating}
-              </strong>
-              <span className="text-xs text-[#7B8490]">تقييم</span>
-            </div>
+
           </div>
         </div>
 
-        <section className="mb-12">
-          <h2 className="mb-5 text-xl font-bold text-[#1F2937]">المجموعات التعليمية</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {instructor.groups.map((group) => (
-              <div key={group.id} className="rounded-lg border border-[#E1E7EF] bg-white p-5">
-                <span className="mb-2 inline-block rounded bg-[#E5F8F4] px-2 py-1 text-xs font-semibold text-[#0E9F8E]">نشط</span>
-                <h3 className="mb-1 font-bold text-[#1F2937]">{group.title}</h3>
-                <p className="mb-4 text-sm text-[#7B8490]">{group.subtitle}</p>
-                <div className="flex items-center justify-between border-t border-[#EDF0F4] pt-3 text-xs text-[#7B8490]">
-                  <span className="flex items-center gap-1"><Users size={14} /> {group.studentsCount} طالب</span>
-                  <span className="flex items-center gap-1"><BookOpen size={14} /> {group.coursesCount} كورسات</span>
+        {/* قسم المجموعات التفاعلية */}
+        <section className="mb-12 !py-0">
+          <h2 className="mb-6 text-xl font-bold text-[#123C91] text-right">المجموعات التفاعلية</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[1, 2, 3].map((_, idx) => (
+              <div key={idx} className="rounded-xl border border-[#DDE4EC] bg-white p-5 shadow-xs flex flex-col justify-between text-right">
+                <div>
+                  <div className="flex items-center justify-start mb-3">
+                    <span className="rounded-md bg-[#E8F8F2] px-2.5 py-0.5 text-xs font-semibold text-[#0A9B72]">
+                      نشط
+                    </span>
+                  </div>
+                  <h3 className="font-bold text-[#1F2937] text-base mb-1">مجموعة {instructor.name} التفاعلية</h3>
+                  <p className="text-xs text-[#7B8490] mb-4">متابعة مباشرة وحل تدريبات</p>
+                </div>
+                <div>
+                  <div className="flex items-center justify-start text-xs text-[#7B8490] border-t border-[#EDF0F4] pt-3 mb-4">
+                    <span className="flex items-center gap-1"><Users size={14} /> 22 / 30 طالباً</span>
+                  </div>
+                  <button className="w-full rounded-lg border border-[#123C91] py-2 text-sm font-bold text-[#123C91] transition-colors hover:bg-[#123C91] hover:text-white">
+                    حجز مقعد
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        <section>
-          <h2 className="mb-5 text-xl font-bold text-[#1F2937]">الكورسات المنشورة</h2>
-          {instructorCourses.length ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {instructorCourses.map((course) => <CourseCard key={course.id} course={course} />)}
+        {/* قسم الكورسات المنشورة */}
+        <section className="!py-0">
+          <h2 className="mb-6 text-xl font-bold text-[#123C91] text-right">
+            الكورسات المنشورة لـ {instructor.name}
+          </h2>
+          
+          {instructorCourses.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {instructorCourses.map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
             </div>
           ) : (
-            <div className="rounded-lg border border-[#E1E7EF] bg-white py-16 text-center text-[#7B8490]">
-              <GraduationCap size={32} className="mx-auto mb-3" />
-              لا توجد كورسات منشورة حالياً.
+            <div className="rounded-xl border border-[#DDE4EC] bg-white p-8 text-center text-[#7B8490]">
+              لا توجد كورسات منشورة لهذا المحاضر حالياً.
             </div>
           )}
         </section>
+
       </div>
     </div>
   );

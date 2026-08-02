@@ -23,8 +23,7 @@ export default function CourseCard({ course }) {
             alt={course.title}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
-          <span className={`absolute right-3 top-3 rounded-md bg-white px-2.5 py-1 text-[12px] font-bold ${course.price ? "text-[#123C91]" : "text-[#0A9B72]"
-            }`}>
+          <span className={`absolute right-3 top-3 rounded-md bg-white px-2.5 py-1 text-[12px] font-bold ${course.price ? "text-[#123C91]" : "text-[#0A9B72]"}`}>
             {course.price ? "مدفوع" : "مجاني"}
           </span>
           <span className="absolute bottom-3 left-3 flex items-center gap-1 rounded-md bg-black/60 px-2.5 py-1 text-xs text-white">
@@ -34,7 +33,7 @@ export default function CourseCard({ course }) {
       </Link>
 
       <div className="flex min-h-48 grow flex-col px-5 py-4" dir="rtl">
-        <div className="mb-3 flex items-center  text-[14px]">
+        <div className="mb-3 flex items-center text-[14px]">
           <span className="rounded-full bg-[#EAF4FF] px-2.5 py-1 font-semibold text-[#123C91]">
             {course.category}
           </span>
@@ -43,13 +42,20 @@ export default function CourseCard({ course }) {
           </span>
         </div>
 
-        <Link to={`/courses/${course.slug}`} className="mb-3 line-clamp-2 text-[17px] font-bold leading-7 text-[#1F2937] transition-colors group-hover:text-[#123C91]">{course.title}</Link>
+        <Link to={`/courses/${course.slug}`} className="mb-3 line-clamp-2 text-[17px] font-bold leading-7 text-[#1F2937] transition-colors group-hover:text-[#123C91]">
+          {course.title}
+        </Link>
 
+        {/* تعديل اسم وصورة المحاضر ليصبح رابطاً لصفحته الشخصية */}
         <div className="mb-4 flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-linear-to-br from-[#12C6B0] to-[#123C91] text-[13px] font-bold text-white">
-            {course.instructor.charAt(0)}
-          </span>
-          <span className="text-[14px] text-[#657080]">{course.instructor}</span>
+          <Link to={`/instructors/${course.instructorSlug || course.instructor}`} className="flex items-center gap-2 group/inst">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#12C6B0] to-[#123C91] text-[13px] font-bold text-white">
+              {course.instructor.charAt(0)}
+            </span>
+            <span className="text-[14px] text-[#657080] transition-colors group-hover/inst:text-[#123C91]">
+              {course.instructor}
+            </span>
+          </Link>
         </div>
 
         <div className="mt-auto flex items-end justify-between border-t border-[#EDF0F4] pt-4">
@@ -57,11 +63,7 @@ export default function CourseCard({ course }) {
             {course.price ? `${course.price} ج.م` : "مجاني"}
           </strong>
           <span className="text-xs text-[#7B8490]">{course.students} طالب</span>
-
         </div>
-        {/* <Link to={`/learn/${course.slug}`} className="mt-4 flex h-11 items-center justify-center rounded-lg bg-[#123C91] text-sm font-bold text-white transition hover:bg-[#0E327A]">
-          ابدأ الدورة
-        </Link> */}
       </div>
     </article>
   );
