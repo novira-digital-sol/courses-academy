@@ -50,7 +50,7 @@ import CoursesPage from "./pages/CoursesPage";
 import CourseDetailsPage from "./pages/CourseDetailsPage";
 import InstructorPage from "./pages/InstructorPage";
 import MyCourseDetailsPage from "./pages/MyCourseDetailsPage";
-import CoursePlayerPage from "./pages/CoursePlayerPage";
+// import CoursePlayerPage from "./pages/CoursePlayerPage";
 import TeacherHome from "./pages/teacher/TeacherHome";
 import TeacherCoursesPage from "./pages/teacher/courses/TeacherCoursesPage";
 import TeacherCourseFormPage from "./pages/teacher/courses/TeacherCourseFormPage";
@@ -124,7 +124,9 @@ function App() {
           <Route path="/courses/:slug" element={<CourseDetailsPage />} />
           <Route path="/instructor/:slug" element={<InstructorPage />} />
           <Route path="/my-courses/:slug" element={<MyCourseDetailsPage />} />
-          
+          {/* <Route path="/learn/:slug" element={<CoursePlayerPage />} /> */}
+
+
         </Route>
 
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
@@ -227,7 +229,6 @@ function App() {
         <Route path="/admin/blogs/add" element={user ? <BlogFormPage /> : <Navigate to="/login" replace />} />
         <Route path="/admin/blogs/:id/edit" element={user ? <BlogFormPage /> : <Navigate to="/login" replace />} />
 
-        <Route path="/learn/:slug" element={<CoursePlayerPage />} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
