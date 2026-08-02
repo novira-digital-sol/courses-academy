@@ -148,7 +148,7 @@ export default function InstructorPage() {
         </section>
 
         {/* قسم الكورسات المنشورة */}
-        <section className="!py-0">
+        <section className="py-0!">
           <h2 className="mb-6 text-xl font-bold text-[#123C91] text-right">
             الكورسات المنشورة لـ {instructor.name}
           </h2>
