@@ -124,6 +124,7 @@ function App() {
           <Route path="/courses/:slug" element={<CourseDetailsPage />} />
           <Route path="/instructor/:slug" element={<InstructorPage />} />
           <Route path="/my-courses/:slug" element={<MyCourseDetailsPage />} />
+          
         </Route>
 
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />

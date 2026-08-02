@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   BookOpen, CalendarDays, Check, ChevronDown, ChevronLeft, Clock3,
   FileText, Globe2, Heart, LockKeyhole, Share2, Star, Users, Video,
@@ -25,6 +25,7 @@ const reviews = [
 ];
 
 export default function CourseDetailsPage() {
+  const { slug } = useParams();
   const [openSection, setOpenSection] = useState(0);
   const [showAllReviews, setShowAllReviews] = useState(false);
   const toggleSection = (index) => setOpenSection((current) => current === index ? -1 : index);
@@ -174,7 +175,12 @@ export default function CourseDetailsPage() {
               <AsideRow icon={<BookOpen size={14}/>} text="وصول كامل مدى الحياة" />
               <AsideRow icon={<Check size={14}/>} text="شهادة إتمام الدورة" />
             </ul>
-            <button className="mt-7 h-12 w-full rounded-[4px] bg-[#123C91] text-[15px] font-bold text-white hover:bg-[#0F3278]">اشترك في الدورة الآن</button>
+            <Link
+              to={`/learn/${slug}`}
+              className="mt-7 flex h-12 w-full items-center justify-center rounded-[4px] bg-[#123C91] text-[15px] font-bold text-white hover:bg-[#0F3278]"
+            >
+              اشترك في الدورة الآن
+            </Link>
             <div className="mt-3.5 flex gap-3">
               <button className="flex h-10 flex-1 items-center justify-center gap-2 border border-[#DDE3E9] text-[13px] text-[#65707E]"><Heart size={15}/> المفضلة</button>
               <button className="flex h-10 flex-1 items-center justify-center gap-2 border border-[#DDE3E9] text-[13px] text-[#65707E]"><Share2 size={15}/> مشاركة</button>

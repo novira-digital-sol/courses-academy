@@ -15,10 +15,8 @@ const courseCovers = {
 
 export default function CourseCard({ course }) {
   return (
-    <Link
-      to={`/courses/${course.slug}`}
-      className="group flex min-w-0 flex-col overflow-hidden rounded-xl border border-[#DDE4EC] bg-white text-right transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-    >
+    <article className="group flex min-w-0 flex-col overflow-hidden rounded-xl border border-[#DDE4EC] bg-white text-right transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+      <Link to={`/courses/${course.slug}`} className="block">
       <div className="relative aspect-[1.5/1] overflow-hidden bg-[#EEF1F4]">
         <img
           src={courseCovers[course.cover]}
@@ -34,6 +32,7 @@ export default function CourseCard({ course }) {
           <Clock size={13} /> {course.duration} ساعة
         </span>
       </div>
+      </Link>
 
       <div className="flex min-h-48 grow flex-col px-5 py-4" dir="rtl">
         <div className="mb-3 flex items-center gap-2 text-xs">
@@ -41,9 +40,7 @@ export default function CourseCard({ course }) {
           <span className="text-[#A0A7B1]">{course.level}</span>
         </div>
 
-        <h3 className="mb-3 line-clamp-2 text-base font-bold leading-7 text-[#1F2937] transition-colors group-hover:text-[#123C91]">
-          {course.title}
-        </h3>
+        <Link to={`/courses/${course.slug}`} className="mb-3 line-clamp-2 text-base font-bold leading-7 text-[#1F2937] transition-colors group-hover:text-[#123C91]">{course.title}</Link>
 
         <div className="mb-4 flex items-center gap-2">
           <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#10A8B5] text-xs font-bold text-white">
@@ -58,7 +55,10 @@ export default function CourseCard({ course }) {
             {course.price ? `${course.price} ج.م` : "مجاني"}
           </strong>
         </div>
+        <Link to={`/courses/${course.slug}`} className="mt-4 flex h-11 items-center justify-center rounded-lg bg-[#123C91] text-sm font-bold text-white transition hover:bg-[#0E327A]">
+          عرض تفاصيل الدورة
+        </Link>
       </div>
-    </Link>
+    </article>
   );
 }

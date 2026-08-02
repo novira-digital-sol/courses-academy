@@ -38,7 +38,7 @@ const TeacherLayout = ({ children, contentClassName = "" }) => {
           setIsOpen={setIsOpen}
         />
       </div>
-      <main className={`teacher-main-scroll h-full min-w-0 flex-1 overflow-y-auto px-3 pt-0 pb-3 md:px-6 md:pt-0 md:pb-6 ${contentClassName}`}>
+      <main className={`teacher-main-scroll relative h-full min-w-0 flex-1 overflow-y-auto px-3 pt-0 pb-3 md:px-6 md:pt-0 md:pb-6 ${contentClassName}`}>
          {/* <Breadcrumbs homeTo="/teacher-dashboard" /> */}
 
         {children}

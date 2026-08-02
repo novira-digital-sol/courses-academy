@@ -791,7 +791,7 @@ const TeacherCourseFormPage = () => {
           )}
 
           {quizModal && activeModalLesson(quizModal) && (
-            <div className="fixed inset-0 z-70 overflow-y-auto bg-[#F7F8FC] p-4 sm:p-7">
+            <div className="absolute inset-0 z-70 overflow-y-auto bg-[#F7F8FC] p-4 sm:p-7">
               <div dir="rtl" className="mx-auto max-w-5xl">
                 <div className="mb-5 flex items-start justify-between">
                   <div><h2 className="text-xl font-bold text-[#1F2937]">بناء الاختبار</h2><p className="mt-1 text-sm text-[#667085]">{activeModalLesson(quizModal).title || "اختبار الدرس"}</p></div>
