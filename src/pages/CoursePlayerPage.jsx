@@ -1,14 +1,15 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   Award,
   CheckCircle2,
   ChevronDown,
-  Circle,
-  FileQuestion,
+  FileText,
+  HelpCircle,
   Maximize2,
   Pause,
   Play,
+  PlayCircle,
   Settings,
   SkipBack,
   SkipForward,
@@ -44,6 +45,15 @@ export default function CoursePlayerPage() {
     requirements: true,
     audience: true,
   });
+  const [completedLessons, setCompletedLessons] = useState(new Set());
+
+  useEffect(() => {
+    if (!content) return;
+    const initialCompleted = new Set(
+      content.chapters.flatMap((chapter) => chapter.lessons.filter((lesson) => lesson.completed).map((lesson) => lesson.id))
+    );
+    setCompletedLessons(initialCompleted);
+  }, [content]);
   const [isPlaying, setIsPlaying] = useState(false);
 
   const [reviewRating, setReviewRating] = useState(0);
@@ -52,16 +62,12 @@ export default function CoursePlayerPage() {
 
   const { completedCount, totalCount } = useMemo(() => {
     if (!content) return { completedCount: 0, totalCount: 0 };
-    let done = 0;
     let total = 0;
     content.chapters.forEach((chapter) => {
-      chapter.lessons.forEach((lesson) => {
-        total += 1;
-        if (lesson.completed) done += 1;
-      });
+      total += chapter.lessons.length;
     });
-    return { completedCount: done, totalCount: total };
-  }, [content]);
+    return { completedCount: completedLessons.size, totalCount: total };
+  }, [content, completedLessons]);
 
   const isCourseComplete = totalCount > 0 && completedCount === totalCount;
 
@@ -75,6 +81,31 @@ export default function CoursePlayerPage() {
   }
 
   const currentLesson = activeLesson || content.chapters[0]?.lessons[0] || null;
+
+  const getNextLesson = () => {
+    if (!content || !currentLesson) return null;
+    for (let chapterIndex = 0; chapterIndex < content.chapters.length; chapterIndex += 1) {
+      const lessons = content.chapters[chapterIndex].lessons;
+      for (let lessonIndex = 0; lessonIndex < lessons.length; lessonIndex += 1) {
+        if (lessons[lessonIndex].id === currentLesson.id) {
+          const nextLesson = lessons[lessonIndex + 1] || content.chapters[chapterIndex + 1]?.lessons[0] || null;
+          return nextLesson;
+        }
+      }
+    }
+    return null;
+  };
+
+  const handleCompleteLesson = () => {
+    if (!currentLesson) return;
+    setCompletedLessons((prev) => new Set(prev).add(currentLesson.id));
+    const nextLesson = getNextLesson();
+    if (nextLesson) {
+      setActiveLesson(nextLesson);
+      const nextChapterIndex = content.chapters.findIndex((chapter) => chapter.lessons.some((lesson) => lesson.id === nextLesson.id));
+      setOpenChapter(nextChapterIndex);
+    }
+  };
 
   const toggleSection = (key) => {
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -119,40 +150,41 @@ export default function CoursePlayerPage() {
                     <span className="min-w-0">
                       <span className="block truncate text-sm font-bold text-[#1F2937]">{chapter.title}</span>
                       <span className="mt-1 block text-xs text-[#9AA5B1]">
-                        {chapter.lessons.length} دروس · {chapter.duration}
+                        {chapter.lessons.length} دروس &nbsp;•&nbsp; {chapter.duration}
                       </span>
                     </span>
                     <ChevronDown
                       size={16}
-                      className={`shrink-0 text-[#7B8490] transition-transform ${
-                        openChapter === chapterIndex ? "rotate-180" : ""
-                      }`}
+                      className={`shrink-0 text-[#7B8490] transition-transform ${openChapter === chapterIndex ? "rotate-180" : ""
+                        }`}
                     />
                   </button>
                   {openChapter === chapterIndex && (
                     <div className="pb-2">
                       {chapter.lessons.map((lesson) => {
                         const isActive = currentLesson?.id === lesson.id;
-                        const isQuiz = lesson.type === "quiz";
                         return (
                           <button
                             key={lesson.id}
                             onClick={() => setActiveLesson(lesson)}
-                            className={`flex w-full items-center gap-3 border-r-[3px] px-4 py-2.5 text-right text-sm transition-colors ${
-                              isActive
+                            className={`flex w-full items-center gap-3 border-r-[3px] px-4 py-2.5 text-right text-sm transition-colors ${isActive
                                 ? "border-[#123C91] bg-[#EAF4FF] text-[#123C91]"
                                 : "border-transparent text-[#556171] hover:bg-[#F7F9FC]"
-                            }`}
+                              }`}
                           >
-                            {lesson.completed ? (
+                            {completedLessons.has(lesson.id) ? (
                               <CheckCircle2 size={16} className="shrink-0 text-[#0E9F8E]" />
-                            ) : isQuiz ? (
-                              <FileQuestion size={16} className="shrink-0 text-[#B7C0CC]" />
+                            ) : lesson.type === "quiz" ? (
+                              <HelpCircle size={16} className={`shrink-0 ${isActive ? "text-[#123C91]" : "text-[#9AA5B1]"}`} />
+                            ) : lesson.type === "file" ? (
+                              <FileText size={16} className={`shrink-0 ${isActive ? "text-[#123C91]" : "text-[#9AA5B1]"}`} />
                             ) : (
-                              <Circle size={16} className="shrink-0 text-[#B7C0CC]" />
+                              <PlayCircle size={16} className={`shrink-0 ${isActive ? "text-[#123C91]" : "text-[#9AA5B1]"}`} />
                             )}
                             <span className="grow truncate">{lesson.title}</span>
-                            <span className="shrink-0 text-xs text-[#9AA5B1]">{lesson.duration}</span>
+                            {lesson.duration && (
+                              <span className="shrink-0 text-xs text-[#9AA5B1]">{lesson.duration}</span>
+                            )}
                           </button>
                         );
                       })}
@@ -163,7 +195,7 @@ export default function CoursePlayerPage() {
             </div>
 
             {/* ⚠️ Route guessed as /courses/:slug/certificate — update to match
-                your actual router config for the certificate page */}
+      your actual router config for the certificate page */}
             {isCourseComplete && (
               <Link
                 to={`/courses/${course.slug}/certificate`}
@@ -247,11 +279,23 @@ export default function CoursePlayerPage() {
               </div>
               <div className="border-t border-[#EDF0F4] p-5">
                 <h1 className="text-lg font-bold text-[#1F2937]">{currentLesson?.title || course.title}</h1>
-                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EDF1F5]">
-                  <div
-                    className="h-full rounded-full bg-[#12C6B0]"
-                    style={{ width: totalCount ? `${(completedCount / totalCount) * 100}%` : "0%" }}
-                  />
+                <p className="mt-2 text-sm text-[#556171]">
+                  {completedLessons.has(currentLesson?.id) ? "أنت أكملت هذا الدرس." : "اضغط زر الإكمال عند الانتهاء من مشاهدة الدرس."}
+                </p>
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#EDF1F5]">
+                    <div
+                      className="h-full rounded-full bg-[#12C6B0]"
+                      style={{ width: totalCount ? `${(completedCount / totalCount) * 100}%` : "0%" }}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCompleteLesson}
+                    className="rounded-lg bg-[#123C91] px-4 py-2 text-sm font-bold text-white hover:bg-[#0F2F73] sm:w-auto"
+                  >
+                    {completedLessons.has(currentLesson?.id) ? "انتقل إلى الدرس التالي" : "أكمل الدرس الحالي"}
+                  </button>
                 </div>
               </div>
             </section>
