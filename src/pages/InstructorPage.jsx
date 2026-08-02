@@ -2,13 +2,14 @@ import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { ChevronLeft, Users } from "lucide-react";
 import CourseCard from "../components/courses/CourseCard";
-import { courses } from "../data/staticData"; // مسار ملف البيانات لديك
+import { courses } from "../data/staticData";
 
 export default function InstructorPage() {
   const { id } = useParams();
 
   const instructorName = id ? decodeURIComponent(id).replace(/-/g, " ") : "";
 
+  // فلترة الكورسات الخاصة بهذا المعلم
   const instructorCourses = courses.filter(
     (course) => course.instructor.trim() === instructorName.trim()
   );
@@ -22,7 +23,7 @@ export default function InstructorPage() {
     experienceYears: 9,
     studentsCount: totalStudents > 0 ? totalStudents.toLocaleString() : "1,250",
     coursesCount: totalCourses > 0 ? totalCourses : 1,
-    interactiveGroupsCount: 3,
+    interactiveGroupsCount: instructorCourses.length > 0 ? instructorCourses.length : 3,
   };
 
   return (
@@ -44,7 +45,7 @@ export default function InstructorPage() {
         <div className="mb-12 rounded-2xl border border-[#DDE4EC] bg-white p-6 shadow-sm">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             
-            {/* تفاصيل الاسم والحروف الأولى بدلاً من الصورة */}
+            {/* تفاصيل الاسم والحروف الأولى */}
             <div className="flex items-center gap-4 text-right">
               <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#12C6B0] to-[#123C91] text-2xl font-bold text-white shadow-md">
                 {instructor.name.charAt(0)}
@@ -55,7 +56,7 @@ export default function InstructorPage() {
               </div>
             </div>
 
-            {/* الإحصائيات الحقيقية */}
+            {/* الإحصائيات */}
             <div className="flex items-center gap-6 md:gap-10 text-center">
               <div>
                 <div className="text-xl font-bold text-[#1F2937]">{instructor.interactiveGroupsCount}</div>
@@ -81,31 +82,68 @@ export default function InstructorPage() {
           </div>
         </div>
 
-        {/* قسم المجموعات التفاعلية */}
+        {/* قسم المجموعات التفاعلية (مبنية على اسم ومادة الكورسات الخاصة بالمعلم وبنفس الديزاين المطلوب) */}
         <section className="mb-12 !py-0">
           <h2 className="mb-6 text-xl font-bold text-[#123C91] text-right">المجموعات التفاعلية</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((_, idx) => (
-              <div key={idx} className="rounded-xl border border-[#DDE4EC] bg-white p-5 shadow-xs flex flex-col justify-between text-right">
-                <div>
-                  <div className="flex items-center justify-start mb-3">
-                    <span className="rounded-md bg-[#E8F8F2] px-2.5 py-0.5 text-xs font-semibold text-[#0A9B72]">
-                      نشط
-                    </span>
+            {instructorCourses.length > 0 ? (
+              instructorCourses.map((course, idx) => (
+                <div 
+                  key={course.id || idx} 
+                  className="flex flex-col justify-between rounded-[16px] border border-[#E5E5E5] bg-white p-[24px] gap-[16px] text-right shadow-xs"
+                >
+                  <div className="flex flex-col gap-[12px]">
+                    <div className="flex items-center justify-start">
+                      <span className="rounded-md bg-[#E8F8F2] px-2.5 py-0.5 text-xs font-semibold text-[#0A9B72]">
+                        نشط
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-[#1F2937] text-base mb-1">مجموعة {course.title}</h3>
+                      <p className="text-xs text-[#7B8490]">{course.grade || course.category} - {course.classification || "متابعة مباشرة"}</p>
+                    </div>
                   </div>
-                  <h3 className="font-bold text-[#1F2937] text-base mb-1">مجموعة {instructor.name} التفاعلية</h3>
-                  <p className="text-xs text-[#7B8490] mb-4">متابعة مباشرة وحل تدريبات</p>
-                </div>
-                <div>
-                  <div className="flex items-center justify-start text-xs text-[#7B8490] border-t border-[#EDF0F4] pt-3 mb-4">
-                    <span className="flex items-center gap-1"><Users size={14} /> 22 / 30 طالباً</span>
+
+                  <div className="flex flex-col gap-[16px]">
+                    <div className="flex items-center justify-start text-xs text-[#7B8490] border-t border-[#EDF0F4] pt-3">
+                      <span className="flex items-center gap-1"><Users size={14} /> 22 / 30 طالباً</span>
+                    </div>
+                    <button className="w-full rounded-lg border border-[#123C91] py-2 text-sm font-bold text-[#123C91] transition-colors hover:bg-[#123C91] hover:text-white">
+                      حجز مقعد
+                    </button>
                   </div>
-                  <button className="w-full rounded-lg border border-[#123C91] py-2 text-sm font-bold text-[#123C91] transition-colors hover:bg-[#123C91] hover:text-white">
-                    حجز مقعد
-                  </button>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              // مجموعة افتراضية في حال لم تكن هناك كورسات مرتبطة برقم كافي
+              [1, 2, 3].map((_, idx) => (
+                <div 
+                  key={idx} 
+                  className="flex flex-col justify-between rounded-[16px] border border-[#E5E5E5] bg-white p-[24px] gap-[16px] text-right shadow-xs"
+                >
+                  <div className="flex flex-col gap-[12px]">
+                    <div className="flex items-center justify-start">
+                      <span className="rounded-md bg-[#E8F8F2] px-2.5 py-0.5 text-xs font-semibold text-[#0A9B72]">
+                        نشط
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-[#1F2937] text-base mb-1">مجموعة {instructor.name} A</h3>
+                      <p className="text-xs text-[#7B8490]">متابعة مباشرة وحل تدريبات</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-[16px]">
+                    <div className="flex items-center justify-start text-xs text-[#7B8490] border-t border-[#EDF0F4] pt-3">
+                      <span className="flex items-center gap-1"><Users size={14} /> 22 / 30 طالباً</span>
+                    </div>
+                    <button className="w-full rounded-lg border border-[#123C91] py-2 text-sm font-bold text-[#123C91] transition-colors hover:bg-[#123C91] hover:text-white">
+                      حجز مقعد
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </section>
 
