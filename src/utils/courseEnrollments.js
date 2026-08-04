@@ -28,3 +28,14 @@ export const enrollInCourse = (user, slug) => {
   }
   return true;
 };
+
+export const unenrollFromCourse = (user, slug) => {
+  if (!user || !slug) return false;
+
+  const enrolled = getEnrolledCourseSlugs(user);
+  localStorage.setItem(
+    storageKey(user),
+    JSON.stringify(enrolled.filter((courseSlug) => courseSlug !== slug)),
+  );
+  return true;
+};

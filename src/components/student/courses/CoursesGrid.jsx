@@ -1,4 +1,4 @@
-import { Award, CheckCircle2, Clock3 } from "lucide-react";
+import { Award, CheckCircle2, Clock3, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 import pythonCover from "../../../assets/courses/python-course.png";
 import mathCover from "../../../assets/courses/math-course.png";
@@ -13,7 +13,7 @@ const courseCovers = {
   algebra: skillsCover,
 };
 
-export default function CoursesGrid({ courses = [], onRate = () => {}, onComplete = () => {} }) {
+export default function CoursesGrid({ courses = [], onRate = () => {}, onComplete = () => {}, onCancel = () => {} }) {
   return (
     <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {courses.map((course, index) => {
@@ -59,6 +59,9 @@ export default function CoursesGrid({ courses = [], onRate = () => {}, onComplet
                   {progress === 0 ? "ابدأ الدورة" : "متابعة التعلم"} <span className="mr-2">←</span>
                 </Link>
               )}
+              <button type="button" onClick={() => onCancel(course)} className="mt-2 flex h-9 w-full items-center justify-center gap-2 rounded-lg text-xs font-semibold text-[#C24141] transition hover:bg-[#FFF1F1]">
+                <LogOut size={14} /> إلغاء الاشتراك في الدورة
+              </button>
             </div>
           </article>
         );

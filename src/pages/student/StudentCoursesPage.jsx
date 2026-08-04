@@ -1,6 +1,7 @@
 import { useContext, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Compass } from "lucide-react";
+import toast from "react-hot-toast";
 import StudentLayout from "../../components/student/layout/StudentLayout";
 import StatusBar from "../../components/student/courses/StatusBar";
 import CoursesFilter from "../../components/student/courses/CoursesFilter";
@@ -10,7 +11,7 @@ import CertificateModal from "../../components/student/courses/CertificateModal"
 import Paginationn from "../../components/teacher/groups/students/Paginationn";
 import { AuthContext } from "../../context/AuthContext";
 import { courses as allCourses } from "../../data/staticData";
-import { getEnrolledCourseSlugs } from "../../utils/courseEnrollments";
+import { getEnrolledCourseSlugs, unenrollFromCourse } from "../../utils/courseEnrollments";
 
 const PAGE_SIZE = 6;
 
@@ -21,11 +22,24 @@ const StudentCoursesPage = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({ sort: "newest", level: "all" });
+  const [enrollmentVersion, setEnrollmentVersion] = useState(0);
 
   const enrolledCourses = useMemo(() => {
+    // Re-read local storage after an enrollment is cancelled.
+    void enrollmentVersion;
     const enrolled = new Set(getEnrolledCourseSlugs(user));
     return allCourses.filter((course) => enrolled.has(course.slug));
-  }, [user]);
+  }, [user, enrollmentVersion]);
+
+  const handleCancelEnrollment = (course) => {
+    const confirmed = window.confirm(`هل أنت متأكد من إلغاء اشتراكك في دورة «${course.title}»؟`);
+    if (!confirmed) return;
+
+    unenrollFromCourse(user, course.slug);
+    setEnrollmentVersion((version) => version + 1);
+    setPage(1);
+    toast.success("تم إلغاء الاشتراك في الدورة");
+  };
 
   const filteredCourses = useMemo(() => {
     const query = search.trim().toLocaleLowerCase("ar");
@@ -70,7 +84,7 @@ const StudentCoursesPage = () => {
           <>
             <CoursesFilter onSearch={(value) => { setSearch(value); setPage(1); }} onChange={updateFilters} />
             {paginatedCourses.length > 0 ? (
-              <CoursesGrid courses={paginatedCourses} onRate={setRatingCourse} onComplete={setCertificateCourse} />
+              <CoursesGrid courses={paginatedCourses} onRate={setRatingCourse} onComplete={setCertificateCourse} onCancel={handleCancelEnrollment} />
             ) : (
               <div className="mt-6 rounded-xl border border-[#E1E7EF] bg-white py-16 text-center text-[#7B8490]">لا توجد دورة مطابقة لبحثك.</div>
             )}

@@ -77,6 +77,7 @@ import SessionDetailsPage from "./pages/shared/SessionDetailsPage";
 
 import TeacherGuard from "./guards/TeacherGuard";
 import StudentGuard from "./guards/StudentGuard";
+import CourseEnrollmentGuard from "./guards/CourseEnrollmentGuard";
 
 import AdminHome from "./pages/admin/AdminHome";
 import AdminSchedulePage from "./pages/admin/SchedulePage";
@@ -125,7 +126,7 @@ function App() {
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/courses/:slug" element={<CourseDetailsPage />} />
           <Route path="/instructors/:id" element={<InstructorPage />} />
-          <Route path="/my-courses/:slug" element={<MyCourseDetailsPage />} />
+          <Route path="/my-courses/:slug" element={<CourseEnrollmentGuard><MyCourseDetailsPage /></CourseEnrollmentGuard>} />
           {/* <Route path="/learn/:slug" element={<CoursePlayerPage />} /> */}
 
 
