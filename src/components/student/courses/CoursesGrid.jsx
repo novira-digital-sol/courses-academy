@@ -1,5 +1,5 @@
 import { Award, CheckCircle2, Clock3, LogOut } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import pythonCover from "../../../assets/courses/python-course.png";
 import mathCover from "../../../assets/courses/math-course.png";
 import skillsCover from "../../../assets/courses/skills-course.png";
@@ -14,6 +14,8 @@ const courseCovers = {
 };
 
 export default function CoursesGrid({ courses = [], onRate = () => {}, onComplete = () => {}, onCancel = () => {} }) {
+  const navigate = useNavigate();
+
   return (
     <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {courses.map((course, index) => {
@@ -21,7 +23,11 @@ export default function CoursesGrid({ courses = [], onRate = () => {}, onComplet
         const completedLessons = progress === 100 ? course.lessons : progress === 0 ? 0 : Math.max(1, Math.round(course.lessons * progress / 100));
 
         return (
-          <article key={course.id || course.slug} className="overflow-hidden rounded-xl border border-[#DFE5EC] bg-white shadow-xs">
+          <article
+            key={course.id || course.slug}
+            onClick={() => navigate(`/my-courses/${course.slug}`)}
+            className="group cursor-pointer overflow-hidden rounded-xl border border-[#DFE5EC] bg-white shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+          >
             <div className="relative aspect-1.85/1 overflow-hidden bg-[#E8EDF2]">
               <img src={courseCovers[course.cover] || pythonCover} alt={course.title} className="h-full w-full object-cover" />
               <span className={`absolute right-2 top-2 rounded-full px-2 py-1 text-[10px] font-bold ${progress === 100 ? "bg-[#E5F7E9] text-[#18753C]" : "bg-white text-[#123C91]"}`}>
@@ -35,8 +41,23 @@ export default function CoursesGrid({ courses = [], onRate = () => {}, onComplet
                 <span className="rounded bg-[#EEF4FF] px-2 py-1 font-bold text-[#123C91]">{course.classification || course.category}</span>
                 <span className="text-[#8B95A1]">{course.level}</span>
               </div>
-              <h2 className="line-clamp-1 text-sm font-extrabold text-[#1F2937]">{course.title}</h2>
-              <p className="mt-2 flex items-center gap-1.5 text-[11px] text-[#697586]"><CheckCircle2 size={14} className="fill-[#11A8B5] text-white" /> {course.instructor}</p>
+              <Link
+                to={`/courses/${course.slug}`}
+                onClick={(e) => e.stopPropagation()}
+                className="line-clamp-1 text-sm font-extrabold text-[#1F2937] transition-colors hover:text-[#123C91]"
+              >
+                {course.title}
+              </Link>
+              <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#697586]">
+                <CheckCircle2 size={14} className="text-[#11A8B5]" />
+                <Link
+                  to={`/instructors/${encodeURIComponent(course.instructor)}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="font-medium text-[#4B5563] underline decoration-transparent underline-offset-4 transition-all duration-300 hover:text-[#123C91] hover:decoration-[#123C91]"
+                >
+                  {course.instructor}
+                </Link>
+              </div>
 
               <div className="mt-4">
                 <div className="mb-1 flex items-center justify-between text-[10px] text-[#89939F]">
@@ -51,15 +72,19 @@ export default function CoursesGrid({ courses = [], onRate = () => {}, onComplet
 
               {progress === 100 ? (
                 <div className="mt-4 flex gap-2">
-                  <button type="button" onClick={() => onRate(course)} className="h-10 flex-1 rounded-lg border border-[#DDE4EC] text-xs font-bold text-[#556171]">مراجعة الدورة</button>
-                  <button type="button" onClick={() => onComplete(course)} aria-label="عرض الشهادة" className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#DDE4EC] text-[#123C91]"><Award size={15} /></button>
+                  <button type="button" onClick={(e) => { e.stopPropagation(); onRate(course); }} className="h-10 flex-1 rounded-lg border border-[#DDE4EC] text-xs font-bold text-[#556171]">مراجعة الدورة</button>
+                  <button type="button" onClick={(e) => { e.stopPropagation(); onComplete(course); }} aria-label="عرض الشهادة" className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#DDE4EC] text-[#123C91]"><Award size={15} /></button>
                 </div>
               ) : (
-                <Link to={`/my-courses/${course.slug}`} className="mt-4 flex h-10 w-full items-center justify-center rounded-lg bg-[#123C91] text-xs font-bold text-white hover:bg-[#0F3278]">
+                <Link
+                  to={`/my-courses/${course.slug}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="mx-auto mt-6 flex h-12 w-[320px] items-center justify-center gap-2 rounded-lg bg-[#123C91] px-4 font-['Tajawal'] text-[16px] font-medium leading-none tracking-normal !text-white"
+                >
                   {progress === 0 ? "ابدأ الدورة" : "متابعة التعلم"} <span className="mr-2">←</span>
                 </Link>
               )}
-              <button type="button" onClick={() => onCancel(course)} className="mt-2 flex h-9 w-full items-center justify-center gap-2 rounded-lg text-xs font-semibold text-[#C24141] transition hover:bg-[#FFF1F1]">
+              <button type="button" onClick={(e) => { e.stopPropagation(); onCancel(course); }} className="mt-2 flex h-9 w-full items-center justify-center gap-2 rounded-lg text-xs font-semibold text-[#C24141] transition hover:bg-[#FFF1F1]">
                 <LogOut size={14} /> إلغاء الاشتراك في الدورة
               </button>
             </div>

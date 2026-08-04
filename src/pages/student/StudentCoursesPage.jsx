@@ -25,20 +25,46 @@ const StudentCoursesPage = () => {
   const [enrollmentVersion, setEnrollmentVersion] = useState(0);
 
   const enrolledCourses = useMemo(() => {
-    // Re-read local storage after an enrollment is cancelled.
     void enrollmentVersion;
     const enrolled = new Set(getEnrolledCourseSlugs(user));
     return allCourses.filter((course) => enrolled.has(course.slug));
   }, [user, enrollmentVersion]);
 
-  const handleCancelEnrollment = (course) => {
-    const confirmed = window.confirm(`هل أنت متأكد من إلغاء اشتراكك في دورة «${course.title}»؟`);
-    if (!confirmed) return;
-
+  const confirmCancelEnrollment = (course) => {
     unenrollFromCourse(user, course.slug);
     setEnrollmentVersion((version) => version + 1);
     setPage(1);
     toast.success("تم إلغاء الاشتراك في الدورة");
+  };
+
+  const handleCancelEnrollment = (course) => {
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-3 text-right" dir="rtl">
+          <p className="text-sm font-semibold text-[#1F2937]">
+            هل أنت متأكد من إلغاء اشتراكك في دورة «{course.title}»؟
+          </p>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="rounded-md border border-[#DDE4EC] px-3 py-1.5 text-xs font-semibold text-[#4B5563] hover:bg-[#F3F4F6]"
+            >
+              تراجع
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                confirmCancelEnrollment(course);
+              }}
+              className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+            >
+              نعم، إلغاء
+            </button>
+          </div>
+        </div>
+      ),
+      { duration: 8000 }
+    );
   };
 
   const filteredCourses = useMemo(() => {
@@ -95,7 +121,7 @@ const StudentCoursesPage = () => {
             <Compass size={40} className="mx-auto mb-4 text-[#123C91]" />
             <h2 className="text-xl font-extrabold text-[#1F2937]">مكتبتك فارغة حاليًا</h2>
             <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-[#7B8490]">اشترك في دورة مجانية أو مدفوعة، وستظهر هنا مباشرة لتبدأ التعلم.</p>
-            <Link to="/courses" className="mx-auto mt-6 flex h-11 w-fit items-center gap-2 rounded-lg bg-[#123C91] px-7 font-bold !text-white ">اكتشاف دورات جديدة</Link>
+            <Link to="/courses" className="mx-auto mt-6 flex h-12 w-fit items-center gap-2 rounded-lg bg-[#123C91] px-7 font-bold !text-white ">اكتشاف دورات جديدة</Link>
           </div>
         )}
 
