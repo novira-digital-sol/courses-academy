@@ -95,7 +95,7 @@ const StudentCoursesPage = () => {
             <Compass size={40} className="mx-auto mb-4 text-[#123C91]" />
             <h2 className="text-xl font-extrabold text-[#1F2937]">مكتبتك فارغة حاليًا</h2>
             <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-[#7B8490]">اشترك في دورة مجانية أو مدفوعة، وستظهر هنا مباشرة لتبدأ التعلم.</p>
-            <Link to="/courses" className="mx-auto mt-6 flex h-11 w-fit items-center gap-2 rounded-lg bg-[#123C91] px-5 font-bold text-white hover:bg-[#0F3278]">اكتشاف دورات جديدة</Link>
+            <Link to="/courses" className="mx-auto mt-6 flex h-11 w-fit items-center gap-2 rounded-lg bg-[#123C91] px-7 font-bold !text-white ">اكتشاف دورات جديدة</Link>
           </div>
         )}
 
