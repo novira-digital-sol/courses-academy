@@ -1,27 +1,43 @@
 import React from "react";
+import { Clock, BookCheck, BookOpen, ClipboardList } from "lucide-react";
 
-export default function StatusBar({ stats = {} }) {
+// ─── Stat Card ────────────────────────────────────────────────────────────────
+const StatCard = ({ value, label, type }) => {
+  const map = {
+    blue: { bg: "bg-[#123C9126]", icon: "text-[#123C91]", Icon: Clock },
+    green: { bg: "bg-[#0A9B7226]", icon: "text-[#0A9B72]", Icon: BookCheck },
+    navy: { bg: "bg-[#EAF4FF]", icon: "text-[#123C91]", Icon: BookOpen },
+    purple: { bg: "bg-[#7C3AED26]", icon: "text-[#7C3AED]", Icon: ClipboardList },
+  };
+  const { bg, icon, Icon } = map[type] ?? map.navy;
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
-      <div className="rounded-lg border bg-white p-4 text-right">
-        <div className="text-sm text-[#7B8490]">وقت التعلم</div>
-        <div className="mt-2 text-xl font-bold text-[#123C91]">{stats.learningHours ?? "0"} ساعة</div>
+    <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 sm:p-5 flex flex-col gap-3">
+      <div className="flex items-center justify-between">
+        <span className="text-2xl sm:text-[28px] font-bold text-[#1A1A1A] leading-none">{value}</span>
+        <div className={`p-2.5 rounded-lg ${bg}`}>
+          <Icon size={20} className={icon} />
+        </div>
       </div>
+      <span className="text-xs sm:text-sm font-medium text-[#8C9198]">{label}</span>
+    </div>
+  );
+};
 
-      <div className="rounded-lg border bg-white p-4 text-right">
-        <div className="text-sm text-[#7B8490]">الدروس المكتملة</div>
-        <div className="mt-2 text-xl font-bold text-[#0A9B72]">{stats.completedLessons ?? 0}</div>
-      </div>
+// ─── Status Bar ─────────────────────────────────────────────────────────────
+export default function StatusBar({ stats = {} }) {
+  const items = [
+    { value: `${stats.learningHours ?? "0"} ساعة`, label: "وقت التعلم", type: "blue" },
+    { value: stats.completedLessons ?? 0, label: "الدروس المكتملة", type: "green" },
+    { value: stats.activeCourses ?? 0, label: "الدورات المفتوحة", type: "navy" },
+    { value: stats.tests ?? 0, label: "الاختبارات", type: "purple" },
+  ];
 
-      <div className="rounded-lg border bg-white p-4 text-right">
-        <div className="text-sm text-[#7B8490]">الدورات المفتوحة</div>
-        <div className="mt-2 text-xl font-bold text-[#123C91]">{stats.activeCourses ?? 0}</div>
-      </div>
-
-      <div className="rounded-lg border bg-white p-4 text-right">
-        <div className="text-sm text-[#7B8490]">الاختبارات</div>
-        <div className="mt-2 text-xl font-bold text-[#123C91]">{stats.tests ?? 0}</div>
-      </div>
+  return (
+    <div dir="rtl" className="grid grid-cols-1 sm:grid-cols-4 gap-3 sm:gap-4 mb-4">
+      {items.map((s) => (
+        <StatCard key={s.label} {...s} />
+      ))}
     </div>
   );
 }
