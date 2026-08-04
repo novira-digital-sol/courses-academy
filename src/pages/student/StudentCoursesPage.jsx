@@ -5,6 +5,9 @@ import CoursesFilter from "../../components/student/courses/CoursesFilter";
 import CoursesGrid from "../../components/student/courses/CoursesGrid";
 import RatingModal from "../../components/student/courses/RatingModal";
 import CertificateModal from "../../components/student/courses/CertificateModal";
+import Paginationn from "../../components/teacher/groups/students/Paginationn";
+
+const PAGE_SIZE_OPTIONS = [4, 6, 9, 24];
 
 const sampleCourses = [
   {
@@ -29,15 +32,30 @@ const sampleCourses = [
     instructor: "منى علي",
     students: 85,
   },
+
 ];
 
 const StudentCoursesPage = () => {
   const [courses] = useState(sampleCourses);
   const [ratingCourse, setRatingCourse] = useState(null);
   const [certificateCourse, setCertificateCourse] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
 
   const handleRate = (course) => setRatingCourse(course);
   const handleComplete = (course) => setCertificateCourse(course);
+
+  const handlePageSizeChange = (size) => {
+    setPageSize(size);
+    setPage(1);
+  };
+
+  const totalPages = Math.max(1, Math.ceil(courses.length / pageSize));
+
+  const paginatedCourses = courses.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
 
   return (
     <StudentLayout>
@@ -46,9 +64,34 @@ const StudentCoursesPage = () => {
 
         <CoursesFilter onSearch={(q) => console.log("search", q)} onChange={() => {}} />
 
-        <div className="mb-4">
-          <CoursesGrid courses={courses} onRate={handleRate} onComplete={handleComplete} />
+        <div className="flex items-center justify-end gap-2 mb-3 text-sm text-[#575F69]">
+          <label htmlFor="pageSize">عرض:</label>
+          <select
+            id="pageSize"
+            value={pageSize}
+            onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+            className="rounded-md border border-[#E5E5E5] bg-[#F9FAFA] px-2 py-1 text-sm outline-none cursor-pointer focus:border-[#123C91]"
+          >
+            {PAGE_SIZE_OPTIONS.map((size) => (
+              <option key={size} value={size}>
+                {size} دورة
+              </option>
+            ))}
+          </select>
         </div>
+
+        <div className="mb-4">
+          <CoursesGrid courses={paginatedCourses} onRate={handleRate} onComplete={handleComplete} />
+        </div>
+
+        <Paginationn
+          page={page}
+          totalPages={totalPages}
+          onChange={setPage}
+          totalItems={courses.length}
+          displayedCount={paginatedCourses.length}
+          unitLabel="دورة"
+        />
 
         <RatingModal open={!!ratingCourse} course={ratingCourse} onClose={() => setRatingCourse(null)} onSubmit={(val) => console.log("rated", val)} />
         <CertificateModal open={!!certificateCourse} course={certificateCourse} onClose={() => setCertificateCourse(null)} />
