@@ -1,77 +1,61 @@
 import { useContext, useMemo, useState } from "react";
-import { CreditCard, LockKeyhole, ShieldCheck } from "lucide-react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import StudentLayout from "../../components/student/layout/StudentLayout";
+import logo from "../../assets/icons/logo.svg";
+import AuthLayout from "../../components/auth/AuthLayout";
 import { AuthContext } from "../../context/AuthContext";
 import { courses } from "../../data/staticData";
 import { enrollInCourse } from "../../utils/courseEnrollments";
 
-export default function CourseCheckoutPage() {
+const money = (value) => `${Number(value || 0).toLocaleString("ar-EG")} ج.م`;
+
+export default function CoursePaymentPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  const [paying, setPaying] = useState(false);
+  const [paymentLoading, setPaymentLoading] = useState(false);
   const course = useMemo(() => courses.find((item) => item.slug === slug), [slug]);
 
   if (!course) return <Navigate to="/courses" replace />;
   if (!course.price) return <Navigate to={`/courses/${slug}`} replace />;
 
-  const handlePayment = (event) => {
-    event.preventDefault();
-    setPaying(true);
-
+  const pay = () => {
+    setPaymentLoading(true);
     window.setTimeout(() => {
       enrollInCourse(user, course.slug);
-      toast.success("تم الدفع والاشتراك في الدورة بنجاح");
+      toast.success("تم تأكيد الدفع والاشتراك في الدورة");
       navigate("/student-dashboard/courses", { replace: true });
     }, 700);
   };
 
   return (
-    <StudentLayout>
-      <div dir="rtl" className="mx-auto max-w-5xl py-5">
-        <div className="mb-6">
-          <h1 className="text-2xl font-extrabold text-[#1F2937]">إتمام الدفع</h1>
-          <p className="mt-2 text-sm text-[#6B7280]">أكمل بيانات الدفع للانضمام إلى الدورة.</p>
-        </div>
+    <AuthLayout>
+      <div className="mx-auto w-full max-w-162.5 p-5" dir="rtl">
+        <img src={logo} alt="الأكاديمية" className="mx-auto mb-6 h-9 w-40" />
+        <div className="rounded-2xl border border-[#DCE8F7] bg-white p-6 shadow-sm">
+          <button type="button" onClick={() => navigate(-1)} className="mb-2 text-sm text-[#123C91]">رجوع</button>
+          <h1 className="text-[22px] font-bold">ملخص طلبك</h1>
+          <p className="mb-5 text-sm text-gray-400">راجع تفاصيل الدورة قبل الدفع</p>
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
-          <form onSubmit={handlePayment} className="rounded-xl border border-[#E1E7EF] bg-white p-6 shadow-sm">
-            <div className="mb-6 flex items-center gap-3 border-b border-[#EDF0F4] pb-5">
-              <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#EAF1FF] text-[#123C91]"><CreditCard size={21} /></span>
-              <div><h2 className="font-bold text-[#1F2937]">الدفع بالبطاقة</h2><p className="text-xs text-[#7B8490]">بياناتك محمية ومشفرة</p></div>
+          <div className="overflow-hidden rounded-xl border border-gray-200">
+            <div className="flex items-center justify-between gap-3 px-4 py-4">
+              <div>
+                <strong className="block text-[#1F2937]">{course.title}</strong>
+                <small className="mt-1 block text-gray-500">دورة تعليمية · {course.duration} ساعة · {course.instructor}</small>
+              </div>
+              <strong className="shrink-0 text-[#123C91]">{money(course.price)}</strong>
             </div>
+          </div>
 
-            <label className="mb-4 block text-sm font-semibold text-[#374151]">اسم حامل البطاقة
-              <input required className="mt-2 h-12 w-full rounded-lg border border-[#DDE4EC] px-4 outline-none focus:border-[#123C91]" placeholder="الاسم كما هو مكتوب على البطاقة" />
-            </label>
-            <label className="mb-4 block text-sm font-semibold text-[#374151]">رقم البطاقة
-              <input required inputMode="numeric" minLength={16} maxLength={19} className="mt-2 h-12 w-full rounded-lg border border-[#DDE4EC] px-4 text-left outline-none focus:border-[#123C91]" placeholder="0000 0000 0000 0000" dir="ltr" />
-            </label>
-            <div className="grid grid-cols-2 gap-4">
-              <label className="block text-sm font-semibold text-[#374151]">تاريخ الانتهاء
-                <input required className="mt-2 h-12 w-full rounded-lg border border-[#DDE4EC] px-4 text-left outline-none focus:border-[#123C91]" placeholder="MM/YY" dir="ltr" />
-              </label>
-              <label className="block text-sm font-semibold text-[#374151]">CVV
-                <input required inputMode="numeric" minLength={3} maxLength={4} className="mt-2 h-12 w-full rounded-lg border border-[#DDE4EC] px-4 text-left outline-none focus:border-[#123C91]" placeholder="123" dir="ltr" />
-              </label>
-            </div>
-            <button disabled={paying} className="mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#123C91] font-bold text-white transition hover:bg-[#0F3278] disabled:opacity-60">
-              <LockKeyhole size={17} /> {paying ? "جاري تأكيد الدفع..." : `ادفع ${course.price} ج.م`}
-            </button>
-          </form>
+          <div className="mt-5 flex justify-between rounded-xl border border-gray-200 p-4 text-lg font-bold">
+            <span>الإجمالي</span><strong className="text-[#123C91]">{money(course.price)}</strong>
+          </div>
 
-          <aside className="h-fit rounded-xl border border-[#E1E7EF] bg-white p-6 shadow-sm">
-            <h2 className="mb-5 font-extrabold text-[#1F2937]">ملخص الطلب</h2>
-            <p className="font-bold leading-7 text-[#253142]">{course.title}</p>
-            <p className="mt-1 text-sm text-[#7B8490]">بواسطة {course.instructor}</p>
-            <div className="my-5 border-y border-[#EDF0F4] py-4 text-sm"><div className="flex justify-between"><span>سعر الدورة</span><b>{course.price} ج.م</b></div></div>
-            <div className="flex justify-between text-lg font-extrabold text-[#123C91]"><span>الإجمالي</span><span>{course.price} ج.م</span></div>
-            <p className="mt-5 flex items-center gap-2 text-xs text-[#6B7280]"><ShieldCheck size={17} className="text-[#0A9B72]" /> دفع آمن ووصول للدورة بعد التأكيد مباشرة.</p>
-          </aside>
+          <button disabled={paymentLoading} onClick={pay} className="mt-5 h-12 w-full rounded-lg bg-[#123C91] text-white disabled:opacity-60">
+            {paymentLoading ? "جاري التحويل للدفع..." : "الدفع الآن"}
+          </button>
         </div>
       </div>
-    </StudentLayout>
+    </AuthLayout>
   );
 }

@@ -51,7 +51,7 @@ export default function CourseDetailsPage() {
     }
 
     if (Number(course.price) > 0) {
-      navigate(`/student/courses/${course.slug}/checkout`);
+      navigate(`/payment/courses/${course.slug}`);
       return;
     }
 
