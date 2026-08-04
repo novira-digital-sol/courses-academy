@@ -13,7 +13,7 @@ const courseCovers = {
   algebra: skillsCover,
 };
 
-export default function CoursesGrid({ courses = [], onRate = () => {}, onComplete = () => {}, onCancel = () => {} }) {
+export default function CoursesGrid({ courses = [], onRate = () => { }, onComplete = () => { }, onCancel = () => { } }) {
   const navigate = useNavigate();
 
   return (
@@ -37,25 +37,28 @@ export default function CoursesGrid({ courses = [], onRate = () => {}, onComplet
             </div>
 
             <div className="p-4 text-right">
-              <div className="mb-2 flex items-center gap-2 text-[10px]">
-                <span className="rounded bg-[#EEF4FF] px-2 py-1 font-bold text-[#123C91]">{course.classification || course.category}</span>
-                <span className="text-[#8B95A1]">{course.level}</span>
+              <div className="mb-3 flex items-center text-[14px]">
+                <span className="rounded-full bg-[#EAF4FF] px-2.5 py-1 font-semibold text-[#123C91]">{course.classification || course.category}</span>
+                <span className="px-2.5 py-1 text-[#7B8490]">{course.level}</span>
               </div>
               <Link
                 to={`/courses/${course.slug}`}
                 onClick={(e) => e.stopPropagation()}
-                className="line-clamp-1 text-sm font-extrabold text-[#1F2937] transition-colors hover:text-[#123C91]"
-              >
+                className="mb-3 line-clamp-2 text-[17px] font-bold leading-7 text-[#1F2937] transition-colors group-hover:text-[#123C91]">
+
                 {course.title}
               </Link>
-              <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#697586]">
-                <CheckCircle2 size={14} className="text-[#11A8B5]" />
+              <div className="mb-4 flex items-center gap-2">
                 <Link
                   to={`/instructors/${encodeURIComponent(course.instructor)}`}
-                  onClick={(e) => e.stopPropagation()}
-                  className="font-medium text-[#4B5563] underline decoration-transparent underline-offset-4 transition-all duration-300 hover:text-[#123C91] hover:decoration-[#123C91]"
+                  className="flex items-center gap-2 group/inst"
                 >
-                  {course.instructor}
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-linear-to-br from-[#12C6B0] to-[#123C91] text-[13px] font-bold text-white shadow-xs">
+                    {course.instructor.charAt(0)}
+                  </span>
+                  <span className="text-[14px] font-medium text-[#4B5563] underline decoration-transparent underline-offset-4 transition-all duration-300 group-hover/inst:text-[#123C91] group-hover/inst:decoration-[#123C91]">
+                    {course.instructor}
+                  </span>
                 </Link>
               </div>
 
@@ -67,7 +70,7 @@ export default function CoursesGrid({ courses = [], onRate = () => {}, onComplet
                 <div className="h-1.5 overflow-hidden rounded-full bg-[#E6E9ED]">
                   <div className={`h-full rounded-full ${progress === 100 ? "bg-[#19804A]" : "bg-[#123C91]"}`} style={{ width: `${progress}%` }} />
                 </div>
-                <p className="mt-2 text-[10px] text-[#8B95A1]">{progress === 100 ? "أحسنت! لقد أكملت الدورة" : progress === 0 ? "لم تبدأ هذه الدورة بعد" : "آخر مشاهدة: أساسيات الدرس"}</p>
+                <p className="mt-2 text-[14px] text-[#8B95A1]">{progress === 100 ? "أحسنت! لقد أكملت الدورة" : progress === 0 ? "لم تبدأ هذه الدورة بعد" : "آخر مشاهدة: أساسيات الدرس"}</p>
               </div>
 
               {progress === 100 ? (

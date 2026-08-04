@@ -37,7 +37,7 @@ export default function CourseCard({ course }) {
           <span className="rounded-full bg-[#EAF4FF] px-2.5 py-1 font-semibold text-[#123C91]">
             {course.category}
           </span>
-          <span className="px-2.5 py-1 text-[#7B8490]">
+          <span className="rounded-full bg-[#F0F4F8] px-2.5 py-1 font-semibold text-[#7B8490]">
             {course.level}
           </span>
         </div>
