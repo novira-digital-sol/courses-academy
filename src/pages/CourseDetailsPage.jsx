@@ -1,10 +1,14 @@
-import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   BookOpen, CalendarDays, Check, ChevronDown, ChevronLeft, Clock3,
   FileText, Globe2, Heart, LockKeyhole, Share2, Star, Users, Video,
 } from "lucide-react";
 import pythonCover from "../assets/courses/python-course.png";
+import { AuthContext } from "../context/AuthContext";
+import { courses } from "../data/staticData";
+import { enrollInCourse, isEnrolledInCourse } from "../utils/courseEnrollments";
 
 const lessons = [
   ["ما هي البرمجة ولماذا Python؟", "04:45", true],
@@ -26,9 +30,35 @@ const reviews = [
 
 export default function CourseDetailsPage() {
   const { slug } = useParams();
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  const course = courses.find((item) => item.slug === slug) || courses[0];
+  const enrolled = isEnrolledInCourse(user, course.slug);
   const [openSection, setOpenSection] = useState(0);
   const [showAllReviews, setShowAllReviews] = useState(false);
   const toggleSection = (index) => setOpenSection((current) => current === index ? -1 : index);
+
+  const handleSubscribe = () => {
+    if (!user) {
+      toast.error("سجّل الدخول أولاً للاشتراك في الدورة");
+      navigate("/login", { state: { from: `/courses/${course.slug}` } });
+      return;
+    }
+
+    if (enrolled) {
+      navigate("/student-dashboard/courses");
+      return;
+    }
+
+    if (Number(course.price) > 0) {
+      navigate(`/student/courses/${course.slug}/checkout`);
+      return;
+    }
+
+    enrollInCourse(user, course.slug);
+    toast.success("تم الاشتراك في الدورة المجانية بنجاح");
+    navigate("/student-dashboard/courses");
+  };
 
   return (
     <div dir="rtl" className="min-h-screen bg-white pb-20 text-[#202936]">
@@ -165,7 +195,7 @@ export default function CourseDetailsPage() {
             <div className="my-6 grid grid-cols-3 border-y border-[#EDF0F3] py-5 text-center">
               <Metric label="عدد الطلاب" value="1,200" />
               <Metric label="مدة الدورة" value="17.5 ساعة" bordered />
-              <Metric label="السعر" value="249 ج.م" price />
+              <Metric label="السعر" value={course.price ? `${course.price} ج.م` : "مجاني"} price />
             </div>
             <p className="mb-6 text-[14px] font-bold">المحاضر: <span className="font-normal">أحمد محمد</span></p>
             <ul className="space-y-4 text-[#5F6A78]">
@@ -175,12 +205,13 @@ export default function CourseDetailsPage() {
               <AsideRow icon={<BookOpen size={14}/>} text="وصول كامل مدى الحياة" />
               <AsideRow icon={<Check size={14}/>} text="شهادة إتمام الدورة" />
             </ul>
-            <Link
-              to={`/learn/${slug}`}
+            <button
+              type="button"
+              onClick={handleSubscribe}
               className="mt-7 flex h-12 w-full items-center justify-center rounded-[4px] bg-[#123C91] text-[15px] font-bold text-white hover:bg-[#0F3278]"
             >
-              اشترك في الدورة الآن
-            </Link>
+              {enrolled ? "اذهب إلى مكتبتي" : "اشترك في الدورة الآن"}
+            </button>
             <div className="mt-3.5 flex gap-3">
               <button className="flex h-10 flex-1 items-center justify-center gap-2 border border-[#DDE3E9] text-[13px] text-[#65707E]"><Heart size={15}/> المفضلة</button>
               <button className="flex h-10 flex-1 items-center justify-center gap-2 border border-[#DDE3E9] text-[13px] text-[#65707E]"><Share2 size={15}/> مشاركة</button>
