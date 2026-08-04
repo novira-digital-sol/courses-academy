@@ -1,6 +1,6 @@
 import { useContext, useMemo, useState } from "react";
 import { CreditCard, LockKeyhole, ShieldCheck } from "lucide-react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import logo from "../../assets/icons/logo.svg";
 import { AuthContext } from "../../context/AuthContext";
@@ -32,7 +32,9 @@ export default function CoursePaymentPage() {
     <div dir="rtl" className="min-h-screen bg-[#F5F7FB] px-4 py-8 text-[#1F2937] sm:px-6">
       <div className="mx-auto max-w-5xl">
         <div className="mb-7 flex items-center justify-between gap-4">
-          <img src={logo} alt="الأكاديمية" className="h-9 w-40" />
+          <Link to="/" aria-label="الذهاب إلى الصفحة الرئيسية">
+            <img src={logo} alt="الأكاديمية" className="h-9 w-40" />
+          </Link>
           <button type="button" onClick={() => navigate(-1)} className="text-sm font-bold text-[#123C91]">العودة إلى الدورة</button>
         </div>
 
