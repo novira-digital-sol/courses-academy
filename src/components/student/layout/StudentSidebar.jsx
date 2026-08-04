@@ -7,6 +7,7 @@ import logo from "../../../assets/icons/loogo.svg";
 import toggleIcon from "../../../assets/icons/sidebar-toggle.png";
 
 import dashboardIcon from "../../../assets/icons/dashboard.png";
+import coursesIcon from "../../../assets/icons/video.png";
 import assignmentsIcon from "../../../assets/icons/children.png";
 import scheduleIcon from "../../../assets/icons/schedule.png";
 import messagesIcon from "../../../assets/icons/messages.png";
@@ -18,6 +19,11 @@ import logoutIcon from "../../../assets/icons/logout.png";
 const StudentSidebar = ({ isOpen, setIsOpen }) => {
   const unread = useSidebarUnread();
   const menu = [
+    {
+      title: "دوراتي",
+      icon: coursesIcon,
+      path: "/student-dashboard/courses",
+    },
     {
       title: "لوحة التحكم",
       icon: dashboardIcon,

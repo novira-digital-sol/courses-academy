@@ -40,6 +40,7 @@ import StudentAssignmentsPage from "./pages/student/assignments/StudentAssignmen
 import StudentGroupLessonsPage from "./pages/student/groupLessons/Studentgrouplessonspage";
 import StudentLessonDetailsPage from "./pages/student/groupLessons/Studentlessondetailspage";
 import LessonFilesPage from "./pages/student/groupLessons/Lessonfilespage";
+import StudentCoursesPage from "./pages/student/StudentCoursesPage";
 import RenewalPage from "./pages/subscription/RenewalPage";
 import AddSubjectPage from "./pages/subscription/AddSubjectPage";
 
@@ -164,6 +165,7 @@ function App() {
         {/* Student */}
         <Route path="/student-dashboard" element={<StudentGuard><StudentHome /></StudentGuard>} />
         <Route path="/student/settings" element={<StudentGuard><StudentAccountSettingsPage /></StudentGuard>} />
+        <Route path="/student-dashboard/courses" element={<StudentGuard><StudentCoursesPage /></StudentGuard>} />
         <Route path="/student/notifications" element={<StudentGuard><StudentNotifications /></StudentGuard>} />
         <Route path="/student/subscription" element={<StudentGuard><StudentSubscriptionPage /></StudentGuard>} />
         <Route path="/student/subscriptions/:id/renew" element={<StudentGuard><RenewalPage role="student" /></StudentGuard>} />

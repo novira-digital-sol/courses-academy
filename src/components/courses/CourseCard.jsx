@@ -53,7 +53,7 @@ export default function CourseCard({ course }) {
             to={`/instructors/${encodeURIComponent(course.instructor)}`} 
             className="flex items-center gap-2 group/inst"
           >
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#12C6B0] to-[#123C91] text-[13px] font-bold text-white shadow-xs">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-linear-to-br from-[#12C6B0] to-[#123C91] text-[13px] font-bold text-white shadow-xs">
               {course.instructor.charAt(0)}
             </span>
             <span className="text-[14px] font-medium text-[#4B5563] underline decoration-transparent underline-offset-4 transition-all duration-300 group-hover/inst:text-[#123C91] group-hover/inst:decoration-[#123C91]">
