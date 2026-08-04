@@ -2,78 +2,75 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { useSidebarUnread } from "../../../api/useSidebarUnread";
+import {
+  LayoutDashboard,
+  Library,
+  ClipboardList,
+  Users,
+  CalendarDays,
+  MessageSquare,
+  Bell,
+  CreditCard,
+  Settings,
+  LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
+} from "lucide-react";
 
 import logo from "../../../assets/icons/loogo.svg";
-import toggleIcon from "../../../assets/icons/sidebar-toggle.png";
-
-import dashboardIcon from "../../../assets/icons/dashboard.png";
-import coursesIcon from "../../../assets/icons/video.png";
-import assignmentsIcon from "../../../assets/icons/children.png";
-import scheduleIcon from "../../../assets/icons/schedule.png";
-import messagesIcon from "../../../assets/icons/messages.png";
-import notificationsIcon from "../../../assets/icons/notifications.png";
-import subscriptionIcon from "../../../assets/icons/subscription.png";
-import settingsIcon from "../../../assets/icons/settings.png";
-import logoutIcon from "../../../assets/icons/logout.png";
 
 const StudentSidebar = ({ isOpen, setIsOpen }) => {
   const unread = useSidebarUnread();
   const menu = [
     {
-      title: "دوراتي",
-      icon: coursesIcon,
-      path: "/student-dashboard/courses",
-    },
-    {
       title: "لوحة التحكم",
-      icon: dashboardIcon,
+      icon: LayoutDashboard,
       path: "/student-dashboard",
     },
     {
+      title: "مكتبتي",
+      icon: Library,
+      path: "/student-dashboard/courses",
+    },
+    {
       title: "الواجبات",
-      icon: assignmentsIcon,
+      icon: ClipboardList,
       path: "/student/assignments",
     },
     {
       title: "مجموعاتي",
-      icon: assignmentsIcon,
+      icon: Users,
       path: "/student/groups",
     },
     {
       title: "الجدول",
-      icon: scheduleIcon,
+      icon: CalendarDays,
       path: "/student/schedule",
     },
     {
       title: "الرسائل",
-      icon: messagesIcon,
+      icon: MessageSquare,
       path: "/student/messages",
     },
     {
       title: "الإشعارات",
-      icon: notificationsIcon,
+      icon: Bell,
       path: "/student/notifications",
     },
     {
       title: "الاشتراك والباقات",
-      icon: subscriptionIcon,
+      icon: CreditCard,
       path: "/student/subscription",
     },
     {
       title: "الإعدادات",
-      icon: settingsIcon,
+      icon: Settings,
       path: "/student/settings",
     },
   ];
 
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  // Note: the initial open/closed state is decided once in the parent
-  // (TeacherLayout) via a lazy useState initializer, based on screen
-  // width at first render. That avoids a flash of the sidebar being
-  // open-then-closing on mobile. From here on, isOpen is just controlled
-  // by the toggle button below.
 
   const handleLogout = () => {
     logout();
@@ -109,6 +106,7 @@ const StudentSidebar = ({ isOpen, setIsOpen }) => {
 
         <button
           onClick={() => setIsOpen(!isOpen)}
+          aria-label={isOpen ? "طي القائمة" : "فتح القائمة"}
           className="
             w-16
             h-16
@@ -117,10 +115,12 @@ const StudentSidebar = ({ isOpen, setIsOpen }) => {
             items-center
             justify-center
             rounded-full
+            text-white
+            hover:bg-white/10
             transition
           "
         >
-          <img src={toggleIcon} alt="toggle" className="object-contain w-7 h-7" />
+          {isOpen ? <PanelLeftClose size={22} /> : <PanelLeftOpen size={22} />}
         </button>
       </div>
 
@@ -151,25 +151,14 @@ const StudentSidebar = ({ isOpen, setIsOpen }) => {
             {({ isActive }) => (
               <>
                 <span className="relative shrink-0">
-                <img
-                  src={item.icon}
-                  alt={item.title}
-                  className={`block w-5 h-5 transition-all duration-200 ${
-                    isActive ? "brightness-0 invert-20 sepia-90 saturate-5000 hue-rotate-200" : ""
-                  }`}
-                  style={
-                    isActive
-                      ? {
-                          filter:
-                            "brightness(0) saturate(100%) invert(14%) sepia(87%) saturate(2768%) hue-rotate(218deg) brightness(93%) contrast(97%)",
-                        }
-                      : {}
-                  }
-                />
-                {((item.path === "/student/messages" && unread.messages) ||
-                  (item.path === "/student/notifications" && unread.notifications)) && (
-                  <span className="absolute -left-1 -top-1 h-3 w-3 rounded-full border-2 border-[#1F2937] bg-red-500" />
-                )}
+                  <item.icon
+                    size={20}
+                    className={isActive ? "text-[#123C91]" : "text-white"}
+                  />
+                  {((item.path === "/student/messages" && unread.messages) ||
+                    (item.path === "/student/notifications" && unread.notifications)) && (
+                    <span className="absolute -left-1 -top-1 h-3 w-3 rounded-full border-2 border-[#1F2937] bg-red-500" />
+                  )}
                 </span>
 
                 {isOpen && <span>{item.title}</span>}
@@ -183,11 +172,11 @@ const StudentSidebar = ({ isOpen, setIsOpen }) => {
       <div className="p-3 border-t border-[#FFFFFF14]">
         <button
           onClick={handleLogout}
-          className={`flex items-center mx-3 py-2 rounded-lg transition-all font-['IBM_Plex_Sans_Arabic'] font-medium text-[16px] leading-4 ${
+          className={`flex items-center mx-3 py-2 rounded-lg transition-all font-['IBM_Plex_Sans_Arabic'] font-medium text-[16px] leading-4 text-white hover:bg-white/10 ${
             isOpen ? "gap-3 justify-start" : "justify-center"
           }`}
         >
-          <img src={logoutIcon} alt="logout" className="w-5 h-5" />
+          <LogOut size={20} />
 
           {isOpen && <span className="text-sm">تسجيل الخروج</span>}
         </button>
