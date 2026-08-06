@@ -1,154 +1,115 @@
 import { useContext, useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Download, GraduationCap, CheckCircle2, Link2 } from "lucide-react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Check, Download, GraduationCap, Link2 } from "lucide-react";
 import { FaFacebookF, FaLinkedinIn } from "react-icons/fa6";
+import toast from "react-hot-toast";
 import StudentLayout from "../../components/student/layout/StudentLayout";
 import { AuthContext } from "../../context/AuthContext";
 import { courses } from "../../data/staticData";
 import { getCourseProgress } from "../../utils/courseProgress";
 
-// ⚠️ لسه محتاجة تتأكدي من شكل الداتا الجاية من الـ API (اسم الطالب، اسم الكورس، اسم
-// المحاضر، تاريخ الإتمام، رابط تحميل PDF) وتستبدلي القيم الثابتة تحت دي بيها —
-// اتأكدي من الأسماء عن طريق Postman / تبويب Network قبل ما تربطيها.
+const xml = (value) => String(value || "")
+  .replaceAll("&", "&amp;")
+  .replaceAll("<", "&lt;")
+  .replaceAll(">", "&gt;")
+  .replaceAll('"', "&quot;");
+
+function makeCertificate({ studentName, courseName, instructorName, date }) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <defs>
+    <pattern id="lace" width="34" height="34" patternUnits="userSpaceOnUse">
+      <path d="M0 17 8 7l9 10L26 7l8 10-8 10-9-10-9 10Z" fill="none" stroke="#4776bd" stroke-width="2"/>
+      <circle cx="17" cy="17" r="3" fill="#4776bd" opacity=".55"/>
+    </pattern>
+    <pattern id="grain" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="4" cy="5" r="1" fill="#123c91" opacity=".055"/></pattern>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#f8fbff"/></linearGradient>
+  </defs>
+  <rect width="1200" height="760" fill="#fff"/>
+  <rect x="12" y="12" width="1176" height="736" fill="none" stroke="#4776bd" stroke-width="12"/>
+  <rect x="32" y="32" width="1136" height="696" fill="none" stroke="url(#lace)" stroke-width="28"/>
+  <rect x="55" y="55" width="1090" height="650" fill="url(#paper)" stroke="#4776bd" stroke-width="3"/>
+  <rect x="67" y="67" width="1066" height="626" fill="url(#grain)" stroke="#9ab2d8" stroke-width="1.5"/>
+  <path d="M70 240C250 115 315 300 500 175S805 95 1130 260" fill="none" stroke="#3974b8" stroke-width="38" opacity=".035"/>
+  <path d="M70 540C285 410 360 585 560 460S865 385 1130 525" fill="none" stroke="#3974b8" stroke-width="30" opacity=".035"/>
+  <circle cx="600" cy="390" r="190" fill="#123c91" opacity=".04"/><circle cx="600" cy="390" r="125" fill="#12c6b0" opacity=".035"/>
+  <circle cx="600" cy="110" r="26" fill="#123c91"/><text x="600" y="120" text-anchor="middle" font-family="Arial" font-size="27" font-weight="700" fill="#fff">A</text>
+  <text x="600" y="158" text-anchor="middle" direction="rtl" font-family="Arial" font-size="27" font-weight="700" fill="#172942">الأكاديمية</text>
+  <text x="600" y="224" text-anchor="middle" font-family="Georgia" font-size="52" font-weight="700" fill="#174b9a">CERTIFICATE</text>
+  <text x="600" y="256" text-anchor="middle" font-family="Arial" font-size="15" letter-spacing="3" fill="#707986">OF APPRECIATION</text>
+  <text x="600" y="310" text-anchor="middle" font-family="Arial" font-size="17" fill="#6f7782">Proudly presented to:</text>
+  <text x="600" y="371" text-anchor="middle" direction="rtl" font-family="Arial" font-size="37" font-weight="700" fill="#174b9a">${xml(studentName)}</text>
+  <line x1="415" y1="394" x2="785" y2="394" stroke="#28bfb4" stroke-width="2"/>
+  <text x="600" y="450" text-anchor="middle" font-family="Arial" font-size="17" fill="#4f5967">In recognition of successfully completing</text>
+  <text x="600" y="500" text-anchor="middle" direction="rtl" font-family="Arial" font-size="26" font-weight="700" fill="#174b9a">${xml(courseName)}</text>
+  <line x1="130" y1="610" x2="405" y2="610" stroke="#174b9a" stroke-width="2"/>
+  <text x="268" y="645" text-anchor="middle" direction="rtl" font-family="Arial" font-size="20" font-style="italic" fill="#29384d">${xml(instructorName)}</text>
+  <text x="268" y="676" text-anchor="middle" font-family="Arial" font-size="17" fill="#687382">Instructor</text>
+  <line x1="795" y1="610" x2="1070" y2="610" stroke="#174b9a" stroke-width="2"/>
+  <text x="932" y="645" text-anchor="middle" font-family="Arial" font-size="20" font-weight="700" fill="#174b9a">${xml(date)}</text>
+  <text x="932" y="676" text-anchor="middle" font-family="Arial" font-size="17" fill="#687382">Date</text>
+  </svg>`;
+}
+
 export default function CertificatePage() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const course = useMemo(() => courses.find((item) => item.slug === slug), [slug]);
   const progress = useMemo(() => getCourseProgress(user, slug), [user, slug]);
+
   const studentName = user?.fullName || user?.name || [user?.firstName, user?.lastName].filter(Boolean).join(" ") || "الطالب";
   const attempts = Object.values(progress.examResults || {}).filter((attempt) => attempt?.completedAt);
-  const latestCompletion = attempts.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt))[0]?.completedAt;
+  const completedAt = attempts.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt))[0]?.completedAt;
   const certificate = {
     studentName,
     courseName: course?.title || "الدورة التدريبية",
     instructorName: course?.instructor || "مدرب الأكاديمية",
-    date: new Date(latestCompletion || Date.now()).toLocaleDateString("en-GB"),
+    date: new Date(completedAt || Date.now()).toLocaleDateString("en-GB"),
+  };
+  const svg = useMemo(() => makeCertificate(certificate), [certificate.studentName, certificate.courseName, certificate.instructorName, certificate.date]);
+  const imageUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+
+  const download = () => {
+    const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml;charset=utf-8" }));
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `certificate-${slug}-${studentName.replaceAll(" ", "-")}.svg`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+    toast.success("تم تنزيل الشهادة بنجاح");
   };
 
-  return (
-    <StudentLayout>
-      <div dir="rtl" className="min-h-screen bg-[#F8FAFC] pb-10 sm:pb-12 font-['IBM_Plex_Sans_Arabic']">
-        <div className="mx-auto w-full  px-4 sm:px-6 pt-4 sm:pt-6 text-center space-y-3 sm:space-y-4">
+  const copyLink = async () => {
+    await navigator.clipboard.writeText(window.location.href);
+    toast.success("تم نسخ رابط الشهادة");
+  };
+  const shareUrl = encodeURIComponent(window.location.href);
 
-          {/* أيقونة النجاح */}
-          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#D1FAE5] text-[#10B981] rounded-full flex items-center justify-center mx-auto">
-            <CheckCircle2 size={22} strokeWidth={2.5} />
-          </div>
+  return <StudentLayout>
+    <div dir="rtl" className="min-h-full bg-[#F7F7FC] py-8 sm:py-12">
+      <div className="mx-auto w-full max-w-[760px] px-4 text-center">
+        <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-[#25bdb3] to-[#70e2da] text-white shadow-[0_7px_18px_rgba(18,198,176,.3)]"><Check size={34} strokeWidth={3} /></div>
+        <h1 className="mt-6 text-xl font-extrabold text-[#202936] sm:text-2xl">تهانينا {studentName}، لقد أكملت بنجاح:</h1>
+        <p className="mt-3 flex items-center justify-center gap-2 text-sm font-bold text-[#687382]"><GraduationCap size={18} className="text-gray-300" />{certificate.courseName}</p>
 
-          {/* العنوان */}
-          <div>
-            <h1 className="text-lg sm:text-xl font-extrabold text-[#1F2937] font-['Tajawal'] leading-snug">
-              تهانينا {certificate.studentName}، لقد أكملت بنجاح:
-            </h1>
-            <p className="text-xs sm:text-sm text-gray-500 mt-1 flex items-center justify-center gap-1.5">
-              <GraduationCap size={15} className="text-[#123C91]" />
-              {certificate.courseName}
-            </p>
-          </div>
-
-          {/* ===== إطار الشهادة الزخرفي ===== */}
-          <div className="rounded-2xl p-2 sm:p-2.5 shadow-lg mx-auto"
-            style={{
-              backgroundColor: "#EEF2F9",
-              backgroundImage:
-                "repeating-linear-gradient(45deg, #123C9126 0, #123C9126 1.2px, transparent 1.2px, transparent 9px), repeating-linear-gradient(-45deg, #123C9126 0, #123C9126 1.2px, transparent 1.2px, transparent 9px)",
-            }}
-          >
-            <div className="rounded-xl border-2 border-[#123C91] bg-white p-1 sm:p-1.5">
-              <div dir="ltr" className="relative overflow-hidden rounded-lg bg-white px-5 py-5 sm:px-10 sm:py-7">
-
-                {/* العلامة المائية */}
-                <span
-                  aria-hidden
-                  className="pointer-events-none select-none absolute inset-0 flex items-center justify-center font-serif font-black text-[#123C91]"
-                  style={{ fontSize: "clamp(110px, 26vw, 200px)", opacity: 0.035, lineHeight: 1 }}
-                >
-                  A
-                </span>
-
-                {/* زوايا زخرفية */}
-                <span className="pointer-events-none absolute top-2.5 left-2.5 w-5 h-5 sm:w-7 sm:h-7 border-t-2 border-l-2 border-[#123C91]/40 rounded-tl-md" />
-                <span className="pointer-events-none absolute top-2.5 right-2.5 w-5 h-5 sm:w-7 sm:h-7 border-t-2 border-r-2 border-[#123C91]/40 rounded-tr-md" />
-                <span className="pointer-events-none absolute bottom-2.5 left-2.5 w-5 h-5 sm:w-7 sm:h-7 border-b-2 border-l-2 border-[#123C91]/40 rounded-bl-md" />
-                <span className="pointer-events-none absolute bottom-2.5 right-2.5 w-5 h-5 sm:w-7 sm:h-7 border-b-2 border-r-2 border-[#123C91]/40 rounded-br-md" />
-
-                {/* المحتوى */}
-                <div className="relative space-y-1.5 sm:space-y-2">
-                  <div className="flex items-center justify-center gap-1.5 text-[12px] sm:text-[13px] font-extrabold text-[#123C91]">
-                    <span className="rounded-full bg-[#123C91] text-white flex items-center justify-center text-[9px] w-[18px] h-[18px]">A</span>
-                    الأكاديمية
-                  </div>
-
-                  <h2 className="font-serif font-bold text-[#1F2937] tracking-wide" style={{ fontSize: "clamp(18px, 4vw, 26px)" }}>
-                    CERTIFICATE
-                  </h2>
-                  <p className="text-[9px] sm:text-[10px] tracking-[0.25em] text-gray-400">OF APPRECIATION</p>
-
-                  <p className="text-xs sm:text-sm text-gray-600 pt-1">Proudly presented to:</p>
-
-                  <h3 className="inline-block font-serif italic font-bold text-[#123C91] bg-[#ECFDF5]/70 px-5 sm:px-8 border-b-2 border-dashed border-[#123C91]/50 pb-1.5"
-                    style={{ fontSize: "clamp(17px, 4vw, 23px)" }}
-                  >
-                    {certificate.studentName}
-                  </h3>
-
-                  <p className="text-[10px] sm:text-[11px] text-gray-500 max-w-xs mx-auto pt-0.5">
-                    In recognition of successfully completing
-                  </p>
-                  <p className="font-bold text-[#123C91] text-xs sm:text-sm">
-                    {certificate.courseName}
-                  </p>
-
-                  <div className="flex justify-between items-end pt-4 sm:pt-6 text-[10px] sm:text-[11px] text-gray-500">
-                    <div className="text-left">
-                      <div className="w-20 sm:w-28 border-t border-gray-300 mb-1" />
-                      <p className="italic text-gray-700">{certificate.instructorName}</p>
-                      <p>Instructor</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="w-20 sm:w-28 border-t border-gray-300 mb-1 ml-auto" />
-                      <p className="font-bold text-[#123C91]">{certificate.date}</p>
-                      <p>Date</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* ===== نهاية إطار الشهادة ===== */}
-
-          {/* الأزرار */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3 pt-1">
-            <button
-              onClick={() => navigate(`/learn/${slug}`)}
-              className="w-full sm:w-auto px-6 py-2.5 border border-[#DDE3E9] bg-white text-sm font-bold rounded-xl text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              ← مواصلة التعلم
-            </button>
-            <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-2.5 bg-[#123C91] text-white text-sm font-bold rounded-xl hover:bg-[#0F3278] shadow-md transition-colors">
-              <Download size={16} /> تنزيل الشهادة
-            </button>
-          </div>
-
-          {/* مشاركة الإنجاز */}
-          <div className="flex flex-col items-center gap-1.5 pt-0.5">
-            <p className="text-xs text-gray-500">شارك إنجازك</p>
-            <div className="flex items-center gap-3">
-              <button className="w-7 h-7 rounded-full border border-[#DDE3E9] bg-white flex items-center justify-center text-gray-500 hover:text-[#123C91] hover:border-[#123C91] transition-colors">
-                <Link2 size={14} />
-              </button>
-              <button className="w-7 h-7 rounded-full border border-[#DDE3E9] bg-white flex items-center justify-center text-gray-500 hover:text-[#0A66C2] hover:border-[#0A66C2] transition-colors">
-                <FaLinkedinIn size={14} />
-              </button>
-              <button className="w-7 h-7 rounded-full border border-[#DDE3E9] bg-white flex items-center justify-center text-gray-500 hover:text-[#1877F2] hover:border-[#1877F2] transition-colors">
-                <FaFacebookF size={14} />
-              </button>
-            </div>
-          </div>
-
+        <div className="mx-auto mt-8 w-full max-w-[620px] bg-white shadow-sm">
+          <img src={imageUrl} alt={`شهادة ${studentName} في ${certificate.courseName}`} className="block h-auto w-full" />
         </div>
+
+        <div className="mx-auto mt-6 grid max-w-[620px] gap-3 sm:grid-cols-[1fr_1.25fr]">
+          <button onClick={() => navigate(`/learn/${slug}`)} className="order-2 flex h-12 items-center justify-center rounded-md border border-[#DDE3E9] bg-white text-sm font-bold text-[#687382] hover:bg-gray-50 sm:order-1">مواصلة التعلم ←</button>
+          <button onClick={download} className="order-1 flex h-12 items-center justify-center gap-2 rounded-md bg-[#1746A2] text-sm font-bold text-white hover:bg-[#123C91] sm:order-2"><Download size={17} />تنزيل الشهادة</button>
+        </div>
+
+        <div className="mt-6 flex items-center justify-center gap-3 text-xs text-[#687382]"><span>شارك إنجازك</span>
+          <button onClick={copyLink} aria-label="نسخ رابط الشهادة" className="grid h-8 w-8 place-items-center rounded-full border bg-white hover:text-[#123C91]"><Link2 size={14} /></button>
+          <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`} target="_blank" rel="noreferrer" aria-label="مشاركة على لينكد إن" className="grid h-8 w-8 place-items-center rounded-full border bg-white hover:text-[#0A66C2]"><FaLinkedinIn size={13} /></a>
+          <a href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} target="_blank" rel="noreferrer" aria-label="مشاركة على فيسبوك" className="grid h-8 w-8 place-items-center rounded-full border bg-white hover:text-[#1877F2]"><FaFacebookF size={13} /></a>
+        </div>
+        {!course && <Link to="/student-dashboard/courses" className="mt-5 inline-block text-sm font-bold text-[#123C91]">العودة إلى مكتبتي</Link>}
       </div>
-    </StudentLayout>
-  );
+    </div>
+  </StudentLayout>;
 }
