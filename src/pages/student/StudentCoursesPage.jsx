@@ -12,6 +12,7 @@ import Paginationn from "../../components/teacher/groups/students/Paginationn";
 import { AuthContext } from "../../context/AuthContext";
 import { courses as allCourses } from "../../data/staticData";
 import { getEnrolledCourseSlugs, unenrollFromCourse } from "../../utils/courseEnrollments";
+import { getCourseProgressSummary } from "../../utils/courseProgress";
 
 const PAGE_SIZE = 6;
 
@@ -27,7 +28,9 @@ const StudentCoursesPage = () => {
   const enrolledCourses = useMemo(() => {
     void enrollmentVersion;
     const enrolled = new Set(getEnrolledCourseSlugs(user));
-    return allCourses.filter((course) => enrolled.has(course.slug));
+    return allCourses
+      .filter((course) => enrolled.has(course.slug))
+      .map((course) => ({ ...course, progressData: getCourseProgressSummary(user, course) }));
   }, [user, enrollmentVersion]);
 
   const confirmCancelEnrollment = (course) => {
@@ -100,10 +103,10 @@ const StudentCoursesPage = () => {
         </div>
 
         <StatusBar stats={{
-          learningHours: enrolledCourses.reduce((total, course) => total + Number(course.duration || 0), 0),
-          completedLessons: 0,
-          activeCourses: enrolledCourses.length,
-          tests: 0,
+          learningHours: Math.round(enrolledCourses.reduce((total, course) => total + (Number(course.duration || 0) * course.progressData.percentage / 100), 0)),
+          completedLessons: enrolledCourses.reduce((total, course) => total + course.progressData.completedLessons, 0),
+          activeCourses: enrolledCourses.filter((course) => course.progressData.percentage < 100).length,
+          tests: enrolledCourses.reduce((total, course) => total + course.progressData.completedTests, 0),
         }} />
 
         {enrolledCourses.length > 0 ? (

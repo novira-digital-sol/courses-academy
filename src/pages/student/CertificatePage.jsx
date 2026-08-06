@@ -1,43 +1,35 @@
+import { useContext, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Download, GraduationCap, CheckCircle2, Link2 } from "lucide-react";
-import StudentLayout from "../components/student/layout/StudentLayout";
+import { FaFacebookF, FaLinkedinIn } from "react-icons/fa6";
+import StudentLayout from "../../components/student/layout/StudentLayout";
+import { AuthContext } from "../../context/AuthContext";
+import { courses } from "../../data/staticData";
+import { getCourseProgress } from "../../utils/courseProgress";
 
 // ⚠️ لسه محتاجة تتأكدي من شكل الداتا الجاية من الـ API (اسم الطالب، اسم الكورس، اسم
 // المحاضر، تاريخ الإتمام، رابط تحميل PDF) وتستبدلي القيم الثابتة تحت دي بيها —
 // اتأكدي من الأسماء عن طريق Postman / تبويب Network قبل ما تربطيها.
-const CERTIFICATE = {
-  studentName: "Mohamed Alaa",
-  courseName: "تعلم البرمجة بلغة Python من الصفر",
-  courseNameEn: "Python Programming from Scratch",
-  instructorName: "Instructor Name",
-  date: "06-08-2026",
-};
-
-// أيقونات براند (لينكدإن وفيسبوك) — lucide-react شالهم من عندها، فعملتهم SVG محلي بسيط
-function LinkedinIcon(props) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" width={14} height={14} {...props}>
-      <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.11 20.45H3.56V9h3.55v11.45z" />
-    </svg>
-  );
-}
-
-function FacebookIcon(props) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" width={14} height={14} {...props}>
-      <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5H16.7V3.6C16.4 3.55 15.4 3.47 14.24 3.47c-2.4 0-4.05 1.47-4.05 4.16v2.27H7.5V13h2.69v8h3.31z" />
-    </svg>
-  );
-}
-
 export default function CertificatePage() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  const course = useMemo(() => courses.find((item) => item.slug === slug), [slug]);
+  const progress = useMemo(() => getCourseProgress(user, slug), [user, slug]);
+  const studentName = user?.fullName || user?.name || [user?.firstName, user?.lastName].filter(Boolean).join(" ") || "الطالب";
+  const attempts = Object.values(progress.examResults || {}).filter((attempt) => attempt?.completedAt);
+  const latestCompletion = attempts.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt))[0]?.completedAt;
+  const certificate = {
+    studentName,
+    courseName: course?.title || "الدورة التدريبية",
+    instructorName: course?.instructor || "مدرب الأكاديمية",
+    date: new Date(latestCompletion || Date.now()).toLocaleDateString("en-GB"),
+  };
 
   return (
     <StudentLayout>
       <div dir="rtl" className="min-h-screen bg-[#F8FAFC] pb-10 sm:pb-12 font-['IBM_Plex_Sans_Arabic']">
-        <div className="mx-auto w-full max-w-[820px] px-4 sm:px-6 pt-4 sm:pt-6 text-center space-y-3 sm:space-y-4">
+        <div className="mx-auto w-full  px-4 sm:px-6 pt-4 sm:pt-6 text-center space-y-3 sm:space-y-4">
 
           {/* أيقونة النجاح */}
           <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#D1FAE5] text-[#10B981] rounded-full flex items-center justify-center mx-auto">
@@ -47,11 +39,11 @@ export default function CertificatePage() {
           {/* العنوان */}
           <div>
             <h1 className="text-lg sm:text-xl font-extrabold text-[#1F2937] font-['Tajawal'] leading-snug">
-              تهانينا محمد، لقد أكملتِ بنجاح :
+              تهانينا {certificate.studentName}، لقد أكملت بنجاح:
             </h1>
             <p className="text-xs sm:text-sm text-gray-500 mt-1 flex items-center justify-center gap-1.5">
               <GraduationCap size={15} className="text-[#123C91]" />
-              {CERTIFICATE.courseName}
+              {certificate.courseName}
             </p>
           </div>
 
@@ -98,25 +90,25 @@ export default function CertificatePage() {
                   <h3 className="inline-block font-serif italic font-bold text-[#123C91] bg-[#ECFDF5]/70 px-5 sm:px-8 border-b-2 border-dashed border-[#123C91]/50 pb-1.5"
                     style={{ fontSize: "clamp(17px, 4vw, 23px)" }}
                   >
-                    {CERTIFICATE.studentName}
+                    {certificate.studentName}
                   </h3>
 
                   <p className="text-[10px] sm:text-[11px] text-gray-500 max-w-xs mx-auto pt-0.5">
                     In recognition of successfully completing
                   </p>
                   <p className="font-bold text-[#123C91] text-xs sm:text-sm">
-                    {CERTIFICATE.courseNameEn}
+                    {certificate.courseName}
                   </p>
 
                   <div className="flex justify-between items-end pt-4 sm:pt-6 text-[10px] sm:text-[11px] text-gray-500">
                     <div className="text-left">
                       <div className="w-20 sm:w-28 border-t border-gray-300 mb-1" />
-                      <p className="italic text-gray-700">{CERTIFICATE.instructorName}</p>
+                      <p className="italic text-gray-700">{certificate.instructorName}</p>
                       <p>Instructor</p>
                     </div>
                     <div className="text-right">
                       <div className="w-20 sm:w-28 border-t border-gray-300 mb-1 ml-auto" />
-                      <p className="font-bold text-[#123C91]">{CERTIFICATE.date}</p>
+                      <p className="font-bold text-[#123C91]">{certificate.date}</p>
                       <p>Date</p>
                     </div>
                   </div>
@@ -147,10 +139,10 @@ export default function CertificatePage() {
                 <Link2 size={14} />
               </button>
               <button className="w-7 h-7 rounded-full border border-[#DDE3E9] bg-white flex items-center justify-center text-gray-500 hover:text-[#0A66C2] hover:border-[#0A66C2] transition-colors">
-                <LinkedinIcon />
+                <FaLinkedinIn size={14} />
               </button>
               <button className="w-7 h-7 rounded-full border border-[#DDE3E9] bg-white flex items-center justify-center text-gray-500 hover:text-[#1877F2] hover:border-[#1877F2] transition-colors">
-                <FacebookIcon />
+                <FaFacebookF size={14} />
               </button>
             </div>
           </div>

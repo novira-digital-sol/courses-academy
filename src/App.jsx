@@ -103,6 +103,11 @@ import CreateCurriculumPage from "./pages/admin/curriculum/CreateCurriculumPage"
 import AddSubscriptionPage from "./pages/admin/subscriptions/Addsubscriptionpage";
 import BlogsPage from "./pages/admin/BlogsPage.jsx/BlogsPage";
 import BlogFormPage from "./pages/admin/BlogsPage.jsx/BlogFormPage";
+import CoursePlayerPage from "./pages/student/CoursePlayerPage";
+import ExamPage from "./pages/student/ExamPage";
+import ExamResultPage from "./pages/student/ExamResultPage";
+import CertificatePage from "./pages/student/CertificatePage";
+
 
 function App() {
   const { user } = useContext(AuthContext);
@@ -169,6 +174,10 @@ function App() {
         <Route path="/student-dashboard/courses" element={<StudentGuard><StudentCoursesPage /></StudentGuard>} />
         <Route path="/my-courses/:slug" element={<StudentGuard><CourseEnrollmentGuard><MyCourseDetailsPage /></CourseEnrollmentGuard></StudentGuard>} />
         <Route path="/payment/courses/:slug" element={<StudentGuard><CoursePaymentPage /></StudentGuard>} />
+        <Route path="/learn/:slug" element={<StudentGuard><CoursePlayerPage /></StudentGuard>} />
+        <Route path="/exam/:slug" element={<StudentGuard><ExamPage /></StudentGuard>} />
+        <Route path="/exam-result/:slug" element={<StudentGuard><ExamResultPage /></StudentGuard>} />
+        <Route path="/certificate/:slug" element={<StudentGuard><CertificatePage /></StudentGuard>} />
         <Route path="/student/notifications" element={<StudentGuard><StudentNotifications /></StudentGuard>} />
         <Route path="/student/subscription" element={<StudentGuard><StudentSubscriptionPage /></StudentGuard>} />
         <Route path="/student/subscriptions/:id/renew" element={<StudentGuard><RenewalPage role="student" /></StudentGuard>} />
@@ -181,6 +190,7 @@ function App() {
         <Route path="/student/groups/:groupId/lessons/:lessonId" element={<StudentGuard><StudentLessonDetailsPage /></StudentGuard>} />
         <Route path="/student/groups/:groupId/lessons/:lessonId/files" element={<StudentGuard><LessonFilesPage /></StudentGuard>} />
 
+       
         {/* Teacher */}
         <Route path="/teacher-dashboard" element={<TeacherGuard><TeacherHome /></TeacherGuard>} />
         <Route path="/teacher/courses" element={<TeacherGuard><TeacherCoursesPage /></TeacherGuard>} />

@@ -18,9 +18,10 @@ export default function CoursesGrid({ courses = [], onRate = () => { }, onComple
 
   return (
     <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      {courses.map((course, index) => {
-        const progress = index === courses.length - 1 && courses.length > 2 ? 100 : index === 0 ? 0 : 8;
-        const completedLessons = progress === 100 ? course.lessons : progress === 0 ? 0 : Math.max(1, Math.round(course.lessons * progress / 100));
+      {courses.map((course) => {
+        const progress = course.progressData?.percentage || 0;
+        const completedLessons = course.progressData?.completedLessons || 0;
+        const totalLessons = course.progressData?.totalLessons || course.lessons || 0;
 
         return (
           <article
@@ -65,22 +66,22 @@ export default function CoursesGrid({ courses = [], onRate = () => { }, onComple
               <div className="mt-4">
                 <div className="mb-1 flex items-center justify-between text-[10px] text-[#89939F]">
                   <span>{progress}%</span>
-                  <span className="flex items-center gap-1"><Clock3 size={11} /> {completedLessons} / {course.lessons} درس</span>
+                  <span className="flex items-center gap-1"><Clock3 size={11} /> {completedLessons} / {totalLessons} درس</span>
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full bg-[#E6E9ED]">
                   <div className={`h-full rounded-full ${progress === 100 ? "bg-[#19804A]" : "bg-[#123C91]"}`} style={{ width: `${progress}%` }} />
                 </div>
-                <p className="mt-2 text-[14px] text-[#8B95A1]">{progress === 100 ? "أحسنت! لقد أكملت الدورة" : progress === 0 ? "لم تبدأ هذه الدورة بعد" : "آخر مشاهدة: أساسيات الدرس"}</p>
+                <p className="mt-2 text-[14px] text-[#8B95A1]">{progress === 100 ? "أحسنت! لقد أكملت الدورة" : progress === 0 ? "لم تبدأ هذه الدورة بعد" : `آخر ما أكملته: ${course.progressData?.lastCompletedTitle || "أحد دروس الدورة"}`}</p>
               </div>
 
               {progress === 100 ? (
                 <div className="mt-4 flex gap-2">
                   <button type="button" onClick={(e) => { e.stopPropagation(); onRate(course); }} className="h-10 flex-1 rounded-lg border border-[#DDE4EC] text-xs font-bold text-[#556171]">مراجعة الدورة</button>
-                  <button type="button" onClick={(e) => { e.stopPropagation(); onComplete(course); }} aria-label="عرض الشهادة" className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#DDE4EC] text-[#123C91]"><Award size={15} /></button>
+                  <button type="button" onClick={(e) => { e.stopPropagation(); navigate(`/certificate/${course.slug}`); }} aria-label="عرض الشهادة" className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#DDE4EC] text-[#123C91]"><Award size={15} /></button>
                 </div>
               ) : (
                 <Link
-                  to={`/my-courses/${course.slug}`}
+                  to={`/learn/${course.slug}`}
                   onClick={(e) => e.stopPropagation()}
                   className="mx-auto mt-6 flex h-12 w-[320px] items-center justify-center gap-2 rounded-lg bg-[#123C91] px-4 font-['Tajawal'] text-[16px] font-medium leading-none tracking-normal !text-white"
                 >
