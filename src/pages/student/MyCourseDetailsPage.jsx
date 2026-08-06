@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Award, BookOpen, Clock, PlayCircle, Star } from "lucide-react";
-import { courses } from "../data/staticData";
-import { getCourseContent } from "../data/courseContent";
-import { instructors } from "../data/instructorsData";
+import { courses } from "../../data/staticData";
+import { getCourseContent } from "../../data/courseContent";
+import { instructors } from "../../data/instructorsData";
+import StudentLayout from "../../components/student/layout/StudentLayout";
 
 export default function MyCourseDetailsPage() {
   const { slug } = useParams();
@@ -13,23 +14,26 @@ export default function MyCourseDetailsPage() {
 
   if (!course || !content) {
     return (
+      <StudentLayout>
       <div className="min-h-[60vh] bg-[#F8FAFC] py-24 text-center" dir="rtl">
         <h1 className="mb-5 text-3xl font-bold text-[#1F2937]">الكورس غير موجود ضمن كورساتك</h1>
         <Link to="/courses" className="font-semibold text-[#123C91]">تصفح الدورات</Link>
       </div>
+      </StudentLayout>
     );
   }
 
   return (
-    <div className="bg-[#F8FAFC] py-12" dir="rtl">
-      <div className="mx-auto w-full max-w-[1360px] px-4 md:px-10">
-        <nav className="mb-8 text-sm text-[#7B8490]">
-          <Link to="/" className="hover:text-[#123C91]">الرئيسية</Link>
+    <StudentLayout>
+    <div className="min-h-ful py-6 md:py-12" dir="rtl">
+      <div className="mx-auto w-full  px-1 md:px-4">
+        {/* <nav className="mb-8 text-sm text-[#7B8490]">
+          <Link to="/" className="hover:text-[#17191b]">الرئيسية</Link>
           <span className="mx-2">/</span>
           <span>كورساتي</span>
           <span className="mx-2">/</span>
           <span>{course.title}</span>
-        </nav>
+        </nav> */}
 
         <div className="grid items-start gap-8 lg:grid-cols-[340px_1fr]">
           <aside className="rounded-lg border border-[#E1E7EF] bg-white p-5 lg:sticky lg:top-6">
@@ -103,5 +107,6 @@ export default function MyCourseDetailsPage() {
         </div>
       </div>
     </div>
+    </StudentLayout>
   );
 }

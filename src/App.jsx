@@ -51,7 +51,7 @@ import BlogPostPage from "./components/landing/Blogpostpage";
 import CoursesPage from "./pages/CoursesPage";
 import CourseDetailsPage from "./pages/CourseDetailsPage";
 import InstructorPage from "./pages/InstructorPage";
-import MyCourseDetailsPage from "./pages/MyCourseDetailsPage";
+import MyCourseDetailsPage from "./pages/student/MyCourseDetailsPage";
 // import CoursePlayerPage from "./pages/CoursePlayerPage";
 import TeacherHome from "./pages/teacher/TeacherHome";
 import TeacherCoursesPage from "./pages/teacher/courses/TeacherCoursesPage";
@@ -126,7 +126,6 @@ function App() {
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/courses/:slug" element={<CourseDetailsPage />} />
           <Route path="/instructors/:id" element={<InstructorPage />} />
-          <Route path="/my-courses/:slug" element={<CourseEnrollmentGuard><MyCourseDetailsPage /></CourseEnrollmentGuard>} />
           {/* <Route path="/learn/:slug" element={<CoursePlayerPage />} /> */}
 
 
@@ -168,6 +167,7 @@ function App() {
         <Route path="/student-dashboard" element={<StudentGuard><StudentHome /></StudentGuard>} />
         <Route path="/student/settings" element={<StudentGuard><StudentAccountSettingsPage /></StudentGuard>} />
         <Route path="/student-dashboard/courses" element={<StudentGuard><StudentCoursesPage /></StudentGuard>} />
+        <Route path="/my-courses/:slug" element={<StudentGuard><CourseEnrollmentGuard><MyCourseDetailsPage /></CourseEnrollmentGuard></StudentGuard>} />
         <Route path="/payment/courses/:slug" element={<StudentGuard><CoursePaymentPage /></StudentGuard>} />
         <Route path="/student/notifications" element={<StudentGuard><StudentNotifications /></StudentGuard>} />
         <Route path="/student/subscription" element={<StudentGuard><StudentSubscriptionPage /></StudentGuard>} />
