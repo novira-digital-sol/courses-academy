@@ -17,6 +17,8 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import TeacherLayout from "../../../components/teacher/layout/TeacherLayout";
+// ⚠️ تأكدي من المسار ده صح عندك (نفس نمط TeacherLayout بس جوه components/admin/layout)
+import AdminLayout from "../../../components/admin/layout/AdminLayout";
 import CourseStepsNavigation from "../../../components/teacher/courses/CourseStepsNavigation";
 import {
   getTeacherCourse,
@@ -872,10 +874,15 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
       </div>
     );
 
-  return useTeacherLayout ? (
-    <TeacherLayout contentClassName="!p-0">{formContent}</TeacherLayout>
+  if (!useTeacherLayout) {
+    return formContent;
+  }
+
+  // ⚠️ فرقنا هنا: لو الراوت بيبدأ بـ /admin نستخدم AdminLayout، غير كده TeacherLayout
+  return isAdminFlow ? (
+    <AdminLayout contentClassName="!p-0">{formContent}</AdminLayout>
   ) : (
-    formContent
+    <TeacherLayout contentClassName="!p-0">{formContent}</TeacherLayout>
   );
 };
 
