@@ -96,12 +96,12 @@ const UploadBox = ({ label, accept, value, onChange, onRemove, icon: Icon }) => 
       <span className="mb-3 block">{label}</span>
       {previewUrl ? (
         <div className="overflow-hidden rounded-xl border border-[#D8DCE2] bg-[#F8FAFC]">
-          <div className="flex min-h-48 items-center justify-center bg-[#EEF2F6]">
+          <div className="flex min-h-40 items-center justify-center bg-[#EEF2F6] sm:min-h-48">
             {isVideo ? (
               <video
                 src={previewUrl}
                 controls
-                className="max-h-64 w-full bg-black object-contain"
+                className="max-h-56 w-full bg-black object-contain sm:max-h-64"
               >
                 متصفحك لا يدعم تشغيل الفيديو.
               </video>
@@ -109,7 +109,7 @@ const UploadBox = ({ label, accept, value, onChange, onRemove, icon: Icon }) => 
               <img
                 src={previewUrl}
                 alt={`معاينة ${label}`}
-                className="max-h-64 w-full object-contain"
+                className="max-h-56 w-full object-contain sm:max-h-64"
               />
             )}
           </div>
@@ -139,7 +139,7 @@ const UploadBox = ({ label, accept, value, onChange, onRemove, icon: Icon }) => 
         <button
           type="button"
           onClick={openModal}
-          className="flex min-h-48 w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D8DCE2] bg-[#FCFCFD] px-5 py-5 text-center transition hover:border-[#123C91] hover:bg-[#F7FAFF]"
+          className="flex min-h-40 w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D8DCE2] bg-[#FCFCFD] px-4 py-5 text-center transition hover:border-[#123C91] hover:bg-[#F7FAFF] sm:min-h-48 sm:px-5"
         >
           <span className="mb-3 grid h-11 w-11 place-items-center rounded-lg bg-[#EAF2FF] text-[#123C91]">
             <Icon size={21} strokeWidth={1.8} />
@@ -154,15 +154,15 @@ const UploadBox = ({ label, accept, value, onChange, onRemove, icon: Icon }) => 
       )}
 
       {isOpen && (
-        <div className="fixed inset-0 z-[100] grid place-items-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-[100] grid place-items-center bg-black/50 p-3 sm:p-4">
           <div
             role="dialog"
             aria-modal="true"
             aria-label={`إضافة ${label}`}
-            className="w-full max-w-xl overflow-hidden rounded-2xl bg-white shadow-2xl"
+            className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-white shadow-2xl"
           >
-            <div className="flex items-center justify-between border-b border-[#EAECF0] px-5 py-4">
-              <div>
+            <div className="flex items-center justify-between border-b border-[#EAECF0] px-4 py-4 sm:px-5">
+              <div className="min-w-0">
                 <h3 className="text-base font-bold text-[#1F2937]">
                   {previewUrl ? `تغيير ${label}` : `إضافة ${label}`}
                 </h3>
@@ -174,21 +174,21 @@ const UploadBox = ({ label, accept, value, onChange, onRemove, icon: Icon }) => 
                 type="button"
                 aria-label="إغلاق"
                 onClick={closeModal}
-                className="rounded-md p-2 text-[#667085] transition hover:bg-[#F2F4F7]"
+                className="shrink-0 rounded-md p-2 text-[#667085] transition hover:bg-[#F2F4F7]"
               >
                 <X size={18} />
               </button>
             </div>
 
-            <div className="p-5">
+            <div className="p-4 sm:p-5">
               {pendingPreviewUrl ? (
                 <div className="overflow-hidden rounded-xl border border-[#D8DCE2]">
-                  <div className="flex min-h-56 items-center justify-center bg-[#EEF2F6]">
+                  <div className="flex min-h-48 items-center justify-center bg-[#EEF2F6] sm:min-h-56">
                     {isVideo ? (
                       <video
                         src={pendingPreviewUrl}
                         controls
-                        className="max-h-80 w-full bg-black object-contain"
+                        className="max-h-72 w-full bg-black object-contain sm:max-h-80"
                       >
                         متصفحك لا يدعم تشغيل الفيديو.
                       </video>
@@ -196,11 +196,11 @@ const UploadBox = ({ label, accept, value, onChange, onRemove, icon: Icon }) => 
                       <img
                         src={pendingPreviewUrl}
                         alt={`معاينة ${label}`}
-                        className="max-h-80 w-full object-contain"
+                        className="max-h-72 w-full object-contain sm:max-h-80"
                       />
                     )}
                   </div>
-                  <div className="flex items-center justify-between gap-3 p-3">
+                  <div className="flex flex-wrap items-center justify-between gap-3 p-3">
                     <span className="min-w-0 flex-1 truncate text-xs font-normal text-[#667085]">
                       {pendingFile.name}
                     </span>
@@ -222,7 +222,7 @@ const UploadBox = ({ label, accept, value, onChange, onRemove, icon: Icon }) => 
                     event.preventDefault();
                     handleFile(event.dataTransfer.files?.[0]);
                   }}
-                  className="flex min-h-64 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#C9D3E0] bg-[#F9FBFD] px-6 text-center transition hover:border-[#123C91] hover:bg-[#F5F8FF]"
+                  className="flex min-h-56 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#C9D3E0] bg-[#F9FBFD] px-4 text-center transition hover:border-[#123C91] hover:bg-[#F5F8FF] sm:min-h-64 sm:px-6"
                 >
                   <span className="mb-3 grid h-12 w-12 place-items-center rounded-xl bg-[#EAF2FF] text-[#123C91]">
                     <UploadCloud size={23} />
@@ -243,7 +243,7 @@ const UploadBox = ({ label, accept, value, onChange, onRemove, icon: Icon }) => 
               )}
             </div>
 
-            <div className="flex items-center justify-end gap-3 border-t border-[#EAECF0] bg-[#FCFCFD] px-5 py-4">
+            <div className="flex flex-wrap items-center justify-end gap-3 border-t border-[#EAECF0] bg-[#FCFCFD] px-4 py-4 sm:px-5">
               <button
                 type="button"
                 onClick={closeModal}
@@ -458,42 +458,42 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
   const formContent = (
     <div
       dir="rtl"
-      className="min-h-screen bg-[#F7F8FC] px-5 pt-1 pb-5 text-right sm:px-8"
+      className="min-h-screen px-3 pt-1 pb-5 text-right sm:px-5 md:px-8"
     >
-      <div className="mx-auto w-full max-w-none">
+      <div className="mx-auto w-full ">
         <div className="mb-4">
-          <h1 className="text-[16px] font-bold text-[#123C91]">
+          <h1 className="text-[15px] font-bold text-[#123C91] sm:text-[16px]">
             {existingCourse ? "تعديل الدورة" : "إنشاء دورة جديدة"}
           </h1>
-          <p className="mt-1 text-sm text-[#667085]">
+          <p className="mt-1 text-xs text-[#667085] sm:text-sm">
             الخطوة {step + 1} من 4 · {STEPS[step]}
           </p>
         </div>
 
-        <div className="mb-4">
+        <div className="mb-4 overflow-x-auto">
           <CourseStepsNavigation currentStep={step + 1} />
         </div>
 
-        <section className="rounded-2xl border border-[#E5E5E5] bg-white px-8 py-7 shadow-[0px_0px_3px_0px_rgba(0,0,0,0.08)] sm:px-12 sm:py-8 lg:px-16">
+        <section className="rounded-2xl border border-[#E5E5E5] bg-white px-4 py-6 shadow-[0px_0px_3px_0px_rgba(0,0,0,0.08)] sm:px-8 sm:py-7 md:px-12 md:py-8 lg:px-16">
           {step === 0 && (
-            <div className="mx-4 space-y-7 sm:mx-6 lg:mx-8 -mt-12">
+            <div className="mx-0 space-y-6 sm:mx-2 sm:space-y-7 lg:mx-8 sm:-mt-8 lg:-mt-12">
                 <div>
-                  <h2 className="text-right font-['IBM_Plex_Sans_Arabic'] text-[18px] font-medium text-[#1F2937] sm:text-[20px] ">المعلومات الأساسية</h2>
-                  <p className="mt-1 text-right font-['IBM_Plex_Sans_Arabic'] text-[14px] text-[#575F69] sm:text-[16px]">أدخل بيانات الدورة التي ستظهر للطلاب.</p>
+                  <h2 className="text-right font-['IBM_Plex_Sans_Arabic'] text-[17px] font-medium text-[#1F2937] sm:text-[18px] md:text-[20px]">المعلومات الأساسية</h2>
+                  <p className="mt-1 text-right font-['IBM_Plex_Sans_Arabic'] text-[13px] text-[#575F69] sm:text-[14px] md:text-[16px]">أدخل بيانات الدورة التي ستظهر للطلاب.</p>
                 </div>
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  <label className="block space-y-2 text-right text-[15px] font-medium text-[#1F2937] sm:text-[17px]">عنوان الدورة بالعربية *
+                  <label className="block space-y-2 text-right text-[14px] font-medium text-[#1F2937] sm:text-[15px] md:text-[17px]">عنوان الدورة بالعربية *
                     <input className={inputClass} value={course.title} onChange={(e) => update("title", e.target.value)} placeholder="مثال: مقدمة في البرمجة" />
                   </label>
-                  <label className="block space-y-2 text-right text-[15px] font-medium text-[#1F2937] sm:text-[17px]">عنوان الدورة بالإنجليزية
+                  <label className="block space-y-2 text-right text-[14px] font-medium text-[#1F2937] sm:text-[15px] md:text-[17px]">عنوان الدورة بالإنجليزية
                     <input dir="ltr" className={`${inputClass} text-left`} value={course.titleEn} onChange={(e) => update("titleEn", e.target.value)} placeholder="Introduction to Programming" />
                   </label>
                 </div>
                 <label className="block space-y-2 text-right text-sm font-medium text-[#1F2937]">وصف الدورة
-                  <textarea className={`${inputClass} h-20 py-3 sm:h-20`} value={course.description} onChange={(e) => update("description", e.target.value)} placeholder="اكتب وصفًا شاملًا للدورة..." />
+                  <textarea className={`${inputClass} h-20 py-3`} value={course.description} onChange={(e) => update("description", e.target.value)} placeholder="اكتب وصفًا شاملًا للدورة..." />
                 </label>
                 <label className="block space-y-2 text-right text-sm font-medium text-[#1F2937]">متطلبات الدورة
-                  <textarea className={`${inputClass} h-20 py-3 sm:h-20`} value={course.requirements} onChange={(e) => update("requirements", e.target.value)} placeholder="اكتب متطلبات الالتحاق بالدورة..." />
+                  <textarea className={`${inputClass} h-20 py-3`} value={course.requirements} onChange={(e) => update("requirements", e.target.value)} placeholder="اكتب متطلبات الالتحاق بالدورة..." />
                 </label>
                 <TagsField
                   label="ماذا سيتعلم الطالب؟"
@@ -510,7 +510,7 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
                   onChange={(values) => update("tags", values)}
                   placeholder="مثال: برمجة، مبتدئين"
                 />
-                <div className="grid gap-5 md:grid-cols-3">
+                <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
                   <label className="space-y-2 text-right text-sm font-medium text-[#1F2937]">التصنيف *
                     <select className={inputClass} value={course.category} onChange={(e) => update("category", e.target.value)}>
                       <option value="">اختر التصنيف</option>
@@ -529,7 +529,7 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
                     </select>
                   </label>
                 </div>
-                <div className="grid gap-5 md:grid-cols-3">
+                <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
                   <label className="space-y-2 text-right text-sm font-medium text-[#1F2937]">المرحلة
                     <select className={inputClass} value={course.academicStage || ""} onChange={(e) => update("academicStage", e.target.value)}><option value="">اختر المرحلة</option><option>ابتدائي</option><option>إعدادي</option><option>ثانوي</option><option>جامعي</option></select>
                   </label>
@@ -540,7 +540,7 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
                     <select className={inputClass} value={course.subject || ""} onChange={(e) => update("subject", e.target.value)}><option value="">اختر المادة</option><option>برمجة</option><option>رياضيات</option><option>علوم</option><option>لغة عربية</option></select>
                   </label>
                 </div>
-                <div className="grid gap-6 border-t border-[#EAECF0] pt-6 md:grid-cols-2">
+                <div className="grid gap-6 border-t border-[#EAECF0] pt-6 sm:grid-cols-2">
                   <UploadBox
                     label="صورة الغلاف"
                     accept="image/png,image/jpeg,image/webp"
@@ -562,67 +562,67 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
             )}
 
             {step === 1 && (
-              <div className="mx-0 space-y-5 sm:mx-2 lg:mx-4 -mt-12">
+              <div className="mx-0 space-y-5 sm:-mt-8 lg:mx-2 lg:-mt-12">
                 <div>
-                  <h2 className="text-[17px] font-semibold text-[#1F2937]">بناء المنهج الدراسي</h2>
-                  <p className="mt-1.5 text-[14px] text-[#667085]">
+                  <h2 className="text-[16px] font-semibold text-[#1F2937] sm:text-[17px]">بناء المنهج الدراسي</h2>
+                  <p className="mt-1.5 text-[13px] text-[#667085] sm:text-[14px]">
                     قم ببناء وتنظيم محتوى دورتك التعليمية خطوة بخطوة لتجربة تعلم متكاملة للطلاب.
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div className="flex flex-wrap items-center gap-4 text-[14px] text-[#667085]">
+                  <div className="flex flex-wrap items-center gap-3 text-[13px] text-[#667085] sm:gap-4 sm:text-[14px]">
                     <span className="inline-flex items-center gap-1.5"><Layers3 size={14} className="text-[#123C91]" />{course.curriculum.length} أقسام</span>
                     <span className="inline-flex items-center gap-1.5"><Video size={14} className="text-[#123C91]" />{totalLessons} دروس</span>
                     <span>{totalContent} دروس بمحتوى</span>
                   </div>
-                  <button type="button" onClick={addSection} className="flex h-10 items-center gap-2 rounded-md bg-[#123C91] px-5 text-sm font-semibold text-white hover:bg-[#0E327A]">
+                  <button type="button" onClick={addSection} className="flex h-10 items-center gap-2 rounded-md bg-[#123C91] px-4 text-sm font-semibold text-white hover:bg-[#0E327A] sm:px-5">
                     <Plus size={16} /> إضافة قسم / وحدة
                   </button>
                 </div>
                 {course.curriculum.length === 0 && (
-                  <button onClick={addSection} className="flex min-h-48 w-full flex-col items-center justify-center rounded-xl border border-dashed border-[#D0D5DD] text-[#667085]">
+                  <button onClick={addSection} className="flex min-h-40 w-full flex-col items-center justify-center rounded-xl border border-dashed border-[#D0D5DD] text-[#667085] sm:min-h-48">
                     <Plus className="mb-2" /> ابدأ بإضافة قسم للمحتوى
                   </button>
                 )}
                 {course.curriculum.map((section, sectionIndex) => (
                   <div key={section.id} className="overflow-hidden rounded-xl border border-[#DDE2E8] bg-white">
-                    <div className="flex items-center gap-2 border-b border-[#E7EBF0] bg-[#EEF6FF] px-4 py-3">
+                    <div className="flex items-center gap-2 border-b border-[#E7EBF0] bg-[#EEF6FF] px-3 py-3 sm:px-4">
                       <GripVertical size={16} className="shrink-0 text-[#98A2B3]" />
                       <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#123C91] text-xs font-semibold text-white">{sectionIndex + 1}</span>
                       <input aria-label={`عنوان القسم ${sectionIndex + 1}`} className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-[#344054] outline-none" value={section.title} onChange={(e) => updateSection(section.id, { title: e.target.value })} />
-                      <button type="button" aria-label="حذف القسم" onClick={() => removeSection(section.id)} className="rounded p-1 text-[#98A2B3] hover:bg-white hover:text-red-600"><X size={15} /></button>
+                      <button type="button" aria-label="حذف القسم" onClick={() => removeSection(section.id)} className="shrink-0 rounded p-1 text-[#98A2B3] hover:bg-white hover:text-red-600"><X size={15} /></button>
                     </div>
                     <div>
                       {section.lessons.map((lesson, lessonIndex) => (
-                        <div key={lesson.id} className="border-b border-[#EAECF0] px-4 py-3 last:border-b-0">
-                          <div className="grid items-center gap-2 xl:grid-cols-[18px_26px_minmax(170px,1fr)_105px_80px_auto_auto_34px]">
-                            <GripVertical size={15} className="text-[#B0B7C3]" />
-                            <span className="grid h-6 w-6 place-items-center rounded-full bg-[#F1F4F8] text-[11px] text-[#667085]">{lessonIndex + 1}</span>
-                            <input className="h-9 min-w-0 rounded-md border border-transparent px-2 text-sm text-[#344054] outline-none placeholder:text-[#98A2B3] focus:border-[#D0D5DD]" value={lesson.title} onChange={(e) => updateLesson(section.id, lesson.id, { title: e.target.value })} placeholder="اكتب عنوان الدرس..." />
-                            <select className="h-9 rounded-md border border-[#D0D5DD] bg-white px-2 text-xs text-[#475467] outline-none" value={lesson.type} onChange={(e) => updateLesson(section.id, lesson.id, { type: e.target.value })}>
+                        <div key={lesson.id} className="border-b border-[#EAECF0] px-3 py-3 last:border-b-0 sm:px-4">
+                          <div className="flex flex-wrap items-center gap-2 xl:grid xl:flex-nowrap xl:grid-cols-[18px_26px_minmax(170px,1fr)_105px_80px_auto_auto_34px]">
+                            <GripVertical size={15} className="hidden shrink-0 text-[#B0B7C3] sm:block" />
+                            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#F1F4F8] text-[11px] text-[#667085]">{lessonIndex + 1}</span>
+                            <input className="h-9 min-w-[160px] flex-1 basis-full rounded-md border border-transparent px-2 text-sm text-[#344054] outline-none placeholder:text-[#98A2B3] focus:border-[#D0D5DD] sm:basis-auto xl:min-w-0 xl:basis-auto" value={lesson.title} onChange={(e) => updateLesson(section.id, lesson.id, { title: e.target.value })} placeholder="اكتب عنوان الدرس..." />
+                            <select className="h-9 shrink-0 rounded-md border border-[#D0D5DD] bg-white px-2 text-xs text-[#475467] outline-none" value={lesson.type} onChange={(e) => updateLesson(section.id, lesson.id, { type: e.target.value })}>
                               <option>فيديو</option><option>ملف</option><option>اختبار</option>
                             </select>
-                            <label className="flex h-9 items-center justify-center gap-1 rounded-md border border-[#E1E5EA] bg-[#FAFAFA] px-2 text-xs text-[#667085]">
+                            <label className="flex h-9 shrink-0 items-center justify-center gap-1 rounded-md border border-[#E1E5EA] bg-[#FAFAFA] px-2 text-xs text-[#667085]">
                               <input type="number" min="0" className="w-8 bg-transparent text-center outline-none" value={lesson.duration || ""} onChange={(e) => updateLesson(section.id, lesson.id, { duration: Number(e.target.value) })} placeholder="0" />
                               <span>د</span>
                             </label>
-                            <label className="flex items-center gap-2 whitespace-nowrap text-xs text-[#475467]">
+                            <label className="flex shrink-0 items-center gap-2 whitespace-nowrap text-xs text-[#475467]">
                               <button type="button" role="switch" aria-checked={Boolean(lesson.preview)} onClick={() => updateLesson(section.id, lesson.id, { preview: !lesson.preview })} className={`relative h-5 w-9 rounded-full transition ${lesson.preview ? "bg-[#12C6B0]" : "bg-[#D0D5DD]"}`}>
                                 <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all ${lesson.preview ? "right-0.5" : "right-4"}`} />
                               </button>
                               معاينة
                             </label>
                             {lesson.type === "اختبار" ? (
-                              <button onClick={() => openQuizBuilder(section.id, lesson)} className="h-9 rounded-md border border-[#12C6B0] bg-[#E8FFFC] px-3 text-xs font-semibold text-[#087F72]">
+                              <button onClick={() => openQuizBuilder(section.id, lesson)} className="h-9 shrink-0 rounded-md border border-[#12C6B0] bg-[#E8FFFC] px-3 text-xs font-semibold text-[#087F72]">
                                 {lesson.quiz?.length ? "تعديل الاختبار" : "بناء الاختبار"}
                               </button>
                             ) : (
-                              <button onClick={() => setContentModal({ sectionId: section.id, lessonId: lesson.id })} className="inline-flex h-9 items-center gap-1.5 rounded-md border border-[#D0D5DD] px-3 text-xs font-medium text-[#475467]">
+                              <button onClick={() => setContentModal({ sectionId: section.id, lessonId: lesson.id })} className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border border-[#D0D5DD] px-3 text-xs font-medium text-[#475467]">
                                 <Video size={14} />
                                 {lesson.attachments?.length ? "تغيير المحتوى" : "إضافة محتوى +"}
                               </button>
                             )}
-                            <button type="button" aria-label="حذف الدرس" onClick={() => updateSection(section.id, { lessons: section.lessons.filter((item) => item.id !== lesson.id) })} className="p-2 text-[#98A2B3] hover:text-red-600"><X size={15} /></button>
+                            <button type="button" aria-label="حذف الدرس" onClick={() => updateSection(section.id, { lessons: section.lessons.filter((item) => item.id !== lesson.id) })} className="shrink-0 p-2 text-[#98A2B3] hover:text-red-600"><X size={15} /></button>
                           </div>
                           <div className="mt-2 flex flex-wrap gap-2">
                             {lesson.attachments?.map((file) => (
@@ -631,7 +631,7 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
                           </div>
                         </div>
                       ))}
-                      <button type="button" onClick={() => addLesson(section.id)} className="flex items-center gap-1 px-5 py-3 text-sm font-semibold text-[#123C91] hover:bg-[#F8FAFC]"><Plus size={15} /> إضافة درس</button>
+                      <button type="button" onClick={() => addLesson(section.id)} className="flex items-center gap-1 px-4 py-3 text-sm font-semibold text-[#123C91] hover:bg-[#F8FAFC] sm:px-5"><Plus size={15} /> إضافة درس</button>
                     </div>
                   </div>
                 ))}
@@ -639,7 +639,7 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
             )}
 
             {step === 2 && (
-              <div className="mx-4 space-y-5 sm:mx-6 lg:mx-8 -mt-12">
+              <div className="mx-0 space-y-5 sm:mx-2 sm:-mt-8 lg:mx-8 lg:-mt-12">
                 <div>
                   <h2 className="font-bold text-[#1F2937]">تسعير الدورة</h2>
                   <p className="mt-1 text-[14px] text-[#667085]">
@@ -650,7 +650,7 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
                   <button
                     type="button"
                     onClick={() => update("pricingType", "paid")}
-                    className={`min-h-32 rounded-xl border p-5 text-right transition ${
+                    className={`min-h-28 rounded-xl border p-4 text-right transition sm:min-h-32 sm:p-5 ${
                       course.pricingType === "paid"
                         ? "border-[#123C91] bg-[#EAF2FF]"
                         : "border-[#E5E7EB] bg-white"
@@ -671,7 +671,7 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
                   <button
                     type="button"
                     onClick={() => update("pricingType", "free")}
-                    className={`min-h-32 rounded-xl border p-5 text-right transition ${
+                    className={`min-h-28 rounded-xl border p-4 text-right transition sm:min-h-32 sm:p-5 ${
                       course.pricingType === "free"
                         ? "border-[#123C91] bg-[#EAF2FF]"
                         : "border-[#E5E7EB] bg-white"
@@ -701,27 +701,27 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
                       <input type="number" min="0" max="100" className={inputClass} value={course.discountPercent || ""} onChange={(e) => update("discountPercent", e.target.value)} placeholder="أدخل النسبة" />
                     </label>
                     <div className="overflow-hidden rounded-xl bg-[#EAF4FF] text-sm text-[#344054]">
-                      <div className="flex items-center justify-between px-5 py-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 sm:px-5">
                         <strong className="text-[#123C91]">سعر الدورة</strong>
                         <span>{money(coursePrice)}</span>
                       </div>
                       {discountPercent > 0 && (
                         <>
-                          <div className="flex items-center justify-between border-t border-[#D7E7FC] px-5 py-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#D7E7FC] px-4 py-3 sm:px-5">
                             <span>الخصم ({discountPercent}%)</span>
                             <span>- {money(discountAmount)}</span>
                           </div>
-                          <div className="flex items-center justify-between border-t border-[#D7E7FC] px-5 py-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#D7E7FC] px-4 py-3 sm:px-5">
                             <span>السعر بعد الخصم</span>
                             <strong>{money(priceAfterDiscount)}</strong>
                           </div>
                         </>
                       )}
-                      <div className="flex items-center justify-between border-t border-[#D7E7FC] px-5 py-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#D7E7FC] px-4 py-3 sm:px-5">
                         <strong className="text-[#123C91]">رسوم المنصة (15%)</strong>
                         <span>- {money(platformFee)}</span>
                       </div>
-                      <div className="flex items-center justify-between border-t border-[#D7E7FC] px-5 py-4 font-bold">
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#D7E7FC] px-4 py-4 font-bold sm:px-5">
                         <span>صافي أرباحك</span>
                         <span>{money(teacherNet)}</span>
                       </div>
@@ -732,7 +732,7 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
             )}
 
             {step === 3 && (
-              <div className="mx-4 space-y-5 sm:mx-6 lg:mx-8 -mt-12">
+              <div className="mx-0 space-y-5 sm:mx-2 sm:-mt-8 lg:mx-8 lg:-mt-12">
                 <div><h2 className="font-bold text-[#1F2937]">مراجعة الدورة</h2><p className="mt-1 text-[14px] text-[#667085]">تأكد من البيانات قبل الإرسال.</p></div>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="rounded-xl border border-[#E5E7EB] p-4"><h3 className="mb-3 font-bold">المعلومات الأساسية</h3><dl className="space-y-2 text-[14px]"><div><dt className="text-[#667085]">العنوان</dt><dd>{course.title}</dd></div><div><dt className="text-[#667085]">التصنيف والمستوى</dt><dd>{course.category} · {course.level}</dd></div><div><dt className="text-[#667085]">اللغة</dt><dd>{course.language}</dd></div></dl></div>
@@ -742,30 +742,30 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
               </div>
             )}
 
-            <div className="mx-4 mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-[#EAECF0] pt-5 sm:mx-6 lg:mx-8">
-              <button onClick={() => step === 0 ? navigate(returnPath) : setStep((current) => current - 1)} className="flex items-center gap-2 rounded-lg border border-[#D0D5DD] px-5 py-2.5 text-sm"><ChevronRight size={16} /> {step === 0 ? "إلغاء" : "السابق"}</button>
-              <div className="flex gap-3">
-                <button onClick={() => save("مسودة")} className="rounded-lg border border-[#D0D5DD] px-5 py-2.5 text-sm">حفظ كمسودة</button>
+            <div className="mx-0 mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-[#EAECF0] pt-5 sm:mx-2 lg:mx-8">
+              <button onClick={() => step === 0 ? navigate(returnPath) : setStep((current) => current - 1)} className="flex items-center gap-2 rounded-lg border border-[#D0D5DD] px-4 py-2.5 text-sm sm:px-5"><ChevronRight size={16} /> {step === 0 ? "إلغاء" : "السابق"}</button>
+              <div className="flex flex-wrap gap-3">
+                <button onClick={() => save("مسودة")} className="rounded-lg border border-[#D0D5DD] px-4 py-2.5 text-sm sm:px-5">حفظ كمسودة</button>
                 {step < 3 ? (
-                  <button onClick={next} className="flex items-center gap-2 rounded-lg bg-[#123C91] px-7 py-2.5 text-sm font-semibold text-white">التالي <ChevronLeft size={16} /></button>
+                  <button onClick={next} className="flex items-center gap-2 rounded-lg bg-[#123C91] px-5 py-2.5 text-sm font-semibold text-white sm:px-7">التالي <ChevronLeft size={16} /></button>
                 ) : (
-                  <button onClick={() => save("قيد المراجعة")} className="rounded-lg bg-[#123C91] px-7 py-2.5 text-sm font-semibold text-white">{existingCourse ? "حفظ التعديلات" : "إرسال للمراجعة"}</button>
+                  <button onClick={() => save("قيد المراجعة")} className="rounded-lg bg-[#123C91] px-5 py-2.5 text-sm font-semibold text-white sm:px-7">{existingCourse ? "حفظ التعديلات" : "إرسال للمراجعة"}</button>
                 )}
               </div>
             </div>
           </section>
 
           {contentModal && (
-            <div className="fixed inset-0 z-70 grid place-items-center bg-black/45 p-4">
-              <div dir="rtl" className="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl">
+            <div className="fixed inset-0 z-[70] grid place-items-center bg-black/45 p-3 sm:p-4">
+              <div dir="rtl" className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl bg-white p-4 shadow-2xl sm:p-5">
                 <div className="mb-4 flex items-start justify-between">
-                  <div>
+                  <div className="min-w-0">
                     <h3 className="font-bold text-[#1F2937]">ملفات الدرس</h3>
-                    <p className="mt-1 text-xs text-[#667085]">{activeModalLesson(contentModal)?.title || "الدرس"}</p>
+                    <p className="mt-1 truncate text-xs text-[#667085]">{activeModalLesson(contentModal)?.title || "الدرس"}</p>
                   </div>
-                  <button onClick={() => setContentModal(null)} className="p-1 text-[#667085]"><X size={18} /></button>
+                  <button onClick={() => setContentModal(null)} className="shrink-0 p-1 text-[#667085]"><X size={18} /></button>
                 </div>
-                <label className="flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D0D5DD] text-center text-sm text-[#475467]">
+                <label className="flex min-h-32 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D0D5DD] p-4 text-center text-sm text-[#475467] sm:min-h-36">
                   <UploadCloud className="mb-3 text-[#123C91]" size={30} />
                   اسحب الملفات هنا أو اضغط للاختيار
                   <span className="mt-1 text-xs text-[#98A2B3]">PDF, DOCX, JPG, PPT</span>
@@ -786,27 +786,27 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
                     }}
                   />
                 </label>
-                <div className="mt-5 flex gap-3">
-                  <button onClick={() => setContentModal(null)} className="flex-1 rounded-lg border border-[#D0D5DD] py-2.5 text-sm">إلغاء</button>
-                  <button onClick={() => setContentModal(null)} className="flex-1 rounded-lg bg-[#123C91] py-2.5 text-sm font-semibold text-white">تأكيد</button>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <button onClick={() => setContentModal(null)} className="min-w-[100px] flex-1 rounded-lg border border-[#D0D5DD] py-2.5 text-sm">إلغاء</button>
+                  <button onClick={() => setContentModal(null)} className="min-w-[100px] flex-1 rounded-lg bg-[#123C91] py-2.5 text-sm font-semibold text-white">تأكيد</button>
                 </div>
               </div>
             </div>
           )}
 
           {quizModal && activeModalLesson(quizModal) && (
-            <div className="absolute inset-0 z-70 overflow-y-auto bg-[#F7F8FC] p-4 sm:p-7">
+            <div className="absolute inset-0 z-[70] overflow-y-auto bg-[#F7F8FC] p-3 sm:p-4 md:p-7">
               <div dir="rtl" className="mx-auto max-w-5xl">
-                <div className="mb-5 flex items-start justify-between">
-                  <div><h2 className="text-xl font-bold text-[#1F2937]">بناء الاختبار</h2><p className="mt-1 text-sm text-[#667085]">{activeModalLesson(quizModal).title || "اختبار الدرس"}</p></div>
-                  <button onClick={() => setQuizModal(null)} className="p-2 text-[#667085]"><X /></button>
+                <div className="mb-5 flex items-start justify-between gap-3">
+                  <div className="min-w-0"><h2 className="text-lg font-bold text-[#1F2937] sm:text-xl">بناء الاختبار</h2><p className="mt-1 truncate text-sm text-[#667085]">{activeModalLesson(quizModal).title || "اختبار الدرس"}</p></div>
+                  <button onClick={() => setQuizModal(null)} className="shrink-0 p-2 text-[#667085]"><X /></button>
                 </div>
                 <div className="mb-4 rounded-lg bg-[#EAF4FF] p-3 text-sm text-[#475467]">
                   أضف الأسئلة وحدد الإجابة الصحيحة لكل سؤال. يمكنك إضافة 4 خيارات لكل سؤال.
                 </div>
                 <div className="space-y-4">
                   {activeModalLesson(quizModal).quiz.map((question, questionIndex) => (
-                    <div key={question.id} className="rounded-xl border border-[#E5E7EB] bg-white p-5">
+                    <div key={question.id} className="rounded-xl border border-[#E5E7EB] bg-white p-4 sm:p-5">
                       <div className="mb-4 flex items-center justify-between">
                         <strong>السؤال {questionIndex + 1}</strong>
                         <button
@@ -836,10 +836,10 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
                               onChange={() => updateLesson(quizModal.sectionId, quizModal.lessonId, {
                                 quiz: activeModalLesson(quizModal).quiz.map((item) => item.id === question.id ? { ...item, correctIndex: optionIndex } : item),
                               })}
-                              className="accent-[#12C6B0]"
+                              className="shrink-0 accent-[#12C6B0]"
                             />
                             <input
-                              className="w-full bg-transparent text-sm outline-none"
+                              className="w-full min-w-0 bg-transparent text-sm outline-none"
                               value={option}
                               onChange={(event) => updateLesson(quizModal.sectionId, quizModal.lessonId, {
                                 quiz: activeModalLesson(quizModal).quiz.map((item) => item.id === question.id ? { ...item, options: item.options.map((value, index) => index === optionIndex ? event.target.value : value) } : item),
@@ -849,7 +849,7 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
                           </label>
                         ))}
                       </div>
-                      <label className="mt-4 flex items-center justify-end gap-2 text-sm">درجة السؤال
+                      <label className="mt-4 flex flex-wrap items-center justify-end gap-2 text-sm">درجة السؤال
                         <input type="number" min="0" className="h-10 w-24 rounded-lg border border-[#E5E7EB] px-3" value={question.points} onChange={(event) => updateLesson(quizModal.sectionId, quizModal.lessonId, {
                           quiz: activeModalLesson(quizModal).quiz.map((item) => item.id === question.id ? { ...item, points: Number(event.target.value) } : item),
                         })} />
@@ -863,9 +863,9 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
                   })}
                   className="mt-4 font-semibold text-[#123C91]"
                 ><Plus size={16} className="inline" /> إضافة سؤال</button>
-                <div className="mt-6 flex justify-between gap-3">
-                  <button onClick={() => setQuizModal(null)} className="rounded-lg border border-[#D0D5DD] px-8 py-3">إلغاء</button>
-                  <button onClick={() => { setQuizModal(null); toast.success("تم حفظ الاختبار"); }} className="rounded-lg bg-[#123C91] px-10 py-3 font-semibold text-white">حفظ الاختبار</button>
+                <div className="mt-6 flex flex-wrap justify-between gap-3">
+                  <button onClick={() => setQuizModal(null)} className="rounded-lg border border-[#D0D5DD] px-6 py-3 sm:px-8">إلغاء</button>
+                  <button onClick={() => { setQuizModal(null); toast.success("تم حفظ الاختبار"); }} className="rounded-lg bg-[#123C91] px-6 py-3 font-semibold text-white sm:px-10">حفظ الاختبار</button>
                 </div>
               </div>
             </div>
@@ -878,7 +878,6 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
     return formContent;
   }
 
-  // ⚠️ فرقنا هنا: لو الراوت بيبدأ بـ /admin نستخدم AdminLayout، غير كده TeacherLayout
   return isAdminFlow ? (
     <AdminLayout contentClassName="!p-0">{formContent}</AdminLayout>
   ) : (
