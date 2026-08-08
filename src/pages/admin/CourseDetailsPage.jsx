@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   BookOpen,
   ChevronDown,
+  ChevronRight,
   ChevronLeft,
   Clock3,
   Copy,
@@ -255,7 +256,7 @@ const StudentsTab = ({ course }) => {
                     <button
                       type="button"
                       onClick={() =>
-                        navigate("/admin/messages", {
+                        navigate("/teacher/messages", {
                           state: {
                             openClassroomId: course.id,
                             openClassroomName: course.title,
@@ -517,6 +518,10 @@ const AdminCourseDetailsPage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
+  const [showApproveModal, setShowApproveModal] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [rejectDetails, setRejectDetails] = useState("");
   const course = useMemo(() => getTeacherCourse(courseId), [courseId]);
 
   if (!course) {
@@ -542,16 +547,8 @@ const AdminCourseDetailsPage = () => {
           <div className="flex gap-2">
             {course.status !== "منشور" ? (
               <>
-                <button onClick={() => {
-                  const updated = saveTeacherCourse({ ...course, status: "منشور" });
-                  toast.success("تم اعتماد ونشر الدورة");
-                  navigate(`/admin/courses/${updated.id}`);
-                }} className="rounded-md bg-[#17864B] px-4 py-2 text-sm font-semibold text-white">اعتماد ونشر</button>
-                <button onClick={() => {
-                  const updated = saveTeacherCourse({ ...course, status: "مرفوض" });
-                  toast.success("تم رفض الدورة");
-                  navigate(`/admin/courses/${updated.id}`);
-                }} className="rounded-md bg-[#D92D20] px-4 py-2 text-sm font-semibold text-white">رفض</button>
+                <button onClick={() => setShowApproveModal(true)} className="rounded-md bg-[#17864B] px-4 py-2 text-sm font-semibold text-white">اعتماد ونشر</button>
+                <button onClick={() => setShowRejectModal(true)} className="rounded-md bg-[#D92D20] px-4 py-2 text-sm font-semibold text-white">رفض</button>
               </>
             ) : (
               <button type="button" onClick={() => navigate(`/admin/courses/${course.id}/edit`)} className="rounded-md bg-[#123C91] px-5 py-2.5 text-sm font-semibold text-white">تعديل الدورة</button>
@@ -586,6 +583,58 @@ const AdminCourseDetailsPage = () => {
         {activeTab === "students" && <StudentsTab course={course} />}
         {activeTab === "reviews" && <ReviewsTab course={course} />}
         {activeTab === "earnings" && <EarningsTab course={course} />}
+
+        {/* Approve modal */}
+        {showApproveModal && (
+          <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4">
+            <div className="w-full max-w-sm rounded-xl bg-white p-5 text-right">
+              <h3 className="mb-2 text-lg font-semibold">اعتماد الدورة للنشر؟</h3>
+              <p className="mb-4 text-sm text-[#667085]">سيتم نشر الدورة "{course.title}" على المنصة وإشعار المحاضر. هل تريد المتابعة؟</p>
+              <div className="flex justify-end gap-2">
+                <button onClick={() => setShowApproveModal(false)} className="rounded-md border px-4 py-2">إلغاء</button>
+                <button onClick={() => {
+                  saveTeacherCourse({ ...course, status: "منشور" });
+                  toast.success("تم اعتماد ونشر الدورة");
+                  setShowApproveModal(false);
+                  navigate('/admin/courses');
+                }} className="rounded-md bg-[#17864B] px-4 py-2 text-white">تأكيد الاعتماد</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Reject modal */}
+        {showRejectModal && (
+          <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4">
+            <div className="w-full max-w-lg rounded-xl bg-white p-5 text-right">
+              <h3 className="mb-2 text-lg font-semibold">سبب الرفض</h3>
+              <p className="mb-4 text-sm text-[#667085]">وضع سبب الرفض بدقة لتمكين المحاضر من تعديل الدورة وإعادة إرسالها للمراجعة.</p>
+              <div className="mb-3">
+                <label className="block text-sm text-[#344054] mb-1">سبب الرفض</label>
+                <select value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} className="w-full rounded-md border px-3 py-2">
+                  <option value="">اختر سببا رئيسيا...</option>
+                  <option value="المحتوى غير مناسب">المحتوى غير مناسب</option>
+                  <option value="جودة التسجيل ضعيفة">جودة التسجيل ضعيفة</option>
+                  <option value="المعلومات ناقصة">المعلومات ناقصة</option>
+                  <option value="اخرى">أخرى</option>
+                </select>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm text-[#344054] mb-1">تفاصيل إضافية</label>
+                <textarea value={rejectDetails} onChange={(e) => setRejectDetails(e.target.value)} rows={4} className="w-full rounded-md border px-3 py-2 text-sm" placeholder="اكتب توضيحًا وأفضّلًا نصائح للمحاضر حول ما يجب تحسينه..." />
+              </div>
+              <div className="flex justify-end gap-2">
+                <button onClick={() => setShowRejectModal(false)} className="rounded-md border px-4 py-2">إلغاء</button>
+                <button onClick={() => {
+                  const updated = saveTeacherCourse({ ...course, status: "مرفوض", rejectedReason: rejectReason, rejectedDetails: rejectDetails });
+                  toast.success("تم رفض الدورة وإرسال الملاحظات للمحاضر");
+                  setShowRejectModal(false);
+                  navigate('/admin/courses');
+                }} disabled={!rejectReason || (rejectDetails && rejectDetails.length < 10)} className="rounded-md bg-[#D92D20] px-4 py-2 text-white disabled:opacity-50">تأكيد</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </AdminLayout>
   );

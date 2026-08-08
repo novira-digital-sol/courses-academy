@@ -14,7 +14,7 @@ import {
   Video,
   X,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import TeacherLayout from "../../../components/teacher/layout/TeacherLayout";
 import CourseStepsNavigation from "../../../components/teacher/courses/CourseStepsNavigation";
@@ -316,9 +316,12 @@ const TagsField = ({ label, values = [], onChange, placeholder }) => {
   );
 };
 
-const TeacherCourseFormPage = () => {
+const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
   const { courseId } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
+  const isAdminFlow = location.pathname.startsWith("/admin");
+  const returnPath = isAdminFlow ? "/admin/courses" : "/teacher/courses";
   const existingCourse = useMemo(
     () => (courseId ? getTeacherCourse(courseId) : null),
     [courseId],
@@ -368,7 +371,7 @@ const TeacherCourseFormPage = () => {
         crypto.randomUUID(),
     });
     toast.success(existingCourse ? "تم تعديل الدورة بنجاح" : "تم إنشاء الدورة بنجاح");
-    navigate("/teacher/courses", { replace: true, state: { savedId: saved.id } });
+    navigate(returnPath, { replace: true, state: { savedId: saved.id } });
   };
 
   const addSection = () =>
@@ -450,29 +453,28 @@ const TeacherCourseFormPage = () => {
   const money = (value) =>
     `${Number(value).toLocaleString("ar-EG", { maximumFractionDigits: 2 })} ج.م`;
 
-  return (
-    <TeacherLayout contentClassName="!p-0">
-      <div
-        dir="rtl"
-        className="min-h-screen bg-[#F7F8FC] px-5 pt-1 pb-5 text-right sm:px-8"
-      >
-        <div className="mx-auto w-full max-w-none">
-          <div className="mb-4">
-            <h1 className="text-[16px] font-bold text-[#123C91]">
-              {existingCourse ? "تعديل الدورة" : "إنشاء دورة جديدة"}
-            </h1>
-            <p className="mt-1 text-sm text-[#667085]">
-              الخطوة {step + 1} من 4 · {STEPS[step]}
-            </p>
-          </div>
+  const formContent = (
+    <div
+      dir="rtl"
+      className="min-h-screen bg-[#F7F8FC] px-5 pt-1 pb-5 text-right sm:px-8"
+    >
+      <div className="mx-auto w-full max-w-none">
+        <div className="mb-4">
+          <h1 className="text-[16px] font-bold text-[#123C91]">
+            {existingCourse ? "تعديل الدورة" : "إنشاء دورة جديدة"}
+          </h1>
+          <p className="mt-1 text-sm text-[#667085]">
+            الخطوة {step + 1} من 4 · {STEPS[step]}
+          </p>
+        </div>
 
-          <div className="mb-4">
-            <CourseStepsNavigation currentStep={step + 1} />
-          </div>
+        <div className="mb-4">
+          <CourseStepsNavigation currentStep={step + 1} />
+        </div>
 
-          <section className="rounded-2xl border border-[#E5E5E5] bg-white px-8 py-7 shadow-[0px_0px_3px_0px_rgba(0,0,0,0.08)] sm:px-12 sm:py-8 lg:px-16">
-            {step === 0 && (
-              <div className="mx-4 space-y-7 sm:mx-6 lg:mx-8 -mt-12">
+        <section className="rounded-2xl border border-[#E5E5E5] bg-white px-8 py-7 shadow-[0px_0px_3px_0px_rgba(0,0,0,0.08)] sm:px-12 sm:py-8 lg:px-16">
+          {step === 0 && (
+            <div className="mx-4 space-y-7 sm:mx-6 lg:mx-8 -mt-12">
                 <div>
                   <h2 className="text-right font-['IBM_Plex_Sans_Arabic'] text-[18px] font-medium text-[#1F2937] sm:text-[20px] ">المعلومات الأساسية</h2>
                   <p className="mt-1 text-right font-['IBM_Plex_Sans_Arabic'] text-[14px] text-[#575F69] sm:text-[16px]">أدخل بيانات الدورة التي ستظهر للطلاب.</p>
@@ -739,7 +741,7 @@ const TeacherCourseFormPage = () => {
             )}
 
             <div className="mx-4 mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-[#EAECF0] pt-5 sm:mx-6 lg:mx-8">
-              <button onClick={() => step === 0 ? navigate("/teacher/courses") : setStep((current) => current - 1)} className="flex items-center gap-2 rounded-lg border border-[#D0D5DD] px-5 py-2.5 text-sm"><ChevronRight size={16} /> {step === 0 ? "إلغاء" : "السابق"}</button>
+              <button onClick={() => step === 0 ? navigate(returnPath) : setStep((current) => current - 1)} className="flex items-center gap-2 rounded-lg border border-[#D0D5DD] px-5 py-2.5 text-sm"><ChevronRight size={16} /> {step === 0 ? "إلغاء" : "السابق"}</button>
               <div className="flex gap-3">
                 <button onClick={() => save("مسودة")} className="rounded-lg border border-[#D0D5DD] px-5 py-2.5 text-sm">حفظ كمسودة</button>
                 {step < 3 ? (
@@ -868,7 +870,12 @@ const TeacherCourseFormPage = () => {
           )}
         </div>
       </div>
-    </TeacherLayout>
+    );
+
+  return useTeacherLayout ? (
+    <TeacherLayout contentClassName="!p-0">{formContent}</TeacherLayout>
+  ) : (
+    formContent
   );
 };
 

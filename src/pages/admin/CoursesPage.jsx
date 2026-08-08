@@ -149,7 +149,7 @@ const AdminCoursesPage = () => {
           </div>
           <button
             type="button"
-            onClick={() => navigate("/teacher/courses/new")}
+            onClick={() => navigate("/admin/courses/new")}
             className="inline-flex h-10 w-fit items-center justify-center gap-2 rounded-md bg-[#123C91] px-5 text-sm font-semibold text-white transition hover:bg-[#0E327A]"
           >
             <Plus size={17} />
