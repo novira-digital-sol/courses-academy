@@ -86,6 +86,11 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
       path: "/admin/blogs",
     },
     {
+      title: "الدورات",
+      icon: Video,
+      path: "/admin/courses",
+    },
+    {
       title: "الإعدادات",
       icon: Settings,
       path: "/admin/settings",
