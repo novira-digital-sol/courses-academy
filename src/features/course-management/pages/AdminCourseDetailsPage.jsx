@@ -76,9 +76,9 @@ const OverviewTab = ({ course, coverSrc, totalLessons }) => {
 
   return (
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
-      <div className="rounded-xl border border-[#E5E7EB] bg-white p-5">
+      <div className="rounded-xl border border-[#E5E7EB] bg-white p-4 sm:p-5">
         <h3 className="font-bold text-[#1F2937]">وصف الدورة</h3>
-        <p className="mt-3 text-[17px] leading-7 text-[#667085]">
+        <p className="mt-3 text-[15px] leading-7 text-[#667085] sm:text-[17px]">
           {course.description || course.shortDescription || "لا يوجد وصف مضاف لهذه الدورة بعد."}
         </p>
         <div className="my-5 border-t border-[#EAECF0]" />
@@ -102,21 +102,21 @@ const OverviewTab = ({ course, coverSrc, totalLessons }) => {
         </dl>
 
         <div className="my-5 border-t border-[#EAECF0]" />
-        <h3 className="mb-3 text-[17px] font-bold text-[#1F2937]">لمن هذه الدورة</h3>
+        <h3 className="mb-3 text-[16px] font-bold text-[#1F2937] sm:text-[17px]">لمن هذه الدورة</h3>
         <div className="flex flex-wrap gap-2">
           {(course.targetAudience ? [course.targetAudience] : ["المبتدئون في البرمجة", "المتعلمون"]).map((item) => (
             <span key={item} className="rounded-full bg-[#EAF2FF] px-3 py-1.5 text-xs text-[#3567C8]">{item}</span>
           ))}
         </div>
 
-        <h3 className="mt-5 mb-3 text-[17px] font-bold text-[#1F2937]">المتطلبات</h3>
+        <h3 className="mt-5 mb-3 text-[16px] font-bold text-[#1F2937] sm:text-[17px]">المتطلبات</h3>
         <div className="flex flex-wrap gap-2">
           {(course.requirements ? [course.requirements] : ["جهاز كمبيوتر", "اتصال بالإنترنت"]).map((item) => (
-            <span key={item} className="rounded-full border border-[#D0D5DD] px-3 py-1.5 text-[14px] text-[#667085]">{item}</span>
+            <span key={item} className="rounded-full border border-[#D0D5DD] px-3 py-1.5 text-[13px] text-[#667085] sm:text-[14px]">{item}</span>
           ))}
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-[#EAECF0] pt-4 text-[14px] text-[#667085]">
+        <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-[#EAECF0] pt-4 text-[13px] text-[#667085] sm:text-[14px]">
           <span className="inline-flex items-center gap-1.5"><Layers3 size={14} className="text-[#123C91]" />{course.curriculum?.length || 0} أقسام</span>
           <span className="inline-flex items-center gap-1.5"><Video size={14} className="text-[#123C91]" />{totalLessons} دروس</span>
           <span className="inline-flex items-center gap-1.5"><Clock3 size={14} className="text-[#123C91]" />{course.duration || 0} ساعة</span>
@@ -126,7 +126,7 @@ const OverviewTab = ({ course, coverSrc, totalLessons }) => {
           <label className="mb-2 block text-[14px] font-semibold text-[#344054]">رابط مشاركة الدورة</label>
           <div className="flex overflow-hidden rounded-md border border-[#D0D5DD]">
             <input readOnly dir="ltr" value={courseUrl} className="h-10 min-w-0 flex-1 bg-[#F9FAFB] px-3 text-left text-xs text-[#667085] outline-none" />
-            <button type="button" onClick={() => navigator.clipboard.writeText(courseUrl)} className="inline-flex items-center gap-1.5 bg-[#123C91] px-4 text-xs font-semibold text-white">
+            <button type="button" onClick={() => navigator.clipboard.writeText(courseUrl)} className="inline-flex shrink-0 items-center gap-1.5 bg-[#123C91] px-4 text-xs font-semibold text-white">
               <Copy size={14} /> نسخ
             </button>
           </div>
@@ -299,13 +299,15 @@ const StudentsTab = ({ course }) => {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-3 rounded-xl border border-[#E5E7EB] bg-white p-4">
-        <label className="relative min-w-60 flex-1">
+        <label className="relative min-w-0 flex-1 sm:min-w-60">
           <Search size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#98A2B3]" />
           <input placeholder="بحث..." className="h-10 w-full rounded-md border border-[#D0D5DD] pr-9 pl-3 text-xs outline-none focus:border-[#123C91]" />
         </label>
         <select className="h-10 rounded-md border border-[#D0D5DD] px-4 text-[14px] text-[#475467]"><option>ترتيب حسب</option><option>الأحدث</option></select>
       </div>
-      <div className="overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
+
+      {/* Desktop / Tablet table */}
+      <div className="hidden overflow-hidden rounded-xl border border-[#E5E7EB] bg-white md:block">
         <div className="overflow-x-auto">
           <table className="w-full min-w-180 text-right text-[14px]">
             <thead className="bg-[#F9FAFB] text-[#667085]"><tr>{["الطالب", "تاريخ التسجيل", "نسبة التقدم", "آخر نشاط", "الإجراءات"].map((h) => <th key={h} className="px-4 py-3 font-medium">{h}</th>)}</tr></thead>
@@ -338,7 +340,51 @@ const StudentsTab = ({ course }) => {
             </tbody>
           </table>
         </div>
-        <div className="flex items-center justify-between border-t border-[#EAECF0] px-4 py-3 text-xs text-[#667085]">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#EAECF0] px-4 py-3 text-xs text-[#667085]">
+          <span>عرض 6 من أصل {Math.max(6, course.students || 0)} طالب</span>
+          <div className="flex gap-1"><button className="grid h-7 w-7 place-items-center rounded border"><ChevronRight size={13} /></button><button className="h-7 w-7 rounded bg-[#123C91] text-white">1</button><button className="h-7 w-7 rounded border">2</button><button className="grid h-7 w-7 place-items-center rounded border"><ChevronLeft size={13} /></button></div>
+        </div>
+      </div>
+
+      {/* Mobile cards */}
+      <div className="space-y-3 md:hidden">
+        {demoStudents.map((name, index) => (
+          <div key={name} className="rounded-xl border border-[#E5E7EB] bg-white p-4">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <span className="text-sm font-medium text-[#344054] break-words">{name}</span>
+              <button
+                type="button"
+                onClick={() =>
+                  navigate("/teacher/messages", {
+                    state: {
+                      openClassroomId: course.id,
+                      openClassroomName: course.title,
+                    },
+                  })
+                }
+                className="inline-flex shrink-0 items-center justify-center rounded-xl border border-[#E5E7EB] bg-[#EAF4FF] p-2 text-[#123C91] transition hover:bg-[#D8EEFF]"
+                aria-label={`فتح محادثة ${name}`}
+              >
+                <MessageSquare size={16} />
+              </button>
+            </div>
+            <div className="grid grid-cols-3 gap-2 border-t border-[#F1F2F4] pt-3 text-center">
+              <div>
+                <p className="mb-0.5 text-[11px] text-[#98A2B3]">التسجيل</p>
+                <p className="text-xs font-medium text-[#667085]">21 يوليو 2026</p>
+              </div>
+              <div>
+                <p className="mb-0.5 text-[11px] text-[#98A2B3]">التقدم</p>
+                <p className="text-xs font-medium text-[#667085]">{80 - (index % 2) * 10}%</p>
+              </div>
+              <div>
+                <p className="mb-0.5 text-[11px] text-[#98A2B3]">آخر نشاط</p>
+                <p className="text-xs font-medium text-[#667085]">أمس</p>
+              </div>
+            </div>
+          </div>
+        ))}
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-xs text-[#667085]">
           <span>عرض 6 من أصل {Math.max(6, course.students || 0)} طالب</span>
           <div className="flex gap-1"><button className="grid h-7 w-7 place-items-center rounded border"><ChevronRight size={13} /></button><button className="h-7 w-7 rounded bg-[#123C91] text-white">1</button><button className="h-7 w-7 rounded border">2</button><button className="grid h-7 w-7 place-items-center rounded border"><ChevronLeft size={13} /></button></div>
         </div>
@@ -517,7 +563,7 @@ const ReviewsTab = ({ course }) => {
 
   return (
     <div className="space-y-4">
-      <div className="grid items-center gap-6 rounded-xl border border-[#E5E7EB] bg-white px-5 py-6 md:grid-cols-[1fr_135px]">
+      <div className="grid items-center gap-6 rounded-xl border border-[#E5E7EB] bg-white px-4 py-6 sm:px-5 md:grid-cols-[1fr_135px]">
         <div className="space-y-3">
           {distribution.map(({ stars, count, width }) => (
             <div key={stars} className="flex items-center gap-3 text-xs">
@@ -537,15 +583,15 @@ const ReviewsTab = ({ course }) => {
       </div>
 
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-4 sm:p-5">
-        <div className="mb-5 mx-1 flex flex-col gap-3 sm:mx-2 sm:flex-row sm:items-center sm:justify-between">
-          <h3 className="mr-4 text-[17px] font-bold text-[#1F2937]">آراء الطلاب</h3>
+        <div className="mb-5 mx-0 flex flex-col gap-3 sm:mx-2 sm:flex-row sm:items-center sm:justify-between">
+          <h3 className="mr-0 text-[16px] font-bold text-[#1F2937] sm:mr-4 sm:text-[17px]">آراء الطلاب</h3>
           <div className="flex flex-wrap items-center gap-1">
             {filters.map(({ id, label }) => (
               <button
                 key={id}
                 type="button"
                 onClick={() => setActiveFilter(id)}
-                className={`ml-2 rounded-full px-4 py-2 text-[14px] font-semibold transition ${
+                className={`ml-2 rounded-full px-4 py-2 text-[13px] font-semibold transition sm:text-[14px] ${
                   activeFilter === id
                     ? "bg-[#1F2937] text-white"
                     : "bg-[#F2F4F7] text-[#667085] hover:bg-[#E5E7EB]"
@@ -559,7 +605,7 @@ const ReviewsTab = ({ course }) => {
 
         <div className="space-y-3">
           {visibleReviews.map((review) => (
-            <article key={review.id} className="mx-1 rounded-lg border border-[#E5E7EB] bg-white px-4 py-3 sm:mx-4">
+            <article key={review.id} className="mx-0 rounded-lg border border-[#E5E7EB] bg-white px-4 py-3 sm:mx-4">
               <div className="flex items-start gap-3">
                 <img
                   src={`https://i.pravatar.cc/80?u=${encodeURIComponent(review.name)}`}
@@ -612,15 +658,15 @@ const EarningsTab = ({ course }) => {
           ["عمولة المنصة (15%)", money(commission)],
           ["صافي أرباحك", money(net)],
         ].map(([label, value]) => (
-          <div key={label} className="px-5 py-4 text-center sm:text-right">
+          <div key={label} className="px-3 py-4 text-center sm:px-5 sm:text-right">
             <span className="block text-xs text-[#667085]">{label}</span>
-            <strong className="mt-2 block text-lg font-bold text-[#1F2937]">{value}</strong>
+            <strong className="mt-2 block text-base font-bold text-[#1F2937] sm:text-lg">{value}</strong>
           </div>
         ))}
       </div>
 
       <div className="flex flex-wrap items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white p-4">
-        <label className="relative min-w-60 flex-1">
+        <label className="relative min-w-0 flex-1 sm:min-w-60">
           <Search size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#98A2B3]" />
           <input
             placeholder="ابحث برقم العملية، اسم الطالب، أو طريقة الدفع..."
@@ -632,7 +678,8 @@ const EarningsTab = ({ course }) => {
         <select className="h-10 rounded-md border border-[#D0D5DD] px-4 text-xs text-[#475467]"><option>ترتيب حسب</option><option>الأحدث</option><option>الأعلى قيمة</option></select>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
+      {/* Desktop / Tablet table */}
+      <div className="hidden overflow-hidden rounded-xl border border-[#E5E7EB] bg-white md:block">
         <div className="overflow-x-auto">
           <table className="w-full min-w-190 text-right text-xs">
             <thead className="bg-[#F9FAFB] text-[#667085]">
@@ -659,7 +706,43 @@ const EarningsTab = ({ course }) => {
             </tbody>
           </table>
         </div>
-        <div className="flex items-center justify-between border-t border-[#EAECF0] px-4 py-3 text-xs text-[#667085]">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#EAECF0] px-4 py-3 text-xs text-[#667085]">
+          <span>عرض 6 من أصل {totalTransactions} معاملة</span>
+          <div className="flex gap-1">
+            <button className="grid h-7 w-7 place-items-center rounded border">
+              <ChevronRight size={13} />
+            </button>
+            <button className="h-7 w-7 rounded bg-[#123C91] text-white">1</button>
+            <button className="h-7 w-7 rounded border">2</button>
+            <button className="grid h-7 w-7 place-items-center rounded border">
+              <ChevronLeft size={13} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile cards */}
+      <div className="space-y-3 md:hidden">
+        {demoStudents.map((name, index) => (
+          <div key={name} className="rounded-xl border border-[#E5E7EB] bg-white p-4 text-xs">
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <span className="font-semibold text-[#344054]">#TXN-{10245 + index}</span>
+              <span className="font-semibold text-[#123C91]">{money(0)}</span>
+            </div>
+            <p className="mb-2 text-[#667085] break-words">{name}</p>
+            <div className="grid grid-cols-2 gap-2 border-t border-[#F1F2F4] pt-2 text-[#667085]">
+              <div>
+                <p className="text-[11px] text-[#98A2B3]">التاريخ</p>
+                <p>26 يوليو 2026</p>
+              </div>
+              <div>
+                <p className="text-[11px] text-[#98A2B3]">طريقة الدفع</p>
+                <p>محفظة إلكترونية</p>
+              </div>
+            </div>
+          </div>
+        ))}
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-xs text-[#667085]">
           <span>عرض 6 من أصل {totalTransactions} معاملة</span>
           <div className="flex gap-1">
             <button className="grid h-7 w-7 place-items-center rounded border">
@@ -722,22 +805,22 @@ const AdminCourseDetailsPage = () => {
     <AdminLayout>
       <div
         dir="rtl"
-        className="min-h-full rounded-xl bg-[#F7F8FC] p-3 pb-10 text-right font-['IBM_Plex_Sans_Arabic'] sm:p-5 sm:pb-12"
+        className="min-h-full min-w-0 overflow-x-hidden rounded-xl bg-[#F7F8FC] p-3 pb-10 text-right font-['IBM_Plex_Sans_Arabic'] sm:p-5 sm:pb-12"
       >
-        <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
-          <div>
+        <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
+          <div className="min-w-0">
             <div className="mb-3 flex items-center gap-2 text-xs text-[#667085]"><Link to="/admin/courses" className="font-semibold text-[#123C91]">الدورات</Link><ChevronLeft size={13} /><span>تفاصيل الدورة</span></div>
-            <div className="flex flex-wrap items-center gap-2"><h1 className="text-xl font-bold text-[#123C91]">{course.title}</h1><span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${isPendingReview ? "bg-[#FFF4D8] text-[#B7791F]" : "bg-[#DDF7E8] text-[#17864B]"}`}>{course.status}</span></div>
+            <div className="flex flex-wrap items-center gap-2"><h1 className="text-lg font-bold text-[#123C91] sm:text-xl">{course.title}</h1><span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${isPendingReview ? "bg-[#FFF4D8] text-[#B7791F]" : "bg-[#DDF7E8] text-[#17864B]"}`}>{course.status}</span></div>
             <p className="mt-2 text-xs text-[#667085]">{course.shortDescription || course.description}</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
             {course.status !== "منشور" ? (
               <>
-                <button onClick={() => setShowApproveModal(true)} className="rounded-md bg-[#17864B] px-4 py-2 text-sm font-semibold text-white">اعتماد ونشر</button>
-                <button onClick={() => setShowRejectModal(true)} className="rounded-md bg-[#D92D20] px-4 py-2 text-sm font-semibold text-white">رفض</button>
+                <button onClick={() => setShowApproveModal(true)} className="w-full rounded-md bg-[#17864B] px-4 py-2 text-sm font-semibold text-white sm:w-auto">اعتماد ونشر</button>
+                <button onClick={() => setShowRejectModal(true)} className="w-full rounded-md bg-[#D92D20] px-4 py-2 text-sm font-semibold text-white sm:w-auto">رفض</button>
               </>
             ) : (
-              <button type="button" onClick={() => navigate(`/admin/courses/${course.id}/edit`)} className="rounded-md bg-[#123C91] px-5 py-2.5 text-sm font-semibold text-white">تعديل الدورة</button>
+              <button type="button" onClick={() => navigate(`/admin/courses/${course.id}/edit`)} className="w-full rounded-md bg-[#123C91] px-5 py-2.5 text-sm font-semibold text-white sm:w-auto">تعديل الدورة</button>
             )}
           </div>
         </div>
@@ -779,14 +862,14 @@ const AdminCourseDetailsPage = () => {
             <div className="w-full max-w-sm rounded-xl bg-white p-5 text-right">
               <h3 className="mb-2 text-lg font-semibold">اعتماد الدورة للنشر؟</h3>
               <p className="mb-4 text-sm text-[#667085]">سيتم نشر الدورة "{course.title}" على المنصة وإشعار المحاضر. هل تريد المتابعة؟</p>
-              <div className="flex justify-end gap-2">
-                <button onClick={() => setShowApproveModal(false)} className="rounded-md border px-4 py-2">إلغاء</button>
+              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <button onClick={() => setShowApproveModal(false)} className="w-full rounded-md border px-4 py-2 sm:w-auto">إلغاء</button>
                 <button onClick={() => {
                   saveTeacherCourse({ ...course, status: "منشور" });
                   toast.success("تم اعتماد ونشر الدورة");
                   setShowApproveModal(false);
                   navigate('/admin/courses');
-                }} className="rounded-md bg-[#17864B] px-4 py-2 text-white">تأكيد الاعتماد</button>
+                }} className="w-full rounded-md bg-[#17864B] px-4 py-2 text-white sm:w-auto">تأكيد الاعتماد</button>
               </div>
             </div>
           </div>
@@ -812,14 +895,14 @@ const AdminCourseDetailsPage = () => {
                 <label className="block text-sm text-[#344054] mb-1">تفاصيل إضافية</label>
                 <textarea value={rejectDetails} onChange={(e) => setRejectDetails(e.target.value)} rows={4} className="w-full rounded-md border px-3 py-2 text-sm" placeholder="اكتب توضيحًا وأفضّلًا نصائح للمحاضر حول ما يجب تحسينه..." />
               </div>
-              <div className="flex justify-end gap-2">
-                <button onClick={() => setShowRejectModal(false)} className="rounded-md border px-4 py-2">إلغاء</button>
+              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <button onClick={() => setShowRejectModal(false)} className="w-full rounded-md border px-4 py-2 sm:w-auto">إلغاء</button>
                 <button onClick={() => {
                   const updated = saveTeacherCourse({ ...course, status: "مرفوض", rejectedReason: rejectReason, rejectedDetails: rejectDetails });
                   toast.success("تم رفض الدورة وإرسال الملاحظات للمحاضر");
                   setShowRejectModal(false);
                   navigate('/admin/courses');
-                }} disabled={!rejectReason || (rejectDetails && rejectDetails.length < 10)} className="rounded-md bg-[#D92D20] px-4 py-2 text-white disabled:opacity-50">تأكيد</button>
+                }} disabled={!rejectReason || (rejectDetails && rejectDetails.length < 10)} className="w-full rounded-md bg-[#D92D20] px-4 py-2 text-white disabled:opacity-50 sm:w-auto">تأكيد</button>
               </div>
             </div>
           </div>

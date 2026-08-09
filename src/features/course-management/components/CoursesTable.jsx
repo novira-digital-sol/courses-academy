@@ -8,7 +8,7 @@ const Badge = ({ label, type }) => {
   };
   return (
     <span
-      className={`inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${map[type] ?? map.gray}`}
+      className={`inline-flex items-center justify-center px-2.5 py-1 sm:px-3 text-[11px] sm:text-xs font-semibold rounded-full whitespace-nowrap shrink-0 ${map[type] ?? map.gray}`}
     >
       {label}
     </span>
@@ -24,7 +24,7 @@ const statusBadge = (status) => {
 const MobileField = ({ label, children }) => (
   <div className="flex items-center justify-between gap-3 py-2.5 border-b border-gray-50 last:border-b-0">
     <span className="text-xs font-medium text-[#8C9198] shrink-0">{label}</span>
-    <span className="text-sm text-[#575F69] font-medium text-left">{children}</span>
+    <span className="text-sm text-[#575F69] font-medium text-left break-words">{children}</span>
   </div>
 );
 
@@ -42,7 +42,7 @@ const CoursesTable = ({ transactions = [] }) => {
     return (
       <div
         dir="rtl"
-        className="w-full bg-white rounded-2xl border border-gray-200 shadow-sm py-12 text-center text-sm text-[#575F69]"
+        className="w-full bg-white rounded-2xl border border-gray-200 shadow-sm py-10 sm:py-12 px-4 text-center text-sm text-[#575F69]"
       >
         لا توجد معاملات
       </div>
@@ -53,16 +53,16 @@ const CoursesTable = ({ transactions = [] }) => {
 
   return (
     <div dir="rtl" className="w-full">
-      {/* Desktop */}
+      {/* Desktop / Tablet */}
       <div className="hidden md:block bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-right">
+          <table className="w-full min-w-[640px] text-right">
             <thead>
               <tr style={{ backgroundColor: "#F9FAFA" }}>
                 {HEADERS.map((h) => (
                   <th
                     key={h}
-                    className="px-5 py-3.5 text-[#575F69] text-[13px] font-medium whitespace-nowrap"
+                    className="px-3 lg:px-5 py-3 lg:py-3.5 text-[#575F69] text-xs lg:text-[13px] font-medium whitespace-nowrap"
                   >
                     {h}
                   </th>
@@ -72,12 +72,12 @@ const CoursesTable = ({ transactions = [] }) => {
             <tbody className="divide-y divide-gray-100">
               {transactions.map((t) => (
                 <tr key={t.id} className="hover:bg-gray-50/80 transition-colors">
-                  <td className="px-5 py-3.5 text-[#575F69] text-sm font-medium whitespace-nowrap">{t.ref}</td>
-                  <td className="px-5 py-3.5 text-[#575F69] text-sm whitespace-nowrap">{t.date}</td>
-                  <td className="px-5 py-3.5 text-[#575F69] text-sm whitespace-nowrap">{t.account}</td>
-                  <td className="px-5 py-3.5 text-[#575F69] text-sm whitespace-nowrap">{t.sessions} حصص</td>
-                  <td className="px-5 py-3.5">{statusBadge(t.status)}</td>
-                  <td className="px-5 py-3.5 text-[#575F69] text-sm font-semibold whitespace-nowrap">{fmt(t.amount)}</td>
+                  <td className="px-3 lg:px-5 py-3 lg:py-3.5 text-[#575F69] text-sm font-medium whitespace-nowrap">{t.ref}</td>
+                  <td className="px-3 lg:px-5 py-3 lg:py-3.5 text-[#575F69] text-sm whitespace-nowrap">{t.date}</td>
+                  <td className="px-3 lg:px-5 py-3 lg:py-3.5 text-[#575F69] text-sm whitespace-nowrap">{t.account}</td>
+                  <td className="px-3 lg:px-5 py-3 lg:py-3.5 text-[#575F69] text-sm whitespace-nowrap">{t.sessions} حصص</td>
+                  <td className="px-3 lg:px-5 py-3 lg:py-3.5">{statusBadge(t.status)}</td>
+                  <td className="px-3 lg:px-5 py-3 lg:py-3.5 text-[#575F69] text-sm font-semibold whitespace-nowrap">{fmt(t.amount)}</td>
                 </tr>
               ))}
             </tbody>
@@ -88,9 +88,9 @@ const CoursesTable = ({ transactions = [] }) => {
       {/* Mobile */}
       <div className="md:hidden space-y-3">
         {transactions.map((t) => (
-          <div key={t.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[#1A1A1A] font-semibold text-sm">{t.ref}</span>
+          <div key={t.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-3.5 sm:p-4">
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <span className="text-[#1A1A1A] font-semibold text-sm break-words">{t.ref}</span>
               {statusBadge(t.status)}
             </div>
             <div className="space-y-0.5">

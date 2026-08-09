@@ -31,6 +31,43 @@ const statusStyles = {
 const formatMoney = (value) =>
   `${Number(value || 0).toLocaleString("ar-EG")} جنيه`;
 
+const CourseActionsMenu = ({ position, onAction, onClose }) => (
+  <>
+    <button
+      type="button"
+      aria-label="إغلاق قائمة الإجراءات"
+      onClick={onClose}
+      className="fixed inset-0 z-40 cursor-default"
+    />
+    <div
+      dir="rtl"
+      role="menu"
+      className="fixed z-50 w-37.5 overflow-hidden rounded-xl bg-[#1F2937] py-2 text-right text-sm text-white shadow-xl"
+      style={{ top: position.top, left: position.left }}
+    >
+      {[
+        { action: "details", label: "عرض التفاصيل", icon: BookOpen },
+        { action: "edit", label: "تعديل", icon: SquarePen },
+        { action: "share", label: "مشاركة", icon: Share2 },
+        { action: "delete", label: "حذف", icon: Trash2, danger: true },
+      ].map(({ action, label, icon: Icon, danger }) => (
+        <button
+          type="button"
+          role="menuitem"
+          key={label}
+          onClick={() => onAction(action)}
+          className={`flex w-full items-center justify-start gap-2 px-4 py-2 text-right transition hover:bg-white/10 ${
+            danger ? "hover:text-[#FFB4B4]" : ""
+          }`}
+        >
+          <Icon size={15} className="shrink-0" />
+          <span>{label}</span>
+        </button>
+      ))}
+    </div>
+  </>
+);
+
 const TeacherCoursesPage = () => {
   const navigate = useNavigate();
   const [teacherCourses, setTeacherCourses] = useState(getTeacherCourses);
@@ -142,15 +179,15 @@ const TeacherCoursesPage = () => {
       >
         <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="font-['IBM_Plex_Sans_Arabic'] font-semibold text-[24px] leading-8 text-primary w-full text-right mb-4">إدارة الدورات</h2>
-             <p className="text-gray-500 font-medium -mt-3 px-2">
+            <h2 className="font-['IBM_Plex_Sans_Arabic'] font-semibold text-xl sm:text-[24px] leading-7 sm:leading-8 text-primary w-full text-right mb-2 sm:mb-4">إدارة الدورات</h2>
+             <p className="text-gray-500 font-medium text-sm sm:text-base sm:-mt-3 px-1 sm:px-2">
               إنشاء وتعديل الدورات التعليمية
             </p>
           </div>
           <button
             type="button"
             onClick={() => navigate("/teacher/courses/new")}
-            className="inline-flex h-10 w-fit items-center justify-center gap-2 rounded-md bg-[#123C91] px-5 text-sm font-semibold text-white transition hover:bg-[#0E327A]"
+            className="inline-flex h-10 w-full sm:w-fit items-center justify-center gap-2 rounded-md bg-[#123C91] px-5 text-sm font-semibold text-white transition hover:bg-[#0E327A]"
           >
             <Plus size={17} />
             دورة جديدة
@@ -166,7 +203,7 @@ const TeacherCoursesPage = () => {
           />
         </div>
 
-        <div className="mb-4 grid gap-3 rounded-xl border border-[#E5E7EB] bg-white p-4 md:grid-cols-[minmax(220px,1fr)_220px_170px]">
+        <div className="mb-4 grid gap-3 rounded-xl border border-[#E5E7EB] bg-white p-3 sm:p-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-[minmax(220px,1fr)_200px_170px]">
           <label className="relative">
             <Search
               size={17}
@@ -213,7 +250,8 @@ const TeacherCoursesPage = () => {
           </label>
         </div>
 
-        <div className="overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
+        {/* Desktop / Tablet table */}
+        <div className="hidden md:block overflow-hidden rounded-lg border border-[#E5E7EB] bg-white">
           <div className="overflow-x-auto">
             <table dir="rtl" className="w-full min-w-190 text-right">
               <thead className="border-b border-[#E5E7EB] bg-[#FAFAFA]">
@@ -293,12 +331,79 @@ const TeacherCoursesPage = () => {
           )}
         </div>
 
+        {/* Mobile cards */}
+        <div className="md:hidden space-y-3">
+          {visibleCourses.map((course) => (
+            <div key={course.id} className="rounded-lg border border-[#E5E7EB] bg-white p-4">
+              <div className="flex items-start justify-between gap-2 mb-3">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className="rounded-md bg-[#EAF2FF] p-2 text-[#3567C8] shrink-0">
+                    <BookOpen size={18} />
+                  </span>
+                  <Link
+                    to={`/teacher/courses/${course.id}`}
+                    className="font-semibold text-[#1F2937] text-sm transition hover:text-[#123C91] hover:underline break-words"
+                  >
+                    {course.title}
+                  </Link>
+                </div>
+                <button
+                  type="button"
+                  aria-label={`إجراءات ${course.title}`}
+                  aria-expanded={actionsMenu?.courseId === course.id}
+                  onClick={(event) => toggleActionsMenu(event, course.id)}
+                  className="shrink-0 rounded-md p-1.5 text-[#475467] hover:bg-[#EEF2F6]"
+                >
+                  <EllipsisVertical size={18} />
+                </button>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                <span className="rounded-full bg-[#EAF2FF] px-3 py-1 text-xs font-medium text-[#3567C8]">
+                  {course.category}
+                </span>
+                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[course.status]}`}>
+                  {course.status}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 text-center border-t border-[#F1F2F4] pt-3">
+                <div>
+                  <p className="text-[11px] text-[#8C9198] mb-0.5">الطلاب</p>
+                  <p className="text-sm font-medium text-[#475467]">{course.students}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] text-[#8C9198] mb-0.5">التقييم</p>
+                  {Number.isFinite(Number(course.rating)) ? (
+                    <span className="inline-flex items-center justify-center gap-1 text-sm font-medium text-[#475467]" dir="ltr">
+                      <Star size={12} className="fill-[#F5A623] text-[#F5A623]" aria-hidden="true" />
+                      {Number(course.rating).toFixed(1)}
+                    </span>
+                  ) : (
+                    <p className="text-sm text-[#98A2B3]">—</p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-[11px] text-[#8C9198] mb-0.5">الأرباح</p>
+                  <p className="text-sm font-medium text-[#475467] break-words">{formatMoney(course.revenue)}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {visibleCourses.length === 0 && (
+            <div className="rounded-lg border border-[#E5E7EB] bg-white px-4 py-12 text-center text-sm text-[#667085]">
+              لا توجد دورات مطابقة للبحث
+            </div>
+          )}
+        </div>
+
         <div className="mt-4 flex flex-col gap-3 text-xs text-[#667085] sm:flex-row sm:items-center sm:justify-between">
-          <p>
+          <p className="text-center sm:text-right">
             عرض {startItem}–{endItem} من أصل {filteredCourses.length} دورة
           </p>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
             <label className="flex items-center gap-2">
               <span>عرض في الصفحة</span>
               <select
@@ -313,7 +418,7 @@ const TeacherCoursesPage = () => {
               </select>
             </label>
 
-            <nav aria-label="صفحات الدورات" className="flex items-center gap-1" dir="rtl">
+            <nav aria-label="صفحات الدورات" className="flex flex-wrap items-center justify-center gap-1" dir="rtl">
               <button
                 type="button"
                 aria-label="الصفحة السابقة"
@@ -355,42 +460,12 @@ const TeacherCoursesPage = () => {
         </div>
 
         {actionsMenu && (
-          <>
-            <button
-              type="button"
-              aria-label="إغلاق قائمة الإجراءات"
-              onClick={() => setActionsMenu(null)}
-              className="fixed inset-0 z-40 cursor-default"
-            />
-            <div
-              dir="rtl"
-              role="menu"
-              className="fixed z-50 w-37.5 overflow-hidden rounded-xl bg-[#1F2937] py-2 text-right text-sm text-white shadow-xl"
-              style={{ top: actionsMenu.top, left: actionsMenu.left }}
-            >
-              {[
-                { action: "details", label: "عرض التفاصيل", icon: BookOpen },
-                { action: "edit", label: "تعديل", icon: SquarePen },
-                { action: "share", label: "مشاركة", icon: Share2 },
-                { action: "delete", label: "حذف", icon: Trash2, danger: true },
-              ].map(({ action, label, icon: Icon, danger }) => (
-                <button
-                  type="button"
-                  role="menuitem"
-                  key={label}
-                  onClick={() => handleAction(action)}
-                  className={`flex w-full items-center justify-start gap-2 px-4 py-2 text-right transition hover:bg-white/10 ${
-                    danger ? "hover:text-[#FFB4B4]" : ""
-                  }`}
-                >
-                  <Icon size={15} className="shrink-0" />
-                  <span>{label}</span>
-                </button>
-              ))}
-            </div>
-          </>
+          <CourseActionsMenu
+            position={actionsMenu}
+            onAction={handleAction}
+            onClose={() => setActionsMenu(null)}
+          />
         )}
-
       </div>
     </TeacherLayout>
   );
