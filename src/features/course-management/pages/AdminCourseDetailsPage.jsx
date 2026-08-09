@@ -529,6 +529,21 @@ const AdminCourseDetailsPage = () => {
   }
 
   const totalLessons = course.curriculum?.reduce((sum, section) => sum + section.lessons.length, 0) || course.lessons || 0;
+  const isPendingReview = course.status === "قيد المراجعة";
+  const tabs = isPendingReview
+    ? [
+        { id: "overview", label: "نظرة عامة", icon: LayoutGrid },
+        { id: "curriculum", label: "المنهج", icon: Layers3 },
+        { id: "instructor", label: "المحاضر", icon: Users },
+      ]
+    : [
+        { id: "overview", label: "نظرة عامة", icon: LayoutGrid },
+        { id: "curriculum", label: "المنهج", icon: Layers3 },
+        { id: "instructor", label: "المحاضر", icon: Users },
+        { id: "students", label: "الطلاب", icon: Users },
+        { id: "reviews", label: "التقييمات", icon: Star },
+        { id: "earnings", label: "الأرباح", icon: WalletCards },
+      ];
   const uploadedCover = typeof course.cover === "object" ? course.cover.previewUrl || course.cover.dataUrl : "";
   const coverSrc = uploadedCover || coverMap[course.cover] || pythonCover;
 
@@ -541,7 +556,7 @@ const AdminCourseDetailsPage = () => {
         <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
           <div>
             <div className="mb-3 flex items-center gap-2 text-xs text-[#667085]"><Link to="/admin/courses" className="font-semibold text-[#123C91]">الدورات</Link><ChevronLeft size={13} /><span>تفاصيل الدورة</span></div>
-            <div className="flex items-center gap-2"><h1 className="text-xl font-bold text-[#123C91]">{course.title}</h1><span className="rounded-full bg-[#DDF7E8] px-2.5 py-1 text-[10px] font-semibold text-[#17864B]">{course.status}</span></div>
+            <div className="flex flex-wrap items-center gap-2"><h1 className="text-xl font-bold text-[#123C91]">{course.title}</h1><span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${isPendingReview ? "bg-[#FFF4D8] text-[#B7791F]" : "bg-[#DDF7E8] text-[#17864B]"}`}>{course.status}</span></div>
             <p className="mt-2 text-xs text-[#667085]">{course.shortDescription || course.description}</p>
           </div>
           <div className="flex gap-2">
@@ -556,22 +571,25 @@ const AdminCourseDetailsPage = () => {
           </div>
         </div>
 
-        <div className="mb-4 grid gap-3 md:grid-cols-3">
-          <StatCard icon={Users} value={course.students || 0} label="إجمالي الطلاب" accent="bg-[#EAF2FF] text-[#3567C8]" />
-          <StatCard icon={Star} value={Number(course.rating || 0).toFixed(1)} label="التقييم" accent="bg-[#FFF4D8] text-[#F5A623]" />
-          <StatCard icon={WalletCards} value={money(course.revenue)} label="إجمالي الأرباح" accent="bg-[#E8FFFC] text-[#12A594]" />
+        <div className="mb-4 grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+          {isPendingReview ? (
+            <>
+              <StatCard icon={Layers3} value={course.curriculum?.length || 0} label="أقسام" accent="bg-[#EAF2FF] text-[#3567C8]" />
+              <StatCard icon={BookOpen} value={totalLessons} label="دروس" accent="bg-[#EAF2FF] text-[#3567C8]" />
+              <StatCard icon={WalletCards} value={money(course.price)} label="سعر الدورة" accent="bg-[#E8FFFC] text-[#12A594]" />
+            </>
+          ) : (
+            <>
+              <StatCard icon={Users} value={course.students || 0} label="إجمالي الطلاب" accent="bg-[#EAF2FF] text-[#3567C8]" />
+              <StatCard icon={Star} value={Number(course.rating || 0).toFixed(1)} label="التقييم" accent="bg-[#FFF4D8] text-[#F5A623]" />
+              <StatCard icon={WalletCards} value={money(course.revenue)} label="إجمالي الأرباح" accent="bg-[#E8FFFC] text-[#12A594]" />
+            </>
+          )}
         </div>
 
         <div className="mb-4 overflow-x-auto">
           <nav className="flex min-w-max items-center justify-start gap-1 rounded-lg border border-[#E5E7EB] bg-white p-1">
-            {[
-              { id: "overview", label: "نظرة عامة", icon: LayoutGrid },
-              { id: "curriculum", label: "المنهج", icon: Layers3 },
-              { id: "instructor", label: "المحاضر", icon: Users },
-              { id: "students", label: "الطلاب", icon: Users },
-              { id: "reviews", label: "التقييمات", icon: Star },
-              { id: "earnings", label: "الأرباح", icon: WalletCards },
-            ].map(({ id, label, icon: Icon }) => (
+            {tabs.map(({ id, label, icon: Icon }) => (
               <button key={id} type="button" onClick={() => setActiveTab(id)} className={`inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-xs font-semibold transition ${activeTab === id ? "bg-[#1F2937] text-white" : "text-[#667085] hover:bg-[#F2F4F7]"}`}><Icon size={15} />{label}</button>
             ))}
           </nav>
