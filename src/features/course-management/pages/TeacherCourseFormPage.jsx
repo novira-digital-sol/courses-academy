@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import {
   BadgeCheck,
   ChevronLeft,
@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 import TeacherLayout from "../../../components/teacher/layout/TeacherLayout";
 // ⚠️ تأكدي من المسار ده صح عندك (نفس نمط TeacherLayout بس جوه components/admin/layout)
 import AdminLayout from "../../../components/admin/layout/AdminLayout";
+import { AuthContext } from "../../../context/AuthContext";
 import CourseStepsNavigation from "../components/CourseStepsNavigation";
 import {
   getTeacherCourse,
@@ -322,6 +323,7 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
   const { courseId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const isAdminFlow = location.pathname.startsWith("/admin");
   const returnPath = isAdminFlow ? "/admin/courses" : "/teacher/courses";
   const existingCourse = useMemo(
@@ -378,6 +380,26 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
         : existingCourse?.submittedCurriculum;
     const saved = saveTeacherCourse({
       ...course,
+      instructor:
+        course.instructor ||
+        (!isAdminFlow
+          ? {
+              id: user?._id || user?.id,
+              name: user?.fullName || user?.name || "المحاضر",
+              email: user?.email || "",
+              phone: user?.phone || user?.phoneNumber || "",
+              avatar: user?.avatar || user?.profileImage || "",
+              subject: user?.subject || user?.specialization || course.subject || "غير محدد",
+              stage: user?.stage || user?.academicStage || course.academicStage || "غير محددة",
+              curriculum: user?.curriculum || user?.educationSystem || "غير محدد",
+              experience: user?.experience || user?.yearsOfExperience || "غير محددة",
+              joinedAt: user?.createdAt || new Date().toISOString(),
+              cvUrl: user?.cv?.url || user?.cvUrl || "",
+              cvName: user?.cv?.name || user?.cvName || "",
+              cvSize: user?.cv?.size || user?.cvSize || "",
+              status: user?.status || "نشط",
+            }
+          : undefined),
       id: existingCourse?.id,
       price: course.pricingType === "free" ? 0 : Number(course.price),
       status,
@@ -760,7 +782,16 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
             <div className="mx-2 mt-8 flex flex-col items-stretch justify-between gap-3 border-t border-[#EAECF0] pt-5 sm:mx-4 sm:flex-row sm:items-center md:mx-6 lg:mx-8">
               <button onClick={() => step === 0 ? navigate(returnPath) : setStep((current) => current - 1)} className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#D0D5DD] px-4 py-2.5 text-sm sm:w-auto sm:px-5"><ChevronRight size={16} /> {step === 0 ? "إلغاء" : "السابق"}</button>
               <div className="grid w-full grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:flex sm:w-auto">
-                <button onClick={() => save("مسودة")} className="w-full rounded-lg border border-[#D0D5DD] px-4 py-2.5 text-sm sm:w-auto sm:px-5">حفظ كمسودة</button>
+                {existingCourse && step < 3 ? (
+                  <button
+                    onClick={() => save(course.status)}
+                    className="w-full rounded-lg border border-[#123C91] bg-[#EAF2FF] px-4 py-2.5 text-sm font-semibold text-[#123C91] transition hover:bg-[#DCE9FF] sm:w-auto sm:px-5"
+                  >
+                    حفظ التعديلات
+                  </button>
+                ) : !existingCourse ? (
+                  <button onClick={() => save("مسودة")} className="w-full rounded-lg border border-[#D0D5DD] px-4 py-2.5 text-sm sm:w-auto sm:px-5">حفظ كمسودة</button>
+                ) : null}
                 {step < 3 ? (
                   <button onClick={next} className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#123C91] px-5 py-2.5 text-sm font-semibold text-white sm:w-auto sm:px-7">التالي <ChevronLeft size={16} /></button>
                 ) : (

@@ -8,6 +8,9 @@ import {
   Clock3,
   Copy,
   CircleHelp,
+  Download,
+  FileText,
+  Mail,
   LayoutGrid,
   Layers3,
   MessageSquare,
@@ -16,6 +19,7 @@ import {
   Users,
   Video,
   WalletCards,
+  X,
 } from "lucide-react";
 import AdminLayout from "../../../components/admin/layout/AdminLayout";
 import { getTeacherCourse, saveTeacherCourse } from "../utils/teacherCoursesStorage";
@@ -344,23 +348,122 @@ const StudentsTab = ({ course }) => {
 };
 
 const InstructorTab = ({ course }) => {
-  const instructor = course.instructor || { name: "محمد أحمد", bio: "مدرس · 9 سنوات خبرة", avatar: "https://i.pravatar.cc/80?u=admin-instructor" };
+  const navigate = useNavigate();
+  const [showDetails, setShowDetails] = useState(false);
+  const rawInstructor = course.instructor || course.teacher || {};
+  const instructor =
+    typeof rawInstructor === "string"
+      ? { name: rawInstructor }
+      : rawInstructor;
+  const name =
+    instructor.name ||
+    instructor.fullName ||
+    instructor.user?.fullName ||
+    course.teacherName ||
+    "المحاضر";
+  const instructorId =
+    instructor.id || instructor._id || instructor.user?.id || instructor.user?._id;
+  const avatar = instructor.avatar || instructor.profileImage || instructor.user?.avatar;
+  const email = instructor.email || instructor.user?.email || "غير متوفر";
+  const phone = instructor.phone || instructor.phoneNumber || instructor.user?.phone || "غير متوفر";
+  const subject = instructor.subject || instructor.specialization || course.subject || "غير محدد";
+  const stage = instructor.stage || instructor.academicStage || course.academicStage || "غير محددة";
+  const curriculum = instructor.curriculum || instructor.educationSystem || "غير محدد";
+  const experience = instructor.experience || instructor.yearsOfExperience || "غير محددة";
+  const joinedAt = instructor.joinedAt || instructor.createdAt;
+  const joinedDate = joinedAt
+    ? new Date(joinedAt).toLocaleDateString("ar-EG")
+    : "غير محدد";
+  const bio = instructor.bio || `${subject} · ${experience}${typeof experience === "number" ? " سنوات خبرة" : ""}`;
+
+  const openMessages = () => {
+    navigate("/admin/messages", {
+      state: {
+        openUserId: instructorId,
+        openClassroomId: course.id,
+        openClassroomName: course.title,
+      },
+    });
+  };
 
   return (
-    <div className="rounded-xl border border-[#E5E7EB] bg-white p-5">
-      <h3 className="font-bold text-[#1F2937]">المحاضر</h3>
-      <div className="mt-4 flex items-center gap-4">
-        <img src={instructor.avatar} alt={instructor.name} className="h-16 w-16 rounded-full object-cover" />
-        <div>
-          <strong className="block text-lg text-[#1F2937]">{instructor.name}</strong>
-          <p className="mt-1 text-sm text-[#667085]">{instructor.bio}</p>
-          <div className="mt-3 flex gap-2">
-            <button className="rounded-md bg-[#123C91] px-4 py-2 text-xs font-semibold text-white">عرض التفاصيل</button>
-            <button className="rounded-md border px-4 py-2 text-xs font-semibold">مراسلة</button>
+    <>
+      <div className="rounded-xl border border-[#E5E7EB] bg-white p-4 sm:p-5">
+        <h3 className="font-bold text-[#1F2937]">المحاضر المسؤول عن الدورة</h3>
+        <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center">
+          {avatar ? (
+            <img src={avatar} alt={name} className="h-16 w-16 rounded-full object-cover" />
+          ) : (
+            <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-[#EAF2FF] text-xl font-bold text-[#123C91]">
+              {name.trim().charAt(0)}
+            </span>
+          )}
+          <div className="min-w-0 flex-1">
+            <strong className="block text-lg text-[#1F2937]">{name}</strong>
+            <p className="mt-1 text-sm text-[#667085]">{bio}</p>
+            <div className="mt-3 flex flex-col gap-2 min-[420px]:flex-row">
+              <button onClick={() => setShowDetails(true)} className="rounded-md bg-[#123C91] px-4 py-2.5 text-xs font-semibold text-white">عرض التفاصيل</button>
+              <button onClick={openMessages} className="inline-flex items-center justify-center gap-2 rounded-md border border-[#D0D5DD] px-4 py-2.5 text-xs font-semibold text-[#344054]"><MessageSquare size={14} /> مراسلة</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {showDetails && (
+        <div className="fixed inset-0 z-[100] grid place-items-center bg-black/60 p-3 sm:p-4" onMouseDown={() => setShowDetails(false)}>
+          <div className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white shadow-2xl" onMouseDown={(event) => event.stopPropagation()}>
+            <div className="flex items-center justify-between border-b border-[#EAECF0] px-4 py-4 sm:px-5">
+              <h3 className="font-bold text-[#1F2937]">تفاصيل المحاضر</h3>
+              <button type="button" onClick={() => setShowDetails(false)} className="rounded-md p-2 text-[#667085] hover:bg-[#F2F4F7]" aria-label="إغلاق"><X size={18} /></button>
+            </div>
+
+            <div className="space-y-4 p-4 sm:p-5">
+              <div className="flex items-center gap-4 rounded-xl bg-[#F8FAFC] p-4">
+                {avatar ? (
+                  <img src={avatar} alt={name} className="h-14 w-14 rounded-full object-cover" />
+                ) : (
+                  <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-white text-lg font-bold text-[#123C91] shadow-sm">{name.trim().charAt(0)}</span>
+                )}
+                <div className="min-w-0 flex-1">
+                  <strong className="block truncate text-[#1F2937]">{name}</strong>
+                  <span className="mt-1 flex items-center gap-1.5 truncate text-xs text-[#667085]"><Mail size={13} />{email}</span>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <span className="rounded-full bg-[#DDF7E8] px-2.5 py-1 text-[10px] font-semibold text-[#17864B]">{instructor.status || "نشط"}</span>
+                    <span className="rounded-full bg-[#EAF2FF] px-2.5 py-1 text-[10px] font-semibold text-[#123C91]">معلم</span>
+                  </div>
+                </div>
+              </div>
+
+              <dl className="grid gap-3 sm:grid-cols-2">
+                {[
+                  ["رقم الهاتف", phone],
+                  ["تاريخ الانضمام", joinedDate],
+                  ["المادة", subject],
+                  ["المرحلة", stage],
+                  ["المنهج", curriculum],
+                  ["سنوات الخبرة", typeof experience === "number" ? `${experience} سنوات` : experience],
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-xl bg-[#F8FAFC] px-4 py-3">
+                    <dt className="text-[11px] text-[#98A2B3]">{label}</dt>
+                    <dd className="mt-1 text-sm font-semibold text-[#344054]">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              {(instructor.cvName || instructor.cvUrl) && (
+                <a href={instructor.cvUrl || "#"} download className="flex items-center gap-3 rounded-xl border border-[#E5E7EB] p-4 text-[#344054]">
+                  <FileText size={20} className="text-[#123C91]" />
+                  <span className="min-w-0 flex-1"><strong className="block truncate text-sm">{instructor.cvName || "السيرة الذاتية"}</strong><small className="text-[#98A2B3]">{instructor.cvSize || "ملف مرفق"}</small></span>
+                  <Download size={17} />
+                </a>
+              )}
+
+              <button onClick={openMessages} className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#123C91] px-5 py-3 text-sm font-semibold text-white"><MessageSquare size={16} /> مراسلة المحاضر</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
