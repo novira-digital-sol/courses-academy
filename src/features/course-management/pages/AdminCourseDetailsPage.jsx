@@ -588,8 +588,16 @@ const AdminCourseDetailsPage = () => {
     return <AdminLayout><div dir="rtl" className="rounded-xl bg-white p-10 text-center"><BookOpen className="mx-auto mb-3 text-[#98A2B3]" /><p className="text-[#667085]">لم يتم العثور على الدورة.</p><Link to="/admin/courses" className="mt-4 inline-block font-semibold text-[#123C91]">العودة إلى الدورات</Link></div></AdminLayout>;
   }
 
-  const totalLessons = course.curriculum?.reduce((sum, section) => sum + section.lessons.length, 0) || course.lessons || 0;
   const isPendingReview = course.status === "قيد المراجعة";
+  const reviewCurriculum =
+    isPendingReview && course.submittedCurriculum?.length
+      ? course.submittedCurriculum
+      : course.curriculum || [];
+  const reviewCourse = { ...course, curriculum: reviewCurriculum };
+  const totalLessons = reviewCurriculum.reduce(
+    (sum, section) => sum + (section.lessons?.length || 0),
+    0,
+  ) || course.lessons || 0;
   const tabs = isPendingReview
     ? [
         { id: "overview", label: "نظرة عامة", icon: LayoutGrid },
@@ -634,7 +642,7 @@ const AdminCourseDetailsPage = () => {
         <div className="mb-4 grid gap-3 sm:grid-cols-2 md:grid-cols-3">
           {isPendingReview ? (
             <>
-              <StatCard icon={Layers3} value={course.curriculum?.length || 0} label="أقسام" accent="bg-[#EAF2FF] text-[#3567C8]" />
+              <StatCard icon={Layers3} value={reviewCurriculum.length} label="أقسام" accent="bg-[#EAF2FF] text-[#3567C8]" />
               <StatCard icon={BookOpen} value={totalLessons} label="دروس" accent="bg-[#EAF2FF] text-[#3567C8]" />
               <StatCard icon={WalletCards} value={money(course.price)} label="سعر الدورة" accent="bg-[#E8FFFC] text-[#12A594]" />
             </>
@@ -655,8 +663,8 @@ const AdminCourseDetailsPage = () => {
           </nav>
         </div>
 
-        {activeTab === "overview" && <OverviewTab course={course} coverSrc={coverSrc} totalLessons={totalLessons} />}
-        {activeTab === "curriculum" && <CurriculumTab course={course} />}
+        {activeTab === "overview" && <OverviewTab course={reviewCourse} coverSrc={coverSrc} totalLessons={totalLessons} />}
+        {activeTab === "curriculum" && <CurriculumTab course={reviewCourse} />}
         {activeTab === "instructor" && <InstructorTab course={course} />}
         {activeTab === "students" && <StudentsTab course={course} />}
         {activeTab === "reviews" && <ReviewsTab course={course} />}

@@ -362,11 +362,26 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
   };
 
   const save = (status = course.status) => {
+    const submittedCurriculum =
+      status === "قيد المراجعة"
+        ? course.curriculum.map((section) => ({
+            ...section,
+            lessons: section.lessons.map((lesson) => ({
+              ...lesson,
+              attachments: [...(lesson.attachments || [])],
+              quiz: (lesson.quiz || []).map((question) => ({
+                ...question,
+                options: [...(question.options || [])],
+              })),
+            })),
+          }))
+        : existingCourse?.submittedCurriculum;
     const saved = saveTeacherCourse({
       ...course,
       id: existingCourse?.id,
       price: course.pricingType === "free" ? 0 : Number(course.price),
       status,
+      submittedCurriculum,
       slug:
         course.slug ||
         course.title.trim().toLowerCase().replace(/\s+/g, "-") ||

@@ -6,7 +6,11 @@ import { getTeacherCourse } from "../utils/teacherCoursesStorage";
 const AdminQuizReviewPage = () => {
   const { courseId, lessonId } = useParams();
   const course = getTeacherCourse(courseId);
-  const lesson = course?.curriculum
+  const reviewCurriculum =
+    course?.status === "قيد المراجعة" && course?.submittedCurriculum?.length
+      ? course.submittedCurriculum
+      : course?.curriculum || [];
+  const lesson = reviewCurriculum
     ?.flatMap((section) => section.lessons || [])
     .find((item) => String(item.id) === String(lessonId));
   const questions = lesson?.quiz || [];
