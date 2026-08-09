@@ -476,7 +476,7 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
 
         <section className="rounded-2xl border border-[#E5E5E5] bg-white px-4 py-6 shadow-[0px_0px_3px_0px_rgba(0,0,0,0.08)] sm:px-8 sm:py-7 md:px-12 md:py-8 lg:px-16">
           {step === 0 && (
-            <div className="mx-0 space-y-6 sm:mx-2 sm:space-y-7 lg:mx-8 sm:-mt-8 lg:-mt-12">
+            <div className="mx-2 space-y-6 sm:mx-4 sm:space-y-7 sm:-mt-8 md:mx-6 lg:mx-8 lg:-mt-12">
                 <div>
                   <h2 className="text-right font-['IBM_Plex_Sans_Arabic'] text-[17px] font-medium text-[#1F2937] sm:text-[18px] md:text-[20px]">المعلومات الأساسية</h2>
                   <p className="mt-1 text-right font-['IBM_Plex_Sans_Arabic'] text-[13px] text-[#575F69] sm:text-[14px] md:text-[16px]">أدخل بيانات الدورة التي ستظهر للطلاب.</p>
@@ -562,7 +562,7 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
             )}
 
             {step === 1 && (
-              <div className="mx-0 space-y-5 sm:-mt-8 lg:mx-2 lg:-mt-12">
+              <div className="mx-2 space-y-5 sm:mx-4 sm:-mt-8 md:mx-6 lg:mx-8 lg:-mt-12">
                 <div>
                   <h2 className="text-[16px] font-semibold text-[#1F2937] sm:text-[17px]">بناء المنهج الدراسي</h2>
                   <p className="mt-1.5 text-[13px] text-[#667085] sm:text-[14px]">
@@ -639,7 +639,7 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
             )}
 
             {step === 2 && (
-              <div className="mx-0 space-y-5 sm:mx-2 sm:-mt-8 lg:mx-8 lg:-mt-12">
+              <div className="mx-2 space-y-5 sm:mx-4 sm:-mt-8 md:mx-6 lg:mx-8 lg:-mt-12">
                 <div>
                   <h2 className="font-bold text-[#1F2937]">تسعير الدورة</h2>
                   <p className="mt-1 text-[14px] text-[#667085]">
@@ -732,7 +732,7 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
             )}
 
             {step === 3 && (
-              <div className="mx-0 space-y-5 sm:mx-2 sm:-mt-8 lg:mx-8 lg:-mt-12">
+              <div className="mx-2 space-y-5 sm:mx-4 sm:-mt-8 md:mx-6 lg:mx-8 lg:-mt-12">
                 <div><h2 className="font-bold text-[#1F2937]">مراجعة الدورة</h2><p className="mt-1 text-[14px] text-[#667085]">تأكد من البيانات قبل الإرسال.</p></div>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="rounded-xl border border-[#E5E7EB] p-4"><h3 className="mb-3 font-bold">المعلومات الأساسية</h3><dl className="space-y-2 text-[14px]"><div><dt className="text-[#667085]">العنوان</dt><dd>{course.title}</dd></div><div><dt className="text-[#667085]">التصنيف والمستوى</dt><dd>{course.category} · {course.level}</dd></div><div><dt className="text-[#667085]">اللغة</dt><dd>{course.language}</dd></div></dl></div>
@@ -742,14 +742,14 @@ const TeacherCourseFormPage = ({ useTeacherLayout = true }) => {
               </div>
             )}
 
-            <div className="mx-0 mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-[#EAECF0] pt-5 sm:mx-2 lg:mx-8">
-              <button onClick={() => step === 0 ? navigate(returnPath) : setStep((current) => current - 1)} className="flex items-center gap-2 rounded-lg border border-[#D0D5DD] px-4 py-2.5 text-sm sm:px-5"><ChevronRight size={16} /> {step === 0 ? "إلغاء" : "السابق"}</button>
-              <div className="flex flex-wrap gap-3">
-                <button onClick={() => save("مسودة")} className="rounded-lg border border-[#D0D5DD] px-4 py-2.5 text-sm sm:px-5">حفظ كمسودة</button>
+            <div className="mx-2 mt-8 flex flex-col items-stretch justify-between gap-3 border-t border-[#EAECF0] pt-5 sm:mx-4 sm:flex-row sm:items-center md:mx-6 lg:mx-8">
+              <button onClick={() => step === 0 ? navigate(returnPath) : setStep((current) => current - 1)} className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#D0D5DD] px-4 py-2.5 text-sm sm:w-auto sm:px-5"><ChevronRight size={16} /> {step === 0 ? "إلغاء" : "السابق"}</button>
+              <div className="grid w-full grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:flex sm:w-auto">
+                <button onClick={() => save("مسودة")} className="w-full rounded-lg border border-[#D0D5DD] px-4 py-2.5 text-sm sm:w-auto sm:px-5">حفظ كمسودة</button>
                 {step < 3 ? (
-                  <button onClick={next} className="flex items-center gap-2 rounded-lg bg-[#123C91] px-5 py-2.5 text-sm font-semibold text-white sm:px-7">التالي <ChevronLeft size={16} /></button>
+                  <button onClick={next} className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#123C91] px-5 py-2.5 text-sm font-semibold text-white sm:w-auto sm:px-7">التالي <ChevronLeft size={16} /></button>
                 ) : (
-                  <button onClick={() => save("قيد المراجعة")} className="rounded-lg bg-[#123C91] px-5 py-2.5 text-sm font-semibold text-white sm:px-7">{existingCourse ? "حفظ التعديلات" : "إرسال للمراجعة"}</button>
+                  <button onClick={() => save("قيد المراجعة")} className="w-full rounded-lg bg-[#123C91] px-5 py-2.5 text-sm font-semibold text-white sm:w-auto sm:px-7">{existingCourse ? "حفظ التعديلات" : "إرسال للمراجعة"}</button>
                 )}
               </div>
             </div>
