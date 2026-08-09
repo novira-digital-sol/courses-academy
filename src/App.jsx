@@ -55,6 +55,7 @@ import {
   AdminCourseDetailsPage,
   AdminCourseFormPage,
   AdminCoursesPage,
+  AdminQuizReviewPage,
   CertificatePage,
   CoursePaymentPage,
   CoursePlayerPage,
@@ -237,6 +238,7 @@ function App() {
         <Route path="/admin/records" element={user ? <RecordingsPages /> : <Navigate to="/login" replace />} />
         <Route path="/admin/courses" element={user ? <AdminCoursesPage /> : <Navigate to="/login" replace />} />
         <Route path="/admin/courses/:courseId" element={user ? <AdminCourseDetailsPage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin/courses/:courseId/quizzes/:lessonId" element={user ? <AdminQuizReviewPage /> : <Navigate to="/login" replace />} />
         <Route path="/admin/courses/new" element={user ? <AdminCourseFormPage /> : <Navigate to="/login" replace />} />
         <Route path="/admin/courses/:courseId/edit" element={user ? <AdminCourseFormPage /> : <Navigate to="/login" replace />} />
         <Route path="/admin/messages" element={user ? <AdminMessages /> : <Navigate to="/login" replace />} />

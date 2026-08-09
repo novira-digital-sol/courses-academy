@@ -4,6 +4,7 @@ export { default as TeacherCourseDetailsPage } from "./pages/TeacherCourseDetail
 export { default as AdminCoursesPage } from "./pages/AdminCoursesPage";
 export { default as AdminCourseFormPage } from "./pages/AdminCourseFormPage";
 export { default as AdminCourseDetailsPage } from "./pages/AdminCourseDetailsPage";
+export { default as AdminQuizReviewPage } from "./pages/AdminQuizReviewPage";
 export { default as StudentCoursesPage } from "./pages/student/StudentCoursesPage";
 export { default as MyCourseDetailsPage } from "./pages/student/MyCourseDetailsPage";
 export { default as CoursePaymentPage } from "./pages/student/CourseCheckoutPage";

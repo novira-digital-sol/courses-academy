@@ -7,7 +7,7 @@ import {
   ChevronLeft,
   Clock3,
   Copy,
-  GripVertical,
+  CircleHelp,
   LayoutGrid,
   Layers3,
   MessageSquare,
@@ -193,41 +193,101 @@ const OverviewTab = ({ course, coverSrc, totalLessons }) => {
   );
 };
 
-const CurriculumTab = ({ course }) => (
-  <div className="rounded-xl border border-[#E5E7EB] bg-white p-5">
-    <div className="flex flex-wrap items-start justify-between gap-3">
-      <div>
-        <h3 className="font-bold text-[#1F2937]">محتوى المنهج الدراسي</h3>
-        <p className="mt-1 text-[14px] text-[#667085]">عرض تسلسل الموضوعات ومحتوى كل قسم داخل الدورة.</p>
-      </div>
-      <div className="flex gap-4 text-[14px] text-[#667085]">
-        <span>{course.curriculum?.length || 0} أقسام</span>
-        <span>{course.curriculum?.reduce((sum, section) => sum + section.lessons.length, 0) || 0} دروس</span>
-      </div>
-    </div>
-    <div className="mt-5 space-y-4">
-      {(course.curriculum?.length ? course.curriculum : [{ id: "empty", title: "مقدمة", lessons: [] }]).map((section, sectionIndex) => (
-        <div key={section.id} className="overflow-hidden rounded-xl border border-[#DDE2E8]">
-          <div className="flex items-center gap-2 bg-[#EEF6FF] px-4 py-3">
-            <span className="grid h-7 w-7 place-items-center rounded-full bg-[#123C91] text-xs font-semibold text-white">{sectionIndex + 1}</span>
-            <strong className="flex-1 text-[17px] text-[#344054]">{section.title}</strong>
-            <ChevronDown size={16} className="text-[#667085]" />
-          </div>
-          <div>
-            {(section.lessons.length ? section.lessons : [{ id: "lesson", title: "لا توجد دروس مضافة بعد", type: "فيديو" }]).map((lesson, lessonIndex) => (
-              <div key={lesson.id} className="flex items-center gap-3 border-t border-[#EAECF0] px-4 py-3 text-[14px]">
-                <GripVertical size={14} className="text-[#B0B7C3]" />
-                <span className="grid h-6 w-6 place-items-center rounded-full bg-[#F2F4F7] text-[#667085]">{lessonIndex + 1}</span>
-                <span className="flex-1 text-[#344054]">{lesson.title || "درس بدون عنوان"}</span>
-                {lesson.title && <button type="button" className="inline-flex items-center gap-1.5 rounded-md border border-[#12C6B0] bg-[#E8FFFC] px-3 py-2 font-semibold text-[#087F72]"><Video size={13} /> معاينة</button>}
-              </div>
-            ))}
-          </div>
+const CurriculumTab = ({ course }) => {
+  const navigate = useNavigate();
+  const sections = course.curriculum?.length
+    ? course.curriculum
+    : [{ id: "empty", title: "مقدمة", lessons: [] }];
+  const [openSections, setOpenSections] = useState(
+    () => new Set(sections.map((section) => section.id)),
+  );
+  const totalLessons = sections.reduce(
+    (sum, section) => sum + section.lessons.length,
+    0,
+  );
+  const totalVideos = sections.reduce(
+    (sum, section) =>
+      sum + section.lessons.filter((lesson) => lesson.type !== "اختبار").length,
+    0,
+  );
+
+  const toggleSection = (sectionId) => {
+    setOpenSections((current) => {
+      const next = new Set(current);
+      if (next.has(sectionId)) next.delete(sectionId);
+      else next.add(sectionId);
+      return next;
+    });
+  };
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
+      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#EAECF0] px-4 py-5 sm:px-6">
+        <div>
+          <h3 className="font-bold text-[#1F2937]">محتوى المنهج الدراسي</h3>
+          <p className="mt-1 text-[13px] text-[#667085] sm:text-[14px]">
+            عرض الأقسام والدروس — لتعديل المحتوى انتقل لصفحة تعديل الدورة
+          </p>
         </div>
-      ))}
+        <div className="flex flex-wrap gap-3 text-xs text-[#667085] sm:gap-4">
+          <span className="inline-flex items-center gap-1.5"><Layers3 size={14} className="text-[#123C91]" />{sections.length} أقسام</span>
+          <span className="inline-flex items-center gap-1.5"><BookOpen size={14} className="text-[#123C91]" />{totalLessons} دروس</span>
+          <span className="inline-flex items-center gap-1.5"><Video size={14} className="text-[#123C91]" />{totalVideos} فيديو</span>
+        </div>
+      </div>
+
+      <div className="space-y-4 p-4 sm:p-6">
+        {sections.map((section, sectionIndex) => {
+          const isOpen = openSections.has(section.id);
+          return (
+            <div key={section.id} className="overflow-hidden rounded-xl border border-[#DDE2E8]">
+              <button
+                type="button"
+                onClick={() => toggleSection(section.id)}
+                className="flex w-full items-center gap-3 bg-[#EEF6FF] px-4 py-3 text-right"
+                aria-expanded={isOpen}
+              >
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#123C91] text-xs font-semibold text-white">{sectionIndex + 1}</span>
+                <strong className="min-w-0 flex-1 truncate text-[15px] text-[#344054] sm:text-[16px]">{section.title}</strong>
+                <ChevronDown size={17} className={`shrink-0 text-[#123C91] transition-transform ${isOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {isOpen && (
+                <div>
+                  {(section.lessons.length
+                    ? section.lessons
+                    : [{ id: `empty-${section.id}`, title: "لا توجد دروس مضافة بعد", type: "فيديو" }]
+                  ).map((lesson, lessonIndex) => {
+                    const isQuiz = lesson.type === "اختبار";
+                    return (
+                      <div key={lesson.id} className="flex flex-wrap items-center gap-3 border-t border-[#EAECF0] px-4 py-3 text-[13px] sm:flex-nowrap sm:text-[14px]">
+                        <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#F2F4F7] text-[11px] text-[#667085]">{lessonIndex + 1}</span>
+                        <span className="min-w-0 flex-1 text-[#344054]">{lesson.title || "درس بدون عنوان"}</span>
+                        {lesson.title && (isQuiz ? (
+                          <button
+                            type="button"
+                            onClick={() => navigate(`/admin/courses/${course.id}/quizzes/${lesson.id}`)}
+                            className="inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-[#123C91] bg-[#F4F7FF] px-4 py-2 font-semibold text-[#123C91] sm:w-auto"
+                          >
+                            <CircleHelp size={14} /> اختبار
+                          </button>
+                        ) : (
+                          <button type="button" className="inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-[#12C6B0] bg-[#E8FFFC] px-4 py-2 font-semibold text-[#087F72] sm:w-auto">
+                            <Video size={13} /> معاينة
+                          </button>
+                        ))}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const StudentsTab = ({ course }) => {
   const navigate = useNavigate();
