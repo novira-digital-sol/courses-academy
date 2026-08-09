@@ -2,17 +2,17 @@ import { useContext, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Compass } from "lucide-react";
 import toast from "react-hot-toast";
-import StudentLayout from "../../components/student/layout/StudentLayout";
-import StatusBar from "../../components/student/courses/StatusBar";
-import CoursesFilter from "../../components/student/courses/CoursesFilter";
-import CoursesGrid from "../../components/student/courses/CoursesGrid";
-import RatingModal from "../../components/student/courses/RatingModal";
-import CertificateModal from "../../components/student/courses/CertificateModal";
-import Paginationn from "../../components/teacher/groups/students/Paginationn";
-import { AuthContext } from "../../context/AuthContext";
-import { courses as allCourses } from "../../data/staticData";
-import { getEnrolledCourseSlugs, unenrollFromCourse } from "../../utils/courseEnrollments";
-import { getCourseProgressSummary } from "../../utils/courseProgress";
+import StudentLayout from "../../../../components/student/layout/StudentLayout";
+import StatusBar from "../../components/student/StatusBar";
+import CoursesFilter from "../../components/student/CoursesFilter";
+import CoursesGrid from "../../components/student/CoursesGrid";
+import RatingModal from "../../components/student/RatingModal";
+import CertificateModal from "../../components/student/CertificateModal";
+import Paginationn from "../../../../components/teacher/groups/students/Paginationn";
+import { AuthContext } from "../../../../context/AuthContext";
+import { courses as allCourses } from "../../../../data/staticData";
+import { getEnrolledCourseSlugs, unenrollFromCourse } from "../../../../utils/courseEnrollments";
+import { getCourseProgressSummary } from "../../../../utils/courseProgress";
 
 const PAGE_SIZE = 6;
 

@@ -2,10 +2,10 @@ import { useContext, useMemo, useState } from "react";
 import { CreditCard, LockKeyhole, ShieldCheck } from "lucide-react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import logo from "../../assets/icons/logo.svg";
-import { AuthContext } from "../../context/AuthContext";
-import { courses } from "../../data/staticData";
-import { enrollInCourse } from "../../utils/courseEnrollments";
+import logo from "../../../../assets/icons/logo.svg";
+import { AuthContext } from "../../../../context/AuthContext";
+import { courses } from "../../../../data/staticData";
+import { enrollInCourse } from "../../../../utils/courseEnrollments";
 
 export default function CoursePaymentPage() {
   const { slug } = useParams();

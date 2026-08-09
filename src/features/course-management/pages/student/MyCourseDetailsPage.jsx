@@ -19,12 +19,12 @@ import {
   Users,
   Video,
 } from "lucide-react";
-import { AuthContext } from "../../context/AuthContext";
-import { courses } from "../../data/staticData";
-import { getCourseContent } from "../../data/courseContent";
-import { instructors } from "../../data/instructorsData";
-import { enrollInCourse, isEnrolledInCourse } from "../../utils/courseEnrollments";
-import StudentLayout from "../../components/student/layout/StudentLayout";
+import { AuthContext } from "../../../../context/AuthContext";
+import { courses } from "../../../../data/staticData";
+import { getCourseContent } from "../../../../data/courseContent";
+import { instructors } from "../../../../data/instructorsData";
+import { enrollInCourse, isEnrolledInCourse } from "../../../../utils/courseEnrollments";
+import StudentLayout from "../../../../components/student/layout/StudentLayout";
 
 const reviews = [
   ["أحمد سامي", "أ.س", "شرح رائع وبسيط جدًا، استفدت من التطبيق العملي."],

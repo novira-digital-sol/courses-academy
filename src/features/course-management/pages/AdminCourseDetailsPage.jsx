@@ -3,8 +3,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   BookOpen,
   ChevronDown,
-  ChevronLeft,
   ChevronRight,
+  ChevronLeft,
   Clock3,
   Copy,
   GripVertical,
@@ -13,25 +13,16 @@ import {
   MessageSquare,
   Search,
   Star,
-  TrendingUp,
   Users,
   Video,
   WalletCards,
 } from "lucide-react";
-import TeacherLayout from "../../../components/teacher/layout/TeacherLayout";
-import { getTeacherCourse } from "../../../utils/teacherCoursesStorage";
+import AdminLayout from "../../../components/admin/layout/AdminLayout";
+import { getTeacherCourse, saveTeacherCourse } from "../utils/teacherCoursesStorage";
+import toast from "react-hot-toast";
 import mathCover from "../../../assets/courses/math-course.png";
 import pythonCover from "../../../assets/courses/python-course.png";
 import skillsCover from "../../../assets/courses/skills-course.png";
-
-const tabs = [
-  { id: "overview", label: "نظرة عامة", icon: LayoutGrid },
-  { id: "curriculum", label: "المنهج", icon: Layers3 },
-  { id: "instructor", label: "المحاضر", icon: Users },
-  { id: "students", label: "الطلاب", icon: Users },
-  { id: "reviews", label: "التقييمات", icon: Star },
-  { id: "earnings", label: "الأرباح", icon: WalletCards },
-];
 
 const coverMap = {
   technology: pythonCover,
@@ -43,8 +34,6 @@ const coverMap = {
 };
 
 const demoStudents = ["محمد أحمد", "محمود أحمد", "محمد محمود", "محمود محمد", "محمد محمد", "محمود محمود"];
-const reviewNames = ["هاني السيد", "منى أحمد", "علياء السيد"];
-const paymentMethods = ["محفظة إلكترونية", "بطاقة ائتمان", "تحويل بنكي"];
 
 const money = (value) =>
   `${Number(value || 0).toLocaleString("ar-EG")} جنيه`;
@@ -295,7 +284,7 @@ const StudentsTab = ({ course }) => {
 };
 
 const InstructorTab = ({ course }) => {
-  const instructor = course.instructor || { name: "محمد أحمد", bio: "مدرس فيزياء · 9 سنوات خبرة", avatar: "https://i.pravatar.cc/80?u=instructor" };
+  const instructor = course.instructor || { name: "محمد أحمد", bio: "مدرس · 9 سنوات خبرة", avatar: "https://i.pravatar.cc/80?u=admin-instructor" };
 
   return (
     <div className="rounded-xl border border-[#E5E7EB] bg-white p-5">
@@ -327,12 +316,12 @@ const ReviewsTab = ({ course }) => {
     { stars: 1, count: 3, width: 5 },
   ];
 
+  const reviewNames = ["هاني السيد", "منى أحمد", "علياء السيد"];
   const reviews = reviewNames.map((name, index) => ({
     id: name,
     name,
     rating: index === 1 ? 4 : 5,
     time: index === 1 ? "منذ 3 شهور" : "منذ 3 أيام",
-    // نستخدم رقم تسلسلي للترتيب حسب "الأحدث" بدل تحليل نص التاريخ
     order: index === 1 ? 0 : reviewNames.length - index,
     comment:
       "دورة ممتازة جداً، الشرح واضح وسلس، وقدرت أطبق كل درس بسهولة، أنصح بها لأي مبتدئ.",
@@ -365,7 +354,6 @@ const ReviewsTab = ({ course }) => {
 
   return (
     <div className="space-y-4">
-      {/* ملخص التقييم وتوزيع النجوم */}
       <div className="grid items-center gap-6 rounded-xl border border-[#E5E7EB] bg-white px-5 py-6 md:grid-cols-[1fr_135px]">
         <div className="space-y-3">
           {distribution.map(({ stars, count, width }) => (
@@ -385,7 +373,6 @@ const ReviewsTab = ({ course }) => {
         </div>
       </div>
 
-      {/* آراء الطلاب + الفلتر */}
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-4 sm:p-5">
         <div className="mb-5 mx-1 flex flex-col gap-3 sm:mx-2 sm:flex-row sm:items-center sm:justify-between">
           <h3 className="mr-4 text-[17px] font-bold text-[#1F2937]">آراء الطلاب</h3>
@@ -455,7 +442,6 @@ const EarningsTab = ({ course }) => {
 
   return (
     <div className="space-y-4">
-      {/* ملخص الأرباح */}
       <div className="grid grid-cols-2 divide-x divide-[#EAECF0] rounded-xl border border-[#E5E7EB] bg-white sm:grid-cols-4">
         {[
           ["إجمالي الإيرادات", money(gross)],
@@ -470,7 +456,6 @@ const EarningsTab = ({ course }) => {
         ))}
       </div>
 
-      {/* شريط البحث والفلاتر */}
       <div className="flex flex-wrap items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white p-4">
         <label className="relative min-w-60 flex-1">
           <Search size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#98A2B3]" />
@@ -479,25 +464,11 @@ const EarningsTab = ({ course }) => {
             className="h-10 w-full rounded-md border border-[#D0D5DD] pr-9 pl-3 text-xs outline-none focus:border-[#123C91]"
           />
         </label>
-        <select className="h-10 rounded-md border border-[#D0D5DD] px-4 text-xs text-[#475467]">
-          <option>التاريخ</option>
-          <option>آخر 7 أيام</option>
-          <option>آخر 30 يوم</option>
-        </select>
-        <select className="h-10 rounded-md border border-[#D0D5DD] px-4 text-xs text-[#475467]">
-          <option>طريقة الدفع</option>
-          {paymentMethods.map((method) => (
-            <option key={method}>{method}</option>
-          ))}
-        </select>
-        <select className="h-10 rounded-md border border-[#D0D5DD] px-4 text-xs text-[#475467]">
-          <option>ترتيب حسب</option>
-          <option>الأحدث</option>
-          <option>الأعلى قيمة</option>
-        </select>
+        <select className="h-10 rounded-md border border-[#D0D5DD] px-4 text-xs text-[#475467]"><option>التاريخ</option><option>آخر 7 أيام</option><option>آخر 30 يوم</option></select>
+        <select className="h-10 rounded-md border border-[#D0D5DD] px-4 text-xs text-[#475467]"><option>طريقة الدفع</option><option>محفظة إلكترونية</option><option>بطاقة ائتمان</option></select>
+        <select className="h-10 rounded-md border border-[#D0D5DD] px-4 text-xs text-[#475467]"><option>ترتيب حسب</option><option>الأحدث</option><option>الأعلى قيمة</option></select>
       </div>
 
-      {/* جدول سجل المبيعات */}
       <div className="overflow-hidden rounded-xl border border-[#E5E7EB] bg-white">
         <div className="overflow-x-auto">
           <table className="w-full min-w-190 text-right text-xs">
@@ -515,10 +486,10 @@ const EarningsTab = ({ course }) => {
                   <td className="px-4 py-4">{name}</td>
                   <td className="px-4 py-4">26 يوليو 2026</td>
                   <td className="px-4 py-4">محفظة إلكترونية</td>
-                  <td className="px-4 py-4">{money(course.price)}</td>
-                  <td className="px-4 py-4">{money(Number(course.price || 0) * 0.15)}</td>
+                  <td className="px-4 py-4">{money(0)}</td>
+                  <td className="px-4 py-4">{money(0)}</td>
                   <td className="px-4 py-4">
-                    <span className="font-semibold text-[#123C91]">{money(Number(course.price || 0) * 0.85)}</span>
+                    <span className="font-semibold text-[#123C91]">{money(0)}</span>
                   </td>
                 </tr>
               ))}
@@ -543,14 +514,18 @@ const EarningsTab = ({ course }) => {
   );
 };
 
-const TeacherCourseDetailsPage = () => {
+const AdminCourseDetailsPage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
+  const [showApproveModal, setShowApproveModal] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [rejectDetails, setRejectDetails] = useState("");
   const course = useMemo(() => getTeacherCourse(courseId), [courseId]);
 
   if (!course) {
-    return <TeacherLayout><div dir="rtl" className="rounded-xl bg-white p-10 text-center"><BookOpen className="mx-auto mb-3 text-[#98A2B3]" /><p className="text-[#667085]">لم يتم العثور على الدورة.</p><Link to="/teacher/courses" className="mt-4 inline-block font-semibold text-[#123C91]">العودة إلى الدورات</Link></div></TeacherLayout>;
+    return <AdminLayout><div dir="rtl" className="rounded-xl bg-white p-10 text-center"><BookOpen className="mx-auto mb-3 text-[#98A2B3]" /><p className="text-[#667085]">لم يتم العثور على الدورة.</p><Link to="/admin/courses" className="mt-4 inline-block font-semibold text-[#123C91]">العودة إلى الدورات</Link></div></AdminLayout>;
   }
 
   const totalLessons = course.curriculum?.reduce((sum, section) => sum + section.lessons.length, 0) || course.lessons || 0;
@@ -558,21 +533,27 @@ const TeacherCourseDetailsPage = () => {
   const coverSrc = uploadedCover || coverMap[course.cover] || pythonCover;
 
   return (
-    <TeacherLayout>
+    <AdminLayout>
       <div
         dir="rtl"
         className="min-h-full rounded-xl bg-[#F7F8FC] p-3 pb-10 text-right font-['IBM_Plex_Sans_Arabic'] sm:p-5 sm:pb-12"
       >
         <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
           <div>
-            <div className="mb-3 flex items-center gap-2 text-xs text-[#667085]"><Link to="/teacher/courses" className="font-semibold text-[#123C91]">الدورات</Link><ChevronLeft size={13} /><span>تفاصيل الدورة</span></div>
+            <div className="mb-3 flex items-center gap-2 text-xs text-[#667085]"><Link to="/admin/courses" className="font-semibold text-[#123C91]">الدورات</Link><ChevronLeft size={13} /><span>تفاصيل الدورة</span></div>
             <div className="flex items-center gap-2"><h1 className="text-xl font-bold text-[#123C91]">{course.title}</h1><span className="rounded-full bg-[#DDF7E8] px-2.5 py-1 text-[10px] font-semibold text-[#17864B]">{course.status}</span></div>
             <p className="mt-2 text-xs text-[#667085]">{course.shortDescription || course.description}</p>
-            {course.status === "قيد المراجعة" && (
-              <div className="mt-3 rounded-md bg-[#FFF8E6] px-4 py-3 text-sm text-[#A76B00]">هذه الدورة قيد المراجعة من قبل الإدارة. سيظهر إشعار عند اعتماد أو رفض الدورة.</div>
+          </div>
+          <div className="flex gap-2">
+            {course.status !== "منشور" ? (
+              <>
+                <button onClick={() => setShowApproveModal(true)} className="rounded-md bg-[#17864B] px-4 py-2 text-sm font-semibold text-white">اعتماد ونشر</button>
+                <button onClick={() => setShowRejectModal(true)} className="rounded-md bg-[#D92D20] px-4 py-2 text-sm font-semibold text-white">رفض</button>
+              </>
+            ) : (
+              <button type="button" onClick={() => navigate(`/admin/courses/${course.id}/edit`)} className="rounded-md bg-[#123C91] px-5 py-2.5 text-sm font-semibold text-white">تعديل الدورة</button>
             )}
           </div>
-          <button type="button" onClick={() => navigate(`/teacher/courses/${course.id}/edit`)} className="rounded-md bg-[#123C91] px-5 py-2.5 text-sm font-semibold text-white">تعديل الدورة</button>
         </div>
 
         <div className="mb-4 grid gap-3 md:grid-cols-3">
@@ -583,7 +564,16 @@ const TeacherCourseDetailsPage = () => {
 
         <div className="mb-4 overflow-x-auto">
           <nav className="flex min-w-max items-center justify-start gap-1 rounded-lg border border-[#E5E7EB] bg-white p-1">
-            {tabs.map(({ id, label, icon: Icon }) => <button key={id} type="button" onClick={() => setActiveTab(id)} className={`inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-xs font-semibold transition ${activeTab === id ? "bg-[#1F2937] text-white" : "text-[#667085] hover:bg-[#F2F4F7]"}`}><Icon size={15} />{label}</button>)}
+            {[
+              { id: "overview", label: "نظرة عامة", icon: LayoutGrid },
+              { id: "curriculum", label: "المنهج", icon: Layers3 },
+              { id: "instructor", label: "المحاضر", icon: Users },
+              { id: "students", label: "الطلاب", icon: Users },
+              { id: "reviews", label: "التقييمات", icon: Star },
+              { id: "earnings", label: "الأرباح", icon: WalletCards },
+            ].map(({ id, label, icon: Icon }) => (
+              <button key={id} type="button" onClick={() => setActiveTab(id)} className={`inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-xs font-semibold transition ${activeTab === id ? "bg-[#1F2937] text-white" : "text-[#667085] hover:bg-[#F2F4F7]"}`}><Icon size={15} />{label}</button>
+            ))}
           </nav>
         </div>
 
@@ -593,9 +583,61 @@ const TeacherCourseDetailsPage = () => {
         {activeTab === "students" && <StudentsTab course={course} />}
         {activeTab === "reviews" && <ReviewsTab course={course} />}
         {activeTab === "earnings" && <EarningsTab course={course} />}
+
+        {/* Approve modal */}
+        {showApproveModal && (
+          <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4">
+            <div className="w-full max-w-sm rounded-xl bg-white p-5 text-right">
+              <h3 className="mb-2 text-lg font-semibold">اعتماد الدورة للنشر؟</h3>
+              <p className="mb-4 text-sm text-[#667085]">سيتم نشر الدورة "{course.title}" على المنصة وإشعار المحاضر. هل تريد المتابعة؟</p>
+              <div className="flex justify-end gap-2">
+                <button onClick={() => setShowApproveModal(false)} className="rounded-md border px-4 py-2">إلغاء</button>
+                <button onClick={() => {
+                  saveTeacherCourse({ ...course, status: "منشور" });
+                  toast.success("تم اعتماد ونشر الدورة");
+                  setShowApproveModal(false);
+                  navigate('/admin/courses');
+                }} className="rounded-md bg-[#17864B] px-4 py-2 text-white">تأكيد الاعتماد</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Reject modal */}
+        {showRejectModal && (
+          <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4">
+            <div className="w-full max-w-lg rounded-xl bg-white p-5 text-right">
+              <h3 className="mb-2 text-lg font-semibold">سبب الرفض</h3>
+              <p className="mb-4 text-sm text-[#667085]">وضع سبب الرفض بدقة لتمكين المحاضر من تعديل الدورة وإعادة إرسالها للمراجعة.</p>
+              <div className="mb-3">
+                <label className="block text-sm text-[#344054] mb-1">سبب الرفض</label>
+                <select value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} className="w-full rounded-md border px-3 py-2">
+                  <option value="">اختر سببا رئيسيا...</option>
+                  <option value="المحتوى غير مناسب">المحتوى غير مناسب</option>
+                  <option value="جودة التسجيل ضعيفة">جودة التسجيل ضعيفة</option>
+                  <option value="المعلومات ناقصة">المعلومات ناقصة</option>
+                  <option value="اخرى">أخرى</option>
+                </select>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm text-[#344054] mb-1">تفاصيل إضافية</label>
+                <textarea value={rejectDetails} onChange={(e) => setRejectDetails(e.target.value)} rows={4} className="w-full rounded-md border px-3 py-2 text-sm" placeholder="اكتب توضيحًا وأفضّلًا نصائح للمحاضر حول ما يجب تحسينه..." />
+              </div>
+              <div className="flex justify-end gap-2">
+                <button onClick={() => setShowRejectModal(false)} className="rounded-md border px-4 py-2">إلغاء</button>
+                <button onClick={() => {
+                  const updated = saveTeacherCourse({ ...course, status: "مرفوض", rejectedReason: rejectReason, rejectedDetails: rejectDetails });
+                  toast.success("تم رفض الدورة وإرسال الملاحظات للمحاضر");
+                  setShowRejectModal(false);
+                  navigate('/admin/courses');
+                }} disabled={!rejectReason || (rejectDetails && rejectDetails.length < 10)} className="rounded-md bg-[#D92D20] px-4 py-2 text-white disabled:opacity-50">تأكيد</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </TeacherLayout>
+    </AdminLayout>
   );
 };
 
-export default TeacherCourseDetailsPage;
+export default AdminCourseDetailsPage;

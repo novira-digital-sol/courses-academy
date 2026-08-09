@@ -4,13 +4,13 @@ import {
   ArrowLeft, ArrowRight, Award, CheckCircle2, ChevronDown, ChevronLeft,
   HelpCircle, LockKeyhole, PlayCircle, Star,
 } from "lucide-react";
-import StudentLayout from "../../components/student/layout/StudentLayout";
-import { AuthContext } from "../../context/AuthContext";
-import { courses } from "../../data/staticData";
-import { getCourseContent } from "../../data/courseContent";
+import StudentLayout from "../../../../components/student/layout/StudentLayout";
+import { AuthContext } from "../../../../context/AuthContext";
+import { courses } from "../../../../data/staticData";
+import { getCourseContent } from "../../../../data/courseContent";
 import {
   completeCourseItem, getCourseProgress, isCourseItemUnlocked, updateCourseProgress,
-} from "../../utils/courseProgress";
+} from "../../../../utils/courseProgress";
 
 const flattenContent = (content) => {
   const items = [];

@@ -1,4 +1,4 @@
-import { courses as sourceCourses } from "../data/staticData";
+import { courses as sourceCourses } from "../../../data/staticData";
 
 const STORAGE_KEY = "academy_teacher_courses";
 const STATUSES = ["قيد المراجعة", "منشور", "منشور", "قيد المراجعة", "مسودة", "مرفوض"];

@@ -19,11 +19,11 @@ import toast from "react-hot-toast";
 import TeacherLayout from "../../../components/teacher/layout/TeacherLayout";
 // ⚠️ تأكدي من المسار ده صح عندك (نفس نمط TeacherLayout بس جوه components/admin/layout)
 import AdminLayout from "../../../components/admin/layout/AdminLayout";
-import CourseStepsNavigation from "../../../components/teacher/courses/CourseStepsNavigation";
+import CourseStepsNavigation from "../components/CourseStepsNavigation";
 import {
   getTeacherCourse,
   saveTeacherCourse,
-} from "../../../utils/teacherCoursesStorage";
+} from "../utils/teacherCoursesStorage";
 
 const EMPTY_COURSE = {
   title: "",

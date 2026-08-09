@@ -4,8 +4,8 @@ import toast from "react-hot-toast";
 import {
   BookOpen,
   ChevronDown,
-  ChevronRight,
   ChevronLeft,
+  ChevronRight,
   EllipsisVertical,
   Plus,
   Search,
@@ -14,12 +14,12 @@ import {
   Star,
   Trash2,
 } from "lucide-react";
-import AdminLayout from "../../components/admin/layout/AdminLayout";
-import CoursesStatusBar from "../../components/teacher/courses/CoursesStatusBar";
+import TeacherLayout from "../../../components/teacher/layout/TeacherLayout";
+import CoursesStatusBar from "../components/CoursesStatusBar";
 import {
   deleteTeacherCourse,
   getTeacherCourses,
-} from "../../utils/teacherCoursesStorage";
+} from "../utils/teacherCoursesStorage";
 
 const statusStyles = {
   منشور: "bg-[#DDF7E8] text-[#17864B]",
@@ -31,7 +31,7 @@ const statusStyles = {
 const formatMoney = (value) =>
   `${Number(value || 0).toLocaleString("ar-EG")} جنيه`;
 
-const AdminCoursesPage = () => {
+const TeacherCoursesPage = () => {
   const navigate = useNavigate();
   const [teacherCourses, setTeacherCourses] = useState(getTeacherCourses);
   const [search, setSearch] = useState("");
@@ -113,10 +113,10 @@ const AdminCoursesPage = () => {
     if (!selectedCourse) return;
 
     if (action === "details") {
-      navigate(`/admin/courses/${selectedCourse.id}`);
+      navigate(`/teacher/courses/${selectedCourse.id}`);
       return;
     }
-    if (action === "edit") navigate(`/admin/courses/${selectedCourse.id}/edit`);
+    if (action === "edit") navigate(`/teacher/courses/${selectedCourse.id}/edit`);
     if (action === "share") {
       const url = `${window.location.origin}/courses/${selectedCourse.slug}`;
       try {
@@ -135,7 +135,7 @@ const AdminCoursesPage = () => {
   };
 
   return (
-    <AdminLayout>
+    <TeacherLayout>
       <div
         dir="rtl"
         className="min-h-full rounded-xl bg-[#F7F8FC] p-3 text-right font-['IBM_Plex_Sans_Arabic'] sm:p-5"
@@ -144,12 +144,12 @@ const AdminCoursesPage = () => {
           <div>
             <h2 className="font-['IBM_Plex_Sans_Arabic'] font-semibold text-[24px] leading-8 text-primary w-full text-right mb-4">إدارة الدورات</h2>
              <p className="text-gray-500 font-medium -mt-3 px-2">
-              إدارة ومراجعة الدورات المنشورة والمعلقة
+              إنشاء وتعديل الدورات التعليمية
             </p>
           </div>
           <button
             type="button"
-            onClick={() => navigate("/admin/courses/new")}
+            onClick={() => navigate("/teacher/courses/new")}
             className="inline-flex h-10 w-fit items-center justify-center gap-2 rounded-md bg-[#123C91] px-5 text-sm font-semibold text-white transition hover:bg-[#0E327A]"
           >
             <Plus size={17} />
@@ -236,7 +236,7 @@ const AdminCoursesPage = () => {
                           <BookOpen size={18} />
                         </span>
                         <Link
-                          to={`/admin/courses/${course.id}`}
+                          to={`/teacher/courses/${course.id}`}
                           className="font-semibold text-[#1F2937] transition hover:text-[#123C91] hover:underline"
                         >
                           {course.title}
@@ -392,8 +392,8 @@ const AdminCoursesPage = () => {
         )}
 
       </div>
-    </AdminLayout>
+    </TeacherLayout>
   );
 };
 
-export default AdminCoursesPage;
+export default TeacherCoursesPage;

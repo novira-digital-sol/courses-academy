@@ -1,5 +1,5 @@
-import AdminLayout from "../../components/admin/layout/AdminLayout";
-import TeacherCourseFormPage from "../teacher/courses/TeacherCourseFormPage";
+import AdminLayout from "../../../components/admin/layout/AdminLayout";
+import TeacherCourseFormPage from "./TeacherCourseFormPage";
 
 const AdminCourseFormPage = () => (
   <AdminLayout>

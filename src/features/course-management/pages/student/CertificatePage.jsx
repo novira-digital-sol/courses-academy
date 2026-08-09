@@ -3,10 +3,10 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Check, Download, GraduationCap, Link2 } from "lucide-react";
 import { FaFacebookF, FaLinkedinIn } from "react-icons/fa6";
 import toast from "react-hot-toast";
-import StudentLayout from "../../components/student/layout/StudentLayout";
-import { AuthContext } from "../../context/AuthContext";
-import { courses } from "../../data/staticData";
-import { getCourseProgress } from "../../utils/courseProgress";
+import StudentLayout from "../../../../components/student/layout/StudentLayout";
+import { AuthContext } from "../../../../context/AuthContext";
+import { courses } from "../../../../data/staticData";
+import { getCourseProgress } from "../../../../utils/courseProgress";
 
 const xml = (value) => String(value || "")
   .replaceAll("&", "&amp;")

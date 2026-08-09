@@ -40,8 +40,6 @@ import StudentAssignmentsPage from "./pages/student/assignments/StudentAssignmen
 import StudentGroupLessonsPage from "./pages/student/groupLessons/Studentgrouplessonspage";
 import StudentLessonDetailsPage from "./pages/student/groupLessons/Studentlessondetailspage";
 import LessonFilesPage from "./pages/student/groupLessons/Lessonfilespage";
-import StudentCoursesPage from "./pages/student/StudentCoursesPage";
-import CoursePaymentPage from "./pages/student/CourseCheckoutPage";
 import RenewalPage from "./pages/subscription/RenewalPage";
 import AddSubjectPage from "./pages/subscription/AddSubjectPage";
 
@@ -51,12 +49,21 @@ import BlogPostPage from "./components/landing/Blogpostpage";
 import CoursesPage from "./pages/CoursesPage";
 import CourseDetailsPage from "./pages/CourseDetailsPage";
 import InstructorPage from "./pages/InstructorPage";
-import MyCourseDetailsPage from "./pages/student/MyCourseDetailsPage";
 // import CoursePlayerPage from "./pages/CoursePlayerPage";
 import TeacherHome from "./pages/teacher/TeacherHome";
-import TeacherCoursesPage from "./pages/teacher/courses/TeacherCoursesPage";
-import TeacherCourseFormPage from "./pages/teacher/courses/TeacherCourseFormPage";
-import TeacherCourseDetailsPage from "./pages/teacher/courses/TeacherCourseDetailsPage";
+import {
+  AdminCourseDetailsPage,
+  AdminCourseFormPage,
+  AdminCoursesPage,
+  CertificatePage,
+  CoursePaymentPage,
+  CoursePlayerPage,
+  MyCourseDetailsPage,
+  StudentCoursesPage,
+  TeacherCourseDetailsPage,
+  TeacherCourseFormPage,
+  TeacherCoursesPage,
+} from "./features/course-management";
 import GroupsPage from "./pages/teacher/groups/GroupsPage";
 import GroupLessonsPage from "./pages/teacher/groups/GroupLessonsPage";
 import GroupStudentsPage from "./pages/teacher/groups/GroupStudentsPage";
@@ -92,9 +99,6 @@ import TeachersPage from "./pages/admin/teachers/TeachersPage";
 import TeacherSessionsPage from "./pages/admin/teachers/TeacherSessionsPage";
 import RecordingsPages from "./pages/admin/recordings/RecordingsPage";
 import AdminMessages from "./pages/admin/messages/Adminmessages";
-import AdminCoursesPage from "./pages/admin/CoursesPage";
-import AdminCourseDetailsPage from "./pages/admin/CourseDetailsPage";
-import AdminCourseFormPage from "./pages/admin/CourseFormPage";
 import SubscriptionsPage from "./pages/admin/subscriptions/SubscriptionsPage";
 import SubscriptionRequestsPage from "./pages/admin/subscriptions/SubscriptionRequestsPage";
 import ActivateSubscriptionPage from "./pages/admin/subscriptions/ActivateSubscriptionPage";
@@ -106,10 +110,8 @@ import CreateCurriculumPage from "./pages/admin/curriculum/CreateCurriculumPage"
 import AddSubscriptionPage from "./pages/admin/subscriptions/Addsubscriptionpage";
 import BlogsPage from "./pages/admin/BlogsPage.jsx/BlogsPage";
 import BlogFormPage from "./pages/admin/BlogsPage.jsx/BlogFormPage";
-import CoursePlayerPage from "./pages/student/CoursePlayerPage";
 import ExamPage from "./pages/student/ExamPage";
 import ExamResultPage from "./pages/student/ExamResultPage";
-import CertificatePage from "./pages/student/CertificatePage";
 
 
 function App() {

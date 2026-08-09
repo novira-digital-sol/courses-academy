@@ -1,8 +1,8 @@
 import { Award, CheckCircle2, Clock3, LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import pythonCover from "../../../assets/courses/python-course.png";
-import mathCover from "../../../assets/courses/math-course.png";
-import skillsCover from "../../../assets/courses/skills-course.png";
+import pythonCover from "../../../../assets/courses/python-course.png";
+import mathCover from "../../../../assets/courses/math-course.png";
+import skillsCover from "../../../../assets/courses/skills-course.png";
 
 const courseCovers = {
   technology: pythonCover,
