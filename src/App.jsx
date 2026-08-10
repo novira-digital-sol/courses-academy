@@ -35,6 +35,7 @@ import StudentSchedulePage from "./pages/student/SchedulePage";
 import StudentAccountSettingsPage from "./pages/student/StudentAccountSettingsPage";
 import StudentNotifications from "./pages/student/Notifications";
 import StudentSubscriptionPage from "./pages/student/StudentSubscriptionPage";
+import StudentPaymentsPage from "./pages/student/StudentPaymentsPage";
 import StudentMessagess from "./pages/student/messages/Messages";
 import StudentAssignmentsPage from "./pages/student/assignments/StudentAssignmentsPage";
 import StudentGroupLessonsPage from "./pages/student/groupLessons/Studentgrouplessonspage";
@@ -186,6 +187,7 @@ function App() {
         <Route path="/certificate/:slug" element={<StudentGuard><CertificatePage /></StudentGuard>} />
         <Route path="/student/notifications" element={<StudentGuard><StudentNotifications /></StudentGuard>} />
         <Route path="/student/subscription" element={<StudentGuard><StudentSubscriptionPage /></StudentGuard>} />
+        <Route path="/student/payments" element={<StudentGuard><StudentPaymentsPage /></StudentGuard>} />
         <Route path="/student/subscriptions/:id/renew" element={<StudentGuard><RenewalPage role="student" /></StudentGuard>} />
         <Route path="/student/subscriptions/:id/add-subject" element={<StudentGuard><AddSubjectPage role="student" /></StudentGuard>} />
         <Route path="/student/messages" element={<StudentGuard><StudentMessagess /></StudentGuard>} />

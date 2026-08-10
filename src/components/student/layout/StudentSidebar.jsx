@@ -11,6 +11,7 @@ import {
   MessageSquare,
   Bell,
   CreditCard,
+  WalletCards,
   Settings,
   LogOut,
   PanelLeftClose,
@@ -61,6 +62,11 @@ const StudentSidebar = ({ isOpen, setIsOpen }) => {
       title: "الاشتراك والباقات",
       icon: CreditCard,
       path: "/student/subscription",
+    },
+    {
+      title: "المدفوعات",
+      icon: WalletCards,
+      path: "/student/payments",
     },
     {
       title: "الإعدادات",
