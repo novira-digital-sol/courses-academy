@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { BookOpen, ChevronDown, Clock3, Search, WalletCards } from "lucide-react";
+import { BookOpen, ChevronDown, ChevronLeft, ChevronRight, Clock3, Search, WalletCards } from "lucide-react";
 import StudentLayout from "../../components/student/layout/StudentLayout";
 
 const PAYMENTS = [
@@ -47,6 +47,8 @@ const StudentPaymentsPage = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("newest");
   const [period, setPeriod] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   const visiblePayments = useMemo(() => {
     const query = search.trim().toLocaleLowerCase("ar");
@@ -58,6 +60,16 @@ const StudentPaymentsPage = () => {
       return matchesSearch && (period === "all" || ageInDays <= Number(period));
     }).sort((a, b) => (sort === "newest" ? -1 : 1) * (new Date(a.date) - new Date(b.date)));
   }, [period, search, sort]);
+
+  const totalPages = Math.max(1, Math.ceil(visiblePayments.length / itemsPerPage));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const firstVisibleIndex = (safeCurrentPage - 1) * itemsPerPage;
+  const paginatedPayments = visiblePayments.slice(firstVisibleIndex, firstVisibleIndex + itemsPerPage);
+
+  const resetToFirstPage = (setter) => (event) => {
+    setter(event.target.value);
+    setCurrentPage(1);
+  };
 
   const totalPaid = PAYMENTS.reduce((sum, payment) => sum + payment.amount, 0);
   const coursesCount = new Set(PAYMENTS.map(({ course }) => course)).size;
@@ -80,17 +92,17 @@ const StudentPaymentsPage = () => {
           <div className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
             <label className="relative block w-full md:max-w-sm">
               <Search size={18} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#69717C]" />
-              <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="ابحث برقم العملية، اسم الدورة أو المحاضر..." className="h-11 w-full rounded-lg border border-[#E3E6EA] bg-[#FAFBFC] pr-10 pl-4 text-sm text-[#1F2937] outline-none transition focus:border-[#123C91] focus:ring-2 focus:ring-[#123C91]/10" />
+              <input value={search} onChange={resetToFirstPage(setSearch)} placeholder="ابحث برقم العملية، اسم الدورة أو المحاضر..." className="h-11 w-full rounded-lg border border-[#E3E6EA] bg-[#FAFBFC] pr-10 pl-4 text-sm text-[#1F2937] outline-none transition focus:border-[#123C91] focus:ring-2 focus:ring-[#123C91]/10" />
             </label>
             <div className="flex gap-3">
               <label className="relative min-w-32 flex-1 md:flex-none">
-                <select value={sort} onChange={(event) => setSort(event.target.value)} className="h-11 w-full appearance-none rounded-lg border border-[#E3E6EA] bg-[#FAFBFC] px-4 pl-9 text-sm text-[#4F5865] outline-none focus:border-[#123C91]">
+                <select value={sort} onChange={resetToFirstPage(setSort)} className="h-11 w-full appearance-none rounded-lg border border-[#E3E6EA] bg-[#FAFBFC] px-4 pl-9 text-sm text-[#4F5865] outline-none focus:border-[#123C91]">
                   <option value="newest">الأحدث أولاً</option><option value="oldest">الأقدم أولاً</option>
                 </select>
                 <ChevronDown size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#69717C]" />
               </label>
               <label className="relative min-w-32 flex-1 md:flex-none">
-                <select value={period} onChange={(event) => setPeriod(event.target.value)} className="h-11 w-full appearance-none rounded-lg border border-[#E3E6EA] bg-[#FAFBFC] px-4 pl-9 text-sm text-[#4F5865] outline-none focus:border-[#123C91]">
+                <select value={period} onChange={resetToFirstPage(setPeriod)} className="h-11 w-full appearance-none rounded-lg border border-[#E3E6EA] bg-[#FAFBFC] px-4 pl-9 text-sm text-[#4F5865] outline-none focus:border-[#123C91]">
                   <option value="all">جميع الأوقات</option><option value="7">آخر 7 أيام</option><option value="30">آخر 30 يوماً</option>
                 </select>
                 <ChevronDown size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#69717C]" />
@@ -104,7 +116,7 @@ const StudentPaymentsPage = () => {
                 {['رقم العملية', 'الدورة', 'المحاضر', 'التاريخ', 'إجمالي المبلغ'].map((title) => <th key={title} className="px-5 py-4 font-medium">{title}</th>)}
               </tr></thead>
               <tbody className="divide-y divide-[#E8EAED]">
-                {visiblePayments.map((payment) => <tr key={payment.id} className="transition-colors hover:bg-[#FAFBFC]">
+                {paginatedPayments.map((payment) => <tr key={payment.id} className="transition-colors hover:bg-[#FAFBFC]">
                   <td className="px-5 py-5 font-mono text-xs text-[#69717C]">#{payment.id}</td>
                   <td className="px-5 py-5 text-sm font-semibold text-[#1F2937]">{payment.course}</td>
                   <td className="px-5 py-5 text-sm text-[#69717C]">{payment.instructor}</td>
@@ -115,9 +127,38 @@ const StudentPaymentsPage = () => {
             </table>
           </div>
           <div className="space-y-3 border-t border-[#E8EAED] bg-[#F8F9FA] p-3 md:hidden">
-            {visiblePayments.map((payment) => <MobilePaymentCard key={payment.id} payment={payment} />)}
+            {paginatedPayments.map((payment) => <MobilePaymentCard key={payment.id} payment={payment} />)}
           </div>
           {visiblePayments.length === 0 && <div className="border-t border-[#E8EAED] px-4 py-12 text-center text-sm text-[#69717C]">لا توجد عمليات دفع مطابقة لبحثك</div>}
+          {visiblePayments.length > 0 && (
+            <div className="flex flex-col-reverse gap-3 border-t border-[#E8EAED] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            
+
+              <div className="flex flex-wrap items-center gap-3 text-xs text-[#69717C]">
+                <span>عرض {firstVisibleIndex + 1}–{Math.min(firstVisibleIndex + itemsPerPage, visiblePayments.length)} من أصل {visiblePayments.length} عملية</span>
+                <label className="flex items-center gap-2">
+                  <span>عدد الصفوف:</span>
+                  <select value={itemsPerPage} onChange={(event) => { setItemsPerPage(Number(event.target.value)); setCurrentPage(1); }} className="h-8 rounded-md border border-[#E3E6EA] bg-white px-2 text-sm text-[#4F5865] outline-none focus:border-[#123C91]">
+                    {[5, 10, 20].map((count) => <option key={count} value={count}>{count}</option>)}
+                  </select>
+                </label>
+              </div>
+
+                <nav dir="ltr" aria-label="التنقل بين الصفحات" className="flex items-center gap-1">
+                <button type="button" aria-label="الصفحة السابقة" disabled={safeCurrentPage === 1} onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} className="flex h-8 w-8 items-center justify-center rounded-md border border-[#E3E6EA] text-[#4F5865] transition hover:bg-[#F8F9FA] disabled:cursor-not-allowed disabled:opacity-40">
+                  <ChevronLeft size={16} />
+                </button>
+                {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                  <button key={page} type="button" aria-current={page === safeCurrentPage ? "page" : undefined} onClick={() => setCurrentPage(page)} className={`h-8 min-w-8 rounded-md px-2 text-sm font-medium transition ${page === safeCurrentPage ? "bg-[#123C91] text-white" : "bg-[#EAF2FF] text-[#1F2937] hover:bg-[#DCE9FF]"}`}>
+                    {page}
+                  </button>
+                ))}
+                <button type="button" aria-label="الصفحة التالية" disabled={safeCurrentPage === totalPages} onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))} className="flex h-8 w-8 items-center justify-center rounded-md border border-[#E3E6EA] text-[#4F5865] transition hover:bg-[#F8F9FA] disabled:cursor-not-allowed disabled:opacity-40">
+                  <ChevronRight size={16} />
+                </button>
+              </nav>
+            </div>
+          )}
         </div>
       </section>
     </StudentLayout>
