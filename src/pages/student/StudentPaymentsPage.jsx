@@ -64,10 +64,10 @@ const StudentPaymentsPage = () => {
 
   return (
     <StudentLayout>
-      <section dir="rtl" className="w-full pb-8 font-['IBM_Plex_Sans_Arabic'] text-right">
+      <section dir="rtl" className="w-full pb-8  -mt-16 font-['IBM_Plex_Sans_Arabic'] text-right">
         <header className="mb-6">
           <h1 className="text-2xl font-semibold text-[#123C91]">المدفوعات</h1>
-          <p className="mt-2 text-sm text-[#69717C]">سجل مشترياتك وفواتيرك في مكان واحد</p>
+          <p className="mt-2 mb-2 text-sm text-[#69717C]">سجل مشترياتك وفواتيرك في مكان واحد</p>
         </header>
 
         <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-3">

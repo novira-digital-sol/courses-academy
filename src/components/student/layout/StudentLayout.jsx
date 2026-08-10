@@ -9,7 +9,7 @@ const getInitialSidebarState = () => {
   return window.innerWidth >= MOBILE_BREAKPOINT;
 };
 
-const StudentLayout = ({ children }) => {
+const StudentLayout = ({ children, hideBreadcrumb = false }) => {
 
   const [isOpen, setIsOpen] = useState(getInitialSidebarState);
 
@@ -39,7 +39,7 @@ const StudentLayout = ({ children }) => {
       </div>
 
       <main className="flex-1 h-full overflow-y-auto p-3 md:p-6">
-         <Breadcrumbs homeTo="/student-dashboard" />
+         {!hideBreadcrumb && <Breadcrumbs homeTo="/student-dashboard" />}
         {children}
       </main>
 
